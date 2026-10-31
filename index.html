@@ -709,22 +709,6 @@
         }
         .contact-socials a:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.3); }
 
-        /* =========================================
-           Loading Spinner
-           ========================================= */
-        .spinner {
-            width: 50px; height: 50px;
-            border: 5px solid var(--border-color);
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* أنيميشن الظهور */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -796,9 +780,18 @@
             </div>
         </div>
 
-        <!-- المشروع البارز (ديناميكي) -->
-        <div class="featured-project reveal" id="dynamic-featured-project">
-            <!-- سيتم وضع الكارت هنا عبر الجافاسكريبت -->
+        <!-- المشروع البارز -->
+        <div class="featured-project reveal">
+            <div class="featured-card tilt-effect" onclick="openProjectDetail(13)">
+                <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
+                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Talabat Campaign">
+                <div class="bookmark-btn"><i class="far fa-bookmark"></i></div>
+                <div class="featured-overlay">
+                    <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
+                    <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
+                    <p style="font-size: 12px; color: var(--text-gray);">طلبات - Talabat</p>
+                </div>
+            </div>
         </div>
 
         <!-- معرض الأعمال -->
@@ -1174,14 +1167,8 @@
 
     <script>
         // =====================================================================
-        // [1] إعدادات Contentful والبيانات الاحتياطية (Fallback)
+        // [1] بيانات المشاريع 
         // =====================================================================
-        const SPACE_ID = 'Od0uoiomzj58';
-        const ACCESS_TOKEN = 'g4PROQkT-7wAC3M2xBwvuOAJzCcpiiQs5D-nBASTJ1iA';
-        const CONTENT_TYPE = 'project'; 
-        const ENVIRONMENT = 'master';
-
-        // البيانات الاحتياطية
         let projectsData = [
             {
                 id: 13,
@@ -1294,87 +1281,11 @@
             }
         ];
 
-        // دالة الجلب من Contentful
-        async function fetchProjectsFromContentful() {
-            try {
-                const response = await fetch(`https://cdn.contentful.com/spaces/${SPACE_ID}/environments/${ENVIRONMENT}/entries?access_token=${ACCESS_TOKEN}&content_type=${CONTENT_TYPE}&include=2`);
-                
-                if (!response.ok) {
-                    console.warn("Contentful API Error. Using fallback data.");
-                    return; 
-                }
-                
-                const data = await response.json();
-                
-                if (!data.items || data.items.length === 0) {
-                    console.warn("No projects found in Contentful. Using fallback data.");
-                    return; 
-                }
-
-                // خريطة لتخزين روابط الصور (Assets)
-                const assets = {};
-                if (data.includes && data.includes.Asset) {
-                    data.includes.Asset.forEach(asset => {
-                        if(asset.fields && asset.fields.file) {
-                            assets[asset.sys.id] = asset.fields.file.url;
-                        }
-                    });
-                }
-
-                // تحويل البيانات بناءً على الأسماء الجديدة (Title, Image, Contentful)
-                const contentfulProjects = data.items.map((item, index) => {
-                    const fields = item.fields;
-                    
-                    // 1. صورة الغلاف (Image)
-                    let coverUrl = 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop';
-                    if (fields.Image && fields.Image.sys && assets[fields.Image.sys.id]) {
-                        coverUrl = assets[fields.Image.sys.id];
-                        if (coverUrl.startsWith('//')) coverUrl = 'https:' + coverUrl;
-                    }
-
-                    // 2. معرض الصور (Contentful)
-                    let galleryUrls = [];
-                    if (fields.Contentful && Array.isArray(fields.Contentful)) {
-                        galleryUrls = fields.Contentful.map(gal => {
-                            if (gal.sys && assets[gal.sys.id]) {
-                                let url = assets[gal.sys.id];
-                                return url.startsWith('//') ? 'https:' + url : url;
-                            }
-                            return null;
-                        }).filter(url => url !== null);
-                    }
-
-                    return {
-                        id: index + 1,
-                        title: fields.Title || 'مشروع بدون اسم', // تم التعديل لـ Title
-                        category: fields.category || 'social',
-                        coverImage: coverUrl,
-                        isNew: fields.isNew || false,
-                        gallery: galleryUrls.length > 0 ? galleryUrls : [coverUrl]
-                    };
-                });
-
-                projectsData = contentfulProjects;
-                renderHomeProjects(projectsData);
-                renderFeaturedProject(projectsData[0]);
-                console.log("Contentful data loaded successfully!");
-
-            } catch (error) {
-                console.error("Error fetching from Contentful:", error);
-            }
-        }
-
         // =====================================================================
-        // [2] تشغيل الموقع
+        // [2] تشغيل الموقع والأنيميشن التفاعلي المتقدم
         // =====================================================================
         window.addEventListener('load', () => {
-            // رسم البيانات الاحتياطية فوراً
             renderHomeProjects(projectsData);
-            renderFeaturedProject(projectsData[0]);
-
-            // محاولة جلب البيانات من Contentful في الخلفية
-            fetchProjectsFromContentful();
-
             startCounters();
             initCustomCursor();
             initMagneticButtons();
@@ -1398,33 +1309,6 @@
             }, 1500); 
         });
 
-        // دالة رسم المشروع البارز
-        function renderFeaturedProject(project) {
-            const container = document.getElementById('dynamic-featured-project');
-            if (!project) {
-                container.innerHTML = '';
-                return;
-            }
-
-            const newBadgeHtml = project.isNew ? `<div class="new-badge"><i class="fas fa-star"></i> جديد</div>` : '';
-
-            container.innerHTML = `
-                <div class="featured-card tilt-effect" onclick="openProjectDetail(${project.id})">
-                    ${newBadgeHtml}
-                    <img src="${project.coverImage}" alt="${project.title}">
-                    <div class="bookmark-btn"><i class="far fa-bookmark"></i></div>
-                    <div class="featured-overlay">
-                        <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
-                        <h3 style="font-size: 20px; margin-bottom: 5px;">${project.title}</h3>
-                        <p style="font-size: 12px; color: var(--text-gray);">${project.category === 'social' ? 'حملة سوشيال ميديا' : 'مشروع مميز'}</p>
-                    </div>
-                </div>
-            `;
-            
-            init3DTilt();
-            initCustomCursor();
-        }
-
         // --- 1. مؤشر الماوس المخصص ---
         function initCustomCursor() {
             const cursor = document.querySelector('.custom-cursor');
@@ -1447,7 +1331,7 @@
             }
             animateFollower();
 
-            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item, .contact-card, .featured-card');
+            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item, .contact-card');
             links.forEach(link => {
                 link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
                 link.addEventListener('mouseleave', () => follower.classList.remove('hovering'));
@@ -1480,33 +1364,25 @@
             
             const cards = document.querySelectorAll('.tilt-effect');
             cards.forEach(card => {
-                card.removeEventListener('mousemove', handleTilt);
-                card.removeEventListener('mouseleave', resetTilt);
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateY = ((x - centerX) / centerX) * 15;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    card.style.boxShadow = `${-rotateY}px ${rotateX}px 30px rgba(57, 255, 20, 0.15)`;
+                });
                 
-                card.addEventListener('mousemove', handleTilt);
-                card.addEventListener('mouseleave', resetTilt);
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    card.style.boxShadow = 'none';
+                });
             });
-
-            function handleTilt(e) {
-                const card = e.currentTarget;
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const rotateX = ((y - centerY) / centerY) * -15; 
-                const rotateY = ((x - centerX) / centerX) * 15;
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                card.style.boxShadow = `${-rotateY}px ${rotateX}px 30px rgba(57, 255, 20, 0.15)`;
-            }
-
-            function resetTilt(e) {
-                const card = e.currentTarget;
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-                card.style.boxShadow = 'none';
-            }
         }
 
         // --- 4. ظهور العناصر أثناء التمرير ---
@@ -1550,7 +1426,7 @@
             grid.innerHTML = '';
 
             if(projectsToRender.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-gray); padding: 30px;">لا توجد مشاريع مطابقة.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-gray); padding: 30px;">لا توجد مشاريع مطابقة لبحثك.</div>`;
                 return;
             }
 
@@ -1569,6 +1445,7 @@
                 grid.innerHTML += card;
             });
             
+            // إعادة تفعيل المغناطيسية والـ 3D للعناصر الجديدة
             init3DTilt();
             initMagneticButtons();
             initCustomCursor();
