@@ -33,7 +33,7 @@
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            cursor: none; /* إخفاء الماوس العادي */
+            cursor: none; 
         }
 
         @media (max-width: 768px) {
@@ -412,7 +412,7 @@
         }
 
         /* =========================================
-           5.1 قسم الكورسات المخصص (الجديد)
+           5.1 قسم الكورسات المخصص
            ========================================= */
         .course-card {
             background: var(--bg-card); border: 1px solid var(--border-color);
@@ -422,64 +422,23 @@
             margin-bottom: 30px;
         }
         
-        .course-image-container {
-            position: relative;
-        }
-        
-        .course-image-container img {
-            width: 100%;
-            display: block;
-        }
+        .course-image-container { position: relative; }
+        .course-image-container img { width: 100%; display: block; }
         
         .course-discount-badge {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: #fbbf24; /* لون أصفر */
-            color: #000;
-            font-weight: 900;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 16px;
+            position: absolute; top: 15px; right: 15px;
+            background: #fbbf24; color: #000; font-weight: 900;
+            padding: 8px 20px; border-radius: 30px; font-size: 16px;
             box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
             animation: pulseNew 1.5s infinite;
         }
 
-        .course-content {
-            padding: 25px 20px;
-        }
-        
-        .course-title {
-            font-size: 26px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            color: var(--text-white);
-        }
-        
-        .course-desc {
-            color: var(--text-gray);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .course-features {
-            list-style: none;
-            margin-bottom: 25px;
-        }
-        
-        .course-features li {
-            font-size: 14px;
-            color: var(--text-white);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .course-features li i {
-            color: var(--primary);
-            font-size: 16px;
-        }
+        .course-content { padding: 25px 20px; }
+        .course-title { font-size: 26px; font-weight: 900; margin-bottom: 10px; color: var(--text-white); }
+        .course-desc { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+        .course-features { list-style: none; margin-bottom: 25px; }
+        .course-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .course-features li i { color: var(--primary); font-size: 16px; }
 
         /* =========================================
            6. صفحة تفاصيل المشروع
@@ -695,6 +654,65 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* =========================================
+           10. صفحة التواصل الاحترافية (الجديدة)
+           ========================================= */
+        .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
+        
+        .contact-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 20px 15px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            text-decoration: none; color: var(--text-white); transition: 0.3s;
+        }
+        .contact-card:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(57, 255, 20, 0.15); transform: translateY(-5px); }
+        .contact-card i { font-size: 28px; color: var(--primary); margin-bottom: 5px; }
+        .contact-card span { font-size: 14px; font-weight: 700; }
+        .contact-card small { font-size: 12px; color: var(--text-gray); direction: ltr; }
+
+        .contact-form {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label { display: block; font-size: 13px; margin-bottom: 8px; color: var(--text-gray); font-weight: 600; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 14px 15px; border-radius: 12px;
+            background-color: var(--bg-main); border: 1px solid var(--border-color);
+            color: var(--text-white); font-size: 14px; outline: none; font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+        .form-group select option { background-color: var(--bg-main); color: white; }
+        
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+        }
+
+        .submit-btn {
+            width: 100%; padding: 16px; border-radius: 12px;
+            background: linear-gradient(90deg, var(--primary), #1f9e0f);
+            color: #000; border: none; font-weight: 900; font-size: 16px;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(57, 255, 20, 0.3); }
+
+        .contact-socials {
+            display: flex; justify-content: center; gap: 15px; margin-top: 30px; margin-bottom: 20px;
+        }
+        .contact-socials a {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-white); font-size: 22px; text-decoration: none;
+            transition: 0.3s;
+        }
+        .contact-socials a:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.3); }
+
     </style>
 </head>
 <body>
@@ -762,7 +780,7 @@
             </div>
         </div>
 
-        <!-- المشروع البارز (المشروع الجديد - طلبات) -->
+        <!-- المشروع البارز -->
         <div class="featured-project reveal">
             <div class="featured-card tilt-effect" onclick="openProjectDetail(13)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
@@ -857,7 +875,7 @@
         </div>
     </section>
 
-    <!-- صفحة الكورسات (الجديدة) -->
+    <!-- صفحة الكورسات -->
     <section id="view-courses" class="view">
         <div class="page-content">
             <h2 style="text-align: center; margin-bottom: 10px; color: var(--primary);">كورسات ودبلومات</h2>
@@ -1056,27 +1074,82 @@
         </div>
     </section>
 
-    <!-- صفحة تواصل -->
+    <!-- صفحة تواصل (الاحترافية الجديدة) -->
     <section id="view-contact" class="view">
         <div class="page-content">
-            <h2 style="text-align: center; margin-bottom: 10px;" class="reveal">لنبدأ مشروعاً</h2>
-            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 25px;" class="reveal">احكِ لي عن علامتك وما تحتاجه، أرد عادةً في أقل من 24 ساعة.</p>
+            <h2 style="text-align: center; margin-bottom: 5px; color: var(--primary); font-weight: 900; font-size: 24px;">لنتحدث عن مشروعك</h2>
+            <p style="text-align: center; color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">أنا هنا لتحويل أفكارك إلى واقع بصري. اختر وسيلة التواصل المفضلة لديك.</p>
             
-            <form onsubmit="sendToWhatsApp(event)" class="reveal">
-                <div class="form-group">
-                    <label>الاسم</label>
-                    <input type="text" id="cName" required>
+            <!-- كروت التواصل السريع -->
+            <div class="contact-grid reveal">
+                <a href="https://wa.me/201154012821" target="_blank" class="contact-card magnetic">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>واتساب</span>
+                    <small>اضغط للمحادثة</small>
+                </a>
+                <a href="mailto:info@yuossef.com" class="contact-card magnetic">
+                    <i class="fas fa-envelope"></i>
+                    <span>البريد الإلكتروني</span>
+                    <small>info@yuossef.com</small>
+                </a>
+                <a href="tel:+201154012821" class="contact-card magnetic">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>اتصل بي</span>
+                    <small dir="ltr">+20 115 401 2821</small>
+                </a>
+                <div class="contact-card magnetic">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>الموقع</span>
+                    <small>القاهرة، مصر</small>
                 </div>
+            </div>
+
+            <!-- الفورم الاحترافي -->
+            <form class="contact-form reveal" onsubmit="sendToWhatsApp(event)">
+                <div class="form-group">
+                    <label>الاسم الكريم</label>
+                    <input type="text" id="cName" placeholder="اكتب اسمك هنا" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>رقم الهاتف أو الواتساب</label>
+                    <input type="tel" id="cPhone" placeholder="مثال: 010xxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label>نوع الخدمة المطلوبة</label>
+                    <select id="cService" required>
+                        <option value="" disabled selected>اختر نوع الخدمة...</option>
+                        <option value="تصميم سوشيال ميديا">تصميم سوشيال ميديا</option>
+                        <option value="هوية بصرية كاملة">هوية بصرية كاملة</option>
+                        <option value="مطبوعات وتغليف">مطبوعات وتغليف</option>
+                        <option value="استفسار عن الكورسات">استفسار عن الكورسات</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>تفاصيل المشروع</label>
-                    <textarea id="cDetails" rows="4" required></textarea>
+                    <textarea id="cDetails" rows="4" placeholder="احكِ لي باختصار عن فكرتك وما تحتاجه..." required></textarea>
                 </div>
-                <button type="submit" class="submit-btn magnetic">إرسال عبر واتساب <i class="fab fa-whatsapp"></i></button>
+
+                <button type="submit" class="submit-btn magnetic">
+                    إرسال عبر واتساب <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
+                </button>
             </form>
+
+            <!-- سوشيال ميديا -->
+            <div class="contact-socials reveal">
+                <a href="https://www.facebook.com/share/1EqptCPXaj/" target="_blank" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" target="_blank" title="انستجرام"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank" title="بيهانس"><i class="fab fa-behance"></i></a>
+                <a href="#" target="_blank" title="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+
         </div>
     </section>
 
-    <!-- الشريط السفلي (تمت إضافة الكورسات) -->
+    <!-- الشريط السفلي -->
     <nav class="bottom-nav" id="bottom-nav">
         <div class="nav-item active magnetic" onclick="switchView('home', this)">
             <i class="fas fa-th-large"></i><span>الأعمال</span>
@@ -1261,7 +1334,7 @@
             }
             animateFollower();
 
-            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item');
+            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item, .contact-card');
             links.forEach(link => {
                 link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
                 link.addEventListener('mouseleave', () => follower.classList.remove('hovering'));
@@ -1483,21 +1556,29 @@
             window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
         }
 
-        // --- دالة طلب الكورس الجديدة ---
         function orderCourse(courseName, price) {
             const phoneNumber = "201154012821";
             const text = `مرحباً YUOSSEF&M،%0Aأود حجز *${courseName}* بسعر *${price}* ج.م. (خصم 50%). يرجى تزويدي بالتفاصيل.`;
             window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
         }
 
+        // --- دالة إرسال الفورم المحدثة (تشمل الخدمة والتليفون) ---
         function sendToWhatsApp(e) {
             e.preventDefault();
             const name = document.getElementById('cName').value;
+            const phone = document.getElementById('cPhone').value;
+            const service = document.getElementById('cService').value;
             const details = document.getElementById('cDetails').value;
+            
             const phoneNumber = "201154012821";
-            const text = `مرحباً YUOSSEF&M،%0A%0A*الاسم:* ${name}%0A*تفاصيل المشروع:* ${details}`;
+            const text = `مرحباً YUOSSEF&M،%0A%0A*الاسم:* ${name}%0A*رقم الهاتف:* ${phone}%0A*الخدمة المطلوبة:* ${service}%0A%0A*التفاصيل:* ${details}`;
+            
             window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
+            
+            // تفريغ الحقول
             document.getElementById('cName').value = '';
+            document.getElementById('cPhone').value = '';
+            document.getElementById('cService').value = '';
             document.getElementById('cDetails').value = '';
         }
 
