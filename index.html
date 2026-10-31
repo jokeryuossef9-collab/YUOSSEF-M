@@ -692,16 +692,16 @@
             </div>
         </div>
 
-        <!-- المشروع البارز (المشروع الجديد - الفريق خميس) -->
+        <!-- المشروع البارز (المشروع الجديد - طلبات) -->
         <div class="featured-project reveal">
-            <div class="featured-card tilt-effect" onclick="openProjectDetail(12)">
+            <div class="featured-card tilt-effect" onclick="openProjectDetail(13)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
-                <img src="https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg" alt="حملة الفريق خميس">
+                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Talabat Campaign">
                 <div class="bookmark-btn"><i class="far fa-bookmark"></i></div>
                 <div class="featured-overlay">
                     <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
                     <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
-                    <p style="font-size: 12px; color: var(--text-gray);">الفريق خميس</p>
+                    <p style="font-size: 12px; color: var(--text-gray);">طلبات - Talabat</p>
                 </div>
             </div>
         </div>
@@ -986,14 +986,27 @@
     <script>
         // =====================================================================
         // [1] بيانات المشاريع 
+        // تم إضافة مشروع طلبات كأحدث مشروع في المقدمة (ID: 13)
         // =====================================================================
         let projectsData = [
+            {
+                id: 13,
+                title: "حملة سوشيال ميديا - طلبات",
+                category: "social",
+                coverImage: "https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg",
+                isNew: true,
+                gallery: [
+                    "https://i.postimg.cc/ht1JcvQP/FB-IMG-1793405878950.jpg",
+                    "https://i.postimg.cc/x13kn8N1/FB-IMG-1793405882435.jpg",
+                    "https://i.postimg.cc/XYkZ4qBJ/FB-IMG-1793405884683.jpg",
+                    "https://i.postimg.cc/RZL34hJC/FB-IMG-1793405886957.jpg"
+                ]
+            },
             {
                 id: 12,
                 title: "حملة سوشيال ميديا - الفريق خميس",
                 category: "social",
                 coverImage: "https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg",
-                isNew: true,
                 gallery: [
                     "https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg",
                     "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg",
