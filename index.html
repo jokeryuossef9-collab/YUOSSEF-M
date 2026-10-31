@@ -528,7 +528,7 @@
         .nav-item.active i { transform: translateY(-3px); text-shadow: 0 0 10px var(--primary); }
 
         /* =========================================
-           9. صفحة عني وتواصل (مع الإضافات الجديدة)
+           9. صفحة عني وتواصل
            ========================================= */
         .page-content { padding: 20px 15px; }
         
@@ -710,7 +710,7 @@
         .contact-socials a:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.3); }
 
         /* =========================================
-           Loading Spinner (جديد)
+           Loading Spinner
            ========================================= */
         .spinner {
             width: 50px; height: 50px;
@@ -796,7 +796,7 @@
             </div>
         </div>
 
-        <!-- المشروع البارز (سيتم تحديثه ديناميكياً من Contentful) -->
+        <!-- المشروع البارز (ديناميكي) -->
         <div class="featured-project reveal" id="dynamic-featured-project">
             <!-- سيتم وضع الكارت هنا عبر الجافاسكريبت -->
         </div>
@@ -832,7 +832,7 @@
         </div>
 
         <div class="projects-grid" id="home-projects-grid">
-            <!-- سيتم توليد المشاريع هنا عبر الجافاسكريبت -->
+            <!-- سيتم توليد المشاريع هنا -->
         </div>
     </section>
 
@@ -1174,30 +1174,143 @@
 
     <script>
         // =====================================================================
-        // [1] إعدادات Contentful والجلب الديناميكي للبيانات
+        // [1] إعدادات Contentful والبيانات الاحتياطية (Fallback)
         // =====================================================================
         const SPACE_ID = 'Od0uoiomzj58';
         const ACCESS_TOKEN = 'g4PROQkT-7wAC3M2xBwvuOAJzCcpiiQs5D-nBASTJ1iA';
-        const CONTENT_TYPE = 'project'; // تأكد أن هذا هو اسم الـ Content Type في Contentful
+        const CONTENT_TYPE = 'project'; 
         const ENVIRONMENT = 'master';
 
-        let projectsData = []; // سيتم ملؤها من Contentful
+        // البيانات الاحتياطية
+        let projectsData = [
+            {
+                id: 13,
+                title: "حملة سوشيال ميديا - طلبات",
+                category: "social",
+                coverImage: "https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg",
+                isNew: true,
+                gallery: [
+                    "https://i.postimg.cc/ht1JcvQP/FB-IMG-1793405878950.jpg",
+                    "https://i.postimg.cc/x13kn8N1/FB-IMG-1793405882435.jpg",
+                    "https://i.postimg.cc/XYkZ4qBJ/FB-IMG-1793405884683.jpg",
+                    "https://i.postimg.cc/RZL34hJC/FB-IMG-1793405886957.jpg"
+                ]
+            },
+            {
+                id: 12,
+                title: "حملة سوشيال ميديا - الفريق خميس",
+                category: "social",
+                coverImage: "https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg",
+                gallery: [
+                    "https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg",
+                    "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg",
+                    "https://i.postimg.cc/hGvYcJZQ/FB-IMG-1793404909274.jpg",
+                    "https://i.postimg.cc/wBrGv6nJ/FB-IMG-1793404984329.jpg"
+                ]
+            },
+            {
+                id: 11,
+                title: "حملة سوشيال ميديا - مشروع جديد",
+                category: "social",
+                coverImage: "https://i.postimg.cc/xd0DLF4c/FB-IMG-1793399730053.jpg",
+                gallery: [
+                    "https://i.postimg.cc/MXkgHsBy/FB-IMG-1793399734239.jpg",
+                    "https://i.postimg.cc/44KdKmcS/FB-IMG-1793399737652.jpg",
+                    "https://i.postimg.cc/HjGFnSM3/FB-IMG-1793399747014.jpg",
+                    "https://i.postimg.cc/LhdG5yPD/FB-IMG-1793399750224.jpg"
+                ]
+            },
+            {
+                id: 10,
+                title: "حملة سوشيال ميديا - مشروع مميز",
+                category: "social",
+                coverImage: "https://i.postimg.cc/hP7Cvbpq/FB-IMG-1793399051535.jpg",
+                gallery: [
+                    "https://i.postimg.cc/gJTDknhd/FB-IMG-1793399059640.jpg",
+                    "https://i.postimg.cc/W3HnbhZ3/FB-IMG-1793399063223.jpg",
+                    "https://i.postimg.cc/wvGVT7NT/FB-IMG-1793399069307.jpg",
+                    "https://i.postimg.cc/0QBf2bSq/FB-IMG-1793399073362.jpg"
+                ]
+            },
+            {
+                id: 9,
+                title: "حملة سوشيال ميديا - OREO",
+                category: "social",
+                coverImage: "https://i.postimg.cc/yx0Z4dXM/FB-IMG-1793398218764.jpg",
+                gallery: [
+                    "https://i.postimg.cc/3xtDHzpP/FB-IMG-1793398223707.jpg",
+                    "https://i.postimg.cc/zGzR6qbz/FB-IMG-1793398226964.jpg",
+                    "https://i.postimg.cc/Bnm1GRH9/FB-IMG-1793398230828.jpg",
+                    "https://i.postimg.cc/6pWGgB26/FB-IMG-1793398234474.jpg"
+                ]
+            },
+            {
+                id: 8,
+                title: "حملة سوشيال ميديا - WE SONIC",
+                category: "social",
+                coverImage: "https://i.postimg.cc/BnVRkQhR/FB-IMG-1793397469863.jpg",
+                gallery: [
+                    "https://i.postimg.cc/pTD7mQ2d/FB-IMG-1793397476305.jpg",
+                    "https://i.postimg.cc/wvhP156j/FB-IMG-1793397480710.jpg",
+                    "https://i.postimg.cc/rmSbDG8m/FB-IMG-1793397485155.jpg",
+                    "https://i.postimg.cc/qR8YNckq/FB-IMG-1793397488672.jpg"
+                ]
+            },
+            {
+                id: 7,
+                title: "حملة سوشيال ميديا - Tabby",
+                category: "social",
+                coverImage: "https://i.postimg.cc/GmVv6Zv7/FB-IMG-1793397047122.jpg",
+                gallery: [
+                    "https://i.postimg.cc/6pv84TGj/FB-IMG-1793397051863.jpg",
+                    "https://i.postimg.cc/rwrDRztf/FB-IMG-1793397056179.jpg",
+                    "https://i.postimg.cc/kgb2RDtj/FB-IMG-1793397058833.jpg",
+                    "https://i.postimg.cc/rwrDRztg/FB-IMG-1793397061941.jpg"
+                ]
+            },
+            {
+                id: 6,
+                title: "حملة KOSMOLITA CLINIC",
+                category: "identity",
+                coverImage: "https://i.postimg.cc/k5bLdv84/IMG-20261029-WA0264.jpg",
+                gallery: [
+                    "https://i.postimg.cc/1t0T8Rv4/FB-IMG-1793395553117.jpg",
+                    "https://i.postimg.cc/d1RXhQ5V/FB-IMG-1793395556773.jpg",
+                    "https://i.postimg.cc/SsL5nQgR/FB-IMG-1793395560665.jpg",
+                    "https://i.postimg.cc/pTQ7mVsd/FB-IMG-1793395657468.jpg"
+                ]
+            },
+            {
+                id: 5,
+                title: "حملة سوشيال ميديا - دجاج مقرمش",
+                category: "social",
+                coverImage: "https://i.postimg.cc/ZqMhxqmq/485893870-1793390740785796.jpg",
+                gallery: [
+                    "https://i.postimg.cc/FKBQVKvs/176635013-1793390744359588.jpg",
+                    "https://i.postimg.cc/YSswzS74/479785028-1793390743585459.jpg",
+                    "https://i.postimg.cc/mD1WXGZk/697932327-1793390742700277.jpg",
+                    "https://i.postimg.cc/fbrhfbsz/995122413-1793390741768358.jpg"
+                ]
+            }
+        ];
 
+        // دالة الجلب من Contentful
         async function fetchProjectsFromContentful() {
-            const grid = document.getElementById('home-projects-grid');
-            const featuredContainer = document.getElementById('dynamic-featured-project');
-            
-            // إظهار التحميل
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;"><div class="spinner"></div><p style="margin-top: 15px; color: var(--text-gray);">جاري تحميل الأعمال...</p></div>`;
-            featuredContainer.innerHTML = ''; // مسح الكارت البارز مؤقتاً
-
             try {
                 const response = await fetch(`https://cdn.contentful.com/spaces/${SPACE_ID}/environments/${ENVIRONMENT}/entries?access_token=${ACCESS_TOKEN}&content_type=${CONTENT_TYPE}&include=2`);
                 
-                if (!response.ok) throw new Error('فشل الاتصال بالخادم');
+                if (!response.ok) {
+                    console.warn("Contentful API Error. Using fallback data.");
+                    return; 
+                }
                 
                 const data = await response.json();
                 
+                if (!data.items || data.items.length === 0) {
+                    console.warn("No projects found in Contentful. Using fallback data.");
+                    return; 
+                }
+
                 // خريطة لتخزين روابط الصور (Assets)
                 const assets = {};
                 if (data.includes && data.includes.Asset) {
@@ -1208,21 +1321,21 @@
                     });
                 }
 
-                // تحويل البيانات لتتوافق مع الكود القديم
-                projectsData = data.items.map((item, index) => {
+                // تحويل البيانات بناءً على الأسماء الجديدة (Title, Image, Contentful)
+                const contentfulProjects = data.items.map((item, index) => {
                     const fields = item.fields;
                     
-                    // صورة الغلاف
-                    let coverUrl = 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop'; // صورة بديلة
-                    if (fields.coverImage && fields.coverImage.sys && assets[fields.coverImage.sys.id]) {
-                        coverUrl = assets[fields.coverImage.sys.id];
+                    // 1. صورة الغلاف (Image)
+                    let coverUrl = 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop';
+                    if (fields.Image && fields.Image.sys && assets[fields.Image.sys.id]) {
+                        coverUrl = assets[fields.Image.sys.id];
                         if (coverUrl.startsWith('//')) coverUrl = 'https:' + coverUrl;
                     }
 
-                    // معرض الصور
+                    // 2. معرض الصور (Contentful)
                     let galleryUrls = [];
-                    if (fields.gallery && Array.isArray(fields.gallery)) {
-                        galleryUrls = fields.gallery.map(gal => {
+                    if (fields.Contentful && Array.isArray(fields.Contentful)) {
+                        galleryUrls = fields.Contentful.map(gal => {
                             if (gal.sys && assets[gal.sys.id]) {
                                 let url = assets[gal.sys.id];
                                 return url.startsWith('//') ? 'https:' + url : url;
@@ -1232,8 +1345,8 @@
                     }
 
                     return {
-                        id: index + 1, // استخدام رقم متسلسل للتوافق مع دوال الموقع
-                        title: fields.title || 'مشروع بدون اسم',
+                        id: index + 1,
+                        title: fields.Title || 'مشروع بدون اسم', // تم التعديل لـ Title
                         category: fields.category || 'social',
                         coverImage: coverUrl,
                         isNew: fields.isNew || false,
@@ -1241,19 +1354,51 @@
                     };
                 });
 
-                // رسم المشاريع
+                projectsData = contentfulProjects;
                 renderHomeProjects(projectsData);
-                
-                // رسم المشروع البارز (أول مشروع في القائمة)
                 renderFeaturedProject(projectsData[0]);
+                console.log("Contentful data loaded successfully!");
 
             } catch (error) {
-                console.error('Error fetching data:', error);
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--accent-red); padding: 50px;">حدث خطأ أثناء تحميل الأعمال. يرجى المحاولة لاحقاً.</div>`;
+                console.error("Error fetching from Contentful:", error);
             }
         }
 
-        // دالة رسم المشروع البارز ديناميكياً
+        // =====================================================================
+        // [2] تشغيل الموقع
+        // =====================================================================
+        window.addEventListener('load', () => {
+            // رسم البيانات الاحتياطية فوراً
+            renderHomeProjects(projectsData);
+            renderFeaturedProject(projectsData[0]);
+
+            // محاولة جلب البيانات من Contentful في الخلفية
+            fetchProjectsFromContentful();
+
+            startCounters();
+            initCustomCursor();
+            initMagneticButtons();
+            init3DTilt();
+            initScrollReveal();
+            typeWriterEffect();
+
+            // إخفاء شاشة البداية
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.classList.add('hide'); 
+                
+                setTimeout(() => {
+                    document.getElementById('welcome-toast').classList.add('show');
+                }, 400);
+
+                setTimeout(() => {
+                    document.getElementById('welcome-toast').classList.remove('show');
+                }, 4000);
+                
+            }, 1500); 
+        });
+
+        // دالة رسم المشروع البارز
         function renderFeaturedProject(project) {
             const container = document.getElementById('dynamic-featured-project');
             if (!project) {
@@ -1276,36 +1421,9 @@
                 </div>
             `;
             
-            // إعادة تفعيل التأثيرات على الكارت البارز الجديد
             init3DTilt();
             initCustomCursor();
         }
-
-        // =====================================================================
-        // [2] تشغيل الموقع والأنيميشن التفاعلي المتقدم
-        // =====================================================================
-        window.addEventListener('load', () => {
-            fetchProjectsFromContentful(); // جلب البيانات بدلاً من استخدام المصفوفة الثابتة
-            startCounters();
-            initCustomCursor();
-            initMagneticButtons();
-            typeWriterEffect();
-
-            // إخفاء شاشة البداية
-            setTimeout(() => {
-                const preloader = document.getElementById('preloader');
-                preloader.classList.add('hide'); 
-                
-                setTimeout(() => {
-                    document.getElementById('welcome-toast').classList.add('show');
-                }, 400);
-
-                setTimeout(() => {
-                    document.getElementById('welcome-toast').classList.remove('show');
-                }, 4000);
-                
-            }, 1500); 
-        });
 
         // --- 1. مؤشر الماوس المخصص ---
         function initCustomCursor() {
@@ -1329,7 +1447,6 @@
             }
             animateFollower();
 
-            // إعادة ربط العناصر الجديدة
             const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item, .contact-card, .featured-card');
             links.forEach(link => {
                 link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
@@ -1363,7 +1480,6 @@
             
             const cards = document.querySelectorAll('.tilt-effect');
             cards.forEach(card => {
-                // تجنب تكرار المستمعين
                 card.removeEventListener('mousemove', handleTilt);
                 card.removeEventListener('mouseleave', resetTilt);
                 
@@ -1453,7 +1569,6 @@
                 grid.innerHTML += card;
             });
             
-            // إعادة تفعيل المغناطيسية والـ 3D للعناصر الجديدة
             init3DTilt();
             initMagneticButtons();
             initCustomCursor();
