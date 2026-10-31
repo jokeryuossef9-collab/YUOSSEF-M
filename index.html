@@ -15,9 +15,9 @@
            1. المتغيرات والألوان (Joker Theme)
            ========================================= */
         :root {
-            --bg-main: #09080d;       
-            --bg-card: #14121c;       
-            --bg-hero: linear-gradient(180deg, #2d0a3d 0%, #09080d 100%); 
+            --bg-main: #05040a;       
+            --bg-card: #110e1a;       
+            --bg-hero: linear-gradient(180deg, #1c072b 0%, #05040a 100%); 
             --primary: #39ff14;       
             --primary-hover: #28cc0d; 
             --accent-red: #e63946;    
@@ -33,6 +33,12 @@
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            cursor: none; /* إخفاء الماوس العادي */
+        }
+
+        @media (max-width: 768px) {
+            * { cursor: auto; }
+            .custom-cursor, .cursor-follower { display: none !important; }
         }
 
         body {
@@ -49,64 +55,80 @@
         body.modal-open { overflow: hidden; }
 
         /* =========================================
-           شاشة البداية (Preloader)
+           مؤشر الماوس المخصص (Custom Cursor)
+           ========================================= */
+        .custom-cursor {
+            width: 8px; height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .cursor-follower {
+            width: 40px; height: 40px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            opacity: 0.5;
+        }
+        .cursor-follower.hovering { width: 60px; height: 60px; background: rgba(57, 255, 20, 0.1); opacity: 1; border-width: 2px;}
+
+        /* =========================================
+           شاشة البداية السينمائية (Preloader)
            ========================================= */
         #preloader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background-color: var(--bg-main);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+            clip-path: circle(150% at 50% 50%);
         }
-        
-        #preloader.hide {
-            opacity: 0;
-            visibility: hidden;
-        }
+        #preloader.hide { clip-path: circle(0% at 50% 50%); opacity: 0; }
 
         .preloader-logo {
             width: 150px; height: 150px; object-fit: cover;
-            opacity: 0;
-            transform: scale(0.8);
-            animation: logoFadeIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
             border-radius: 50%;
             border: 3px solid var(--primary);
             box-shadow: 0 0 40px rgba(57, 255, 20, 0.4);
+            animation: pulseLogo 1s infinite alternate;
+        }
+        @keyframes pulseLogo {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 0 50px rgba(57, 255, 20, 0.6); }
         }
 
         .preloader-name {
             color: var(--text-white);
             font-size: 26px; font-weight: 900; margin-top: 25px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: nameFadeIn 1s ease 1.5s forwards;
             text-shadow: 0 0 15px rgba(255,255,255,0.2);
+            animation: glitch 1s linear infinite;
         }
-
-        @keyframes logoFadeIn { to { opacity: 1; transform: scale(1); } }
-        @keyframes nameFadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
 
         /* =========================================
            رسالة الترحيب
            ========================================= */
         .welcome-toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(90deg, var(--accent-red), var(--accent-purple));
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--accent-purple), var(--primary));
+            color: #000; padding: 12px 25px; border-radius: 30px;
+            font-weight: 900; font-size: 14px; box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
+            z-index: 1000; display: flex; align-items: center; gap: 10px;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .welcome-toast.show { top: 20px; }
 
@@ -115,18 +137,17 @@
            ========================================= */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: var(--bg-main);
+            padding: 15px; background-color: rgba(5, 4, 10, 0.8);
+            backdrop-filter: blur(10px);
             position: sticky; top: 0; z-index: 100;
             transition: transform 0.4s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        
         .logo-icon {
-            width: 42px; height: 42px; border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+            width: 42px; height: 42px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
         }
 
         .header-btns { display: flex; align-items: center; gap: 10px; }
@@ -136,21 +157,20 @@
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 18px; text-decoration: none; transition: 0.3s;
         }
-        .btn-icon:hover { background: rgba(57, 255, 20, 0.1); border-color: var(--primary); }
+        .btn-icon:hover { background: rgba(57, 255, 20, 0.1); border-color: var(--primary); transform: scale(1.1); }
 
         .btn-primary {
             background-color: var(--primary); color: #000;
-            text-decoration: none; padding: 8px 16px; border-radius: 10px;
+            text-decoration: none; padding: 8px 20px; border-radius: 10px;
             font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 5px;
-            transition: 0.3s;
+            transition: transform 0.1s ease-out, box-shadow 0.3s; 
         }
-        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
 
         /* =========================================
            3. إعدادات التنقل بين الصفحات
            ========================================= */
         .view {
-            display: none; opacity: 0; transform: translateY(10px);
+            display: none; opacity: 0; transform: translateY(20px);
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
         .view.active { display: block; opacity: 1; transform: translateY(0); }
@@ -159,52 +179,86 @@
            4. الصفحة الرئيسية
            ========================================= */
         .hero-section {
-            background: var(--bg-hero); padding: 30px 20px;
+            background: var(--bg-hero); padding: 40px 20px;
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
             text-align: center; margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
+            position: relative; overflow: hidden;
         }
-        
+
+        .hero-grid-bg {
+            position: absolute; top: 0; left: 0; width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: moveGrid 10s linear infinite;
+            z-index: 0; pointer-events: none;
+        }
+        @keyframes moveGrid {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 30px; }
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
         .hero-tag {
             background-color: rgba(123, 44, 191, 0.2); color: #d8b4fe;
             padding: 6px 15px; border-radius: 20px; font-size: 12px;
             display: inline-block; margin-bottom: 15px;
             border: 1px solid rgba(123, 44, 191, 0.5);
+            opacity: 0; animation: fadeInUp 0.6s ease 0.2s forwards;
         }
 
-        .hero-title { font-size: 28px; font-weight: 900; line-height: 1.3; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-        .hero-desc { color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; }
+        .hero-title { 
+            font-size: 30px; font-weight: 900; line-height: 1.3; margin-bottom: 15px; 
+            text-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+            opacity: 0; animation: fadeInUp 0.6s ease 0.3s forwards;
+            min-height: 40px;
+        }
 
-        .hero-actions { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .hero-desc { 
+            color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; 
+            opacity: 0; animation: fadeInUp 0.6s ease 0.4s forwards;
+        }
+
+        .hero-actions { 
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; 
+            opacity: 0; animation: fadeInUp 0.6s ease 0.5s forwards;
+        }
         .hero-btn {
-            padding: 10px 20px; border-radius: 12px; font-size: 14px;
-            font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px;
-            transition: 0.3s;
+            padding: 12px 24px; border-radius: 12px; font-size: 15px;
+            font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 8px;
+            transition: transform 0.1s ease-out, box-shadow 0.3s;
         }
-        .hero-btn-primary { background-color: var(--primary); color: #000; font-weight: 900; }
-        .hero-btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
+        .hero-btn-primary { background-color: var(--primary); color: #000; }
         .hero-btn-dark { background-color: var(--bg-card); color: white; border: 1px solid var(--border-color); }
-        .hero-btn-dark:hover { background-color: #1f1f2e; transform: translateY(-2px); border-color: var(--primary); }
-
-        .stats-row { display: flex; justify-content: center; gap: 30px; }
-        .stat-item { text-align: center; }
-        .stat-val { color: var(--accent-red); font-size: 22px; font-weight: 900; text-shadow: 0 0 10px rgba(230, 57, 70, 0.4); }
+        
+        .stats-row { 
+            display: flex; justify-content: center; gap: 30px; 
+            opacity: 0; animation: fadeInUp 0.6s ease 0.6s forwards;
+        }
+        .stat-item { text-align: center; transition: transform 0.3s; }
+        .stat-item:hover { transform: scale(1.1); }
+        .stat-val { color: var(--accent-red); font-size: 24px; font-weight: 900; text-shadow: 0 0 10px rgba(230, 57, 70, 0.4); }
         .stat-lbl { color: var(--text-gray); font-size: 11px; margin-top: 5px; }
 
-        /* --- شارة "جديد" المميزة --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- شارة "جديد" --- */
         .new-badge {
-            position: absolute;
-            top: 15px; left: 15px;
+            position: absolute; top: 15px; left: 15px;
             background: linear-gradient(45deg, var(--accent-red), #f97316);
             color: white; padding: 5px 12px; border-radius: 8px;
-            font-size: 12px; font-weight: 900;
-            display: flex; align-items: center; gap: 5px;
-            z-index: 10;
-            box-shadow: 0 0 15px rgba(230, 57, 70, 0.8);
+            font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 5px;
+            z-index: 10; box-shadow: 0 0 15px rgba(230, 57, 70, 0.8);
             animation: pulseNew 1.5s infinite;
         }
         .new-badge i { font-size: 10px; color: #fbbf24; }
-
         @keyframes pulseNew {
             0% { transform: scale(1); box-shadow: 0 0 10px rgba(230, 57, 70, 0.5); }
             50% { transform: scale(1.08); box-shadow: 0 0 25px rgba(230, 57, 70, 0.9); }
@@ -212,99 +266,127 @@
         }
 
         /* --- المشروع البارز --- */
-        .featured-project { 
-            padding: 0 15px; margin-bottom: 30px; 
-        }
+        .featured-project { padding: 0 15px; margin-bottom: 30px; perspective: 1000px; }
         .featured-card {
             position: relative; border-radius: 20px; overflow: hidden;
             border: 1px solid var(--border-color); aspect-ratio: 4/5;
-            cursor: pointer; transition: box-shadow 0.3s ease, border-color 0.3s;
+            cursor: pointer; transform-style: preserve-3d;
+            transition: box-shadow 0.3s ease, border-color 0.3s, transform 0.1s ease-out;
+            animation: floatCard 4s infinite alternate ease-in-out;
         }
-        .featured-card:hover {
-            box-shadow: 0 10px 30px rgba(57, 255, 20, 0.2);
-            border-color: var(--primary);
+        @keyframes floatCard {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
         }
-        .featured-card img { width: 100%; height: 100%; object-fit: cover; }
+        .featured-card img { width: 100%; height: 100%; object-fit: cover; transform: translateZ(20px) scale(1.05); transition: transform 0.3s; pointer-events: none;}
         .featured-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%;
             padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            transform: translateZ(30px); pointer-events: none;
         }
         .bookmark-btn {
             position: absolute; top: 15px; right: 15px;
             background: rgba(0,0,0,0.6); border: 1px solid var(--border-color);
             color: var(--primary); width: 35px; height: 35px; border-radius: 10px;
             display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(5px); z-index: 10;
+            backdrop-filter: blur(5px); z-index: 10; transition: 0.3s; transform: translateZ(40px);
         }
 
-        /* --- شبكة الأعمال --- */
+        /* =========================================
+           شريط التصنيفات المتحرك
+           ========================================= */
+        .marquee-container {
+            overflow: hidden; padding: 15px 0; position: relative;
+            background: var(--bg-main); border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
+        }
+        .marquee-container::before, .marquee-container::after {
+            content: ''; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 2; pointer-events: none;
+        }
+        .marquee-container::before { right: 0; background: linear-gradient(to left, var(--bg-main), transparent); }
+        .marquee-container::after { left: 0; background: linear-gradient(to right, var(--bg-main), transparent); }
+
+        .marquee-content {
+            display: flex; gap: 15px; width: max-content;
+            animation: scrollMarquee 25s linear infinite;
+        }
+        .marquee-container:hover .marquee-content { animation-play-state: paused; }
+        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+
+        .category-chip {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-white); padding: 8px 20px; border-radius: 20px;
+            font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
+            transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .category-chip i { color: var(--primary); font-size: 12px; }
+        .category-chip.active, .category-chip:hover {
+            background-color: var(--primary); color: #000; border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); transform: translateY(-2px);
+        }
+        .category-chip.active i, .category-chip:hover i { color: #000; }
+
+        /* =========================================
+           البحث وأزرار الفلترة
+           ========================================= */
+        .search-container { margin: 10px 15px; position: relative; }
+        .search-container input {
+            width: 100%; padding: 14px 40px 14px 15px; border-radius: 12px;
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-white); font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.3s;
+        }
+        .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); }
+        .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 16px; }
+
+        .filter-pills { display: flex; gap: 10px; padding: 5px 15px 15px 15px; overflow-x: auto; scrollbar-width: none; }
+        .filter-pills::-webkit-scrollbar { display: none; }
+        .pill {
+            background-color: transparent; border: 1px solid var(--border-color);
+            color: var(--text-white); padding: 8px 16px; border-radius: 20px;
+            font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s;
+        }
+        .pill.active { background-color: var(--primary); color: #000; border-color: var(--primary); font-weight: 900; }
+
         .section-title {
-            padding: 0 15px; font-size: 18px; margin-bottom: 15px;
+            padding: 0 15px; font-size: 20px; margin-bottom: 15px;
             display: flex; align-items: center; gap: 10px;
         }
         .section-title::before {
-            content: ''; width: 4px; height: 18px;
-            background-color: var(--primary); border-radius: 2px;
-            box-shadow: 0 0 8px var(--primary);
+            content: ''; width: 4px; height: 20px; background-color: var(--primary); border-radius: 2px;
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        .projects-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 12px; padding: 0 15px; margin-bottom: 30px;
-        }
+        /* --- شبكة الأعمال --- */
+        .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; perspective: 1000px; }
 
         .project-card {
             background-color: var(--bg-card); border: 1px solid var(--border-color);
             border-radius: 16px; overflow: hidden; cursor: pointer;
-            transition: box-shadow 0.3s ease, border-color 0.3s;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.3s ease, border-color 0.3s, transform 0.1s ease-out;
             position: relative;
         }
-        .project-card:hover { box-shadow: 0 10px 25px rgba(57, 255, 20, 0.2); border-color: var(--primary); }
-        
-        /* شارة جديد للمشاريع في الشبكة */
-        .project-card .new-badge {
-            top: 10px; left: 10px;
-            font-size: 10px; padding: 3px 8px;
-            border-radius: 6px;
-        }
-
-        .card-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .card-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .project-card .new-badge { top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 6px; }
+        .card-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; pointer-events: none; transform: translateZ(10px); }
+        .card-info { padding: 12px; transform: translateZ(20px); pointer-events: none;}
+        .card-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* =========================================
            5. صفحة الباكجات والأسعار
            ========================================= */
-        .packages-container {
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .packages-container { padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; perspective: 1000px;}
 
         .pricing-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px 20px;
-            position: relative;
-            overflow: hidden;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        
-        .pricing-card:hover {
-            box-shadow: 0 15px 35px rgba(123, 44, 191, 0.3);
-            border-color: var(--accent-purple);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.1s ease-out;
         }
 
         .discount-badge {
-            position: absolute;
-            top: 20px; left: -35px;
-            background: linear-gradient(45deg, var(--accent-red), #f97316);
-            color: white; padding: 5px 40px;
-            font-size: 12px; font-weight: 900;
-            transform: rotate(-45deg);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: absolute; top: 20px; left: -35px; background: linear-gradient(45deg, var(--accent-red), #f97316);
+            color: white; padding: 5px 40px; font-size: 12px; font-weight: 900;
+            transform: rotate(-45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 2; animation: pulseBadge 2s infinite;
         }
         @keyframes pulseBadge {
@@ -313,123 +395,69 @@
             100% { transform: rotate(-45deg) scale(1); }
         }
 
-        .package-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; color: var(--primary); }
-        .package-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; }
-        .current-price { font-size: 32px; font-weight: 900; color: var(--accent-red); }
+        .package-title { font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--primary); transform: translateZ(30px); }
+        .package-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; transform: translateZ(25px); }
+        .current-price { font-size: 36px; font-weight: 900; color: var(--accent-red); }
         .currency { font-size: 16px; color: var(--text-gray); }
         .old-price { font-size: 18px; color: var(--text-gray); text-decoration: line-through; opacity: 0.7; }
-        .package-features { list-style: none; margin-bottom: 25px; }
+        .package-features { list-style: none; margin-bottom: 25px; transform: translateZ(20px); }
         .package-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .package-features li i { color: var(--primary); font-size: 16px; }
 
         .order-btn {
-            width: 100%; padding: 14px; border-radius: 12px;
-            background: linear-gradient(90deg, var(--primary), #1f9e0f);
-            color: #000; border: none; font-size: 16px; font-weight: 900;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
-            transition: 0.3s;
+            width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(90deg, var(--primary), #1f9e0f);
+            color: #000; border: none; font-size: 16px; font-weight: 900; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
+            transform: translateZ(30px);
         }
-        .order-btn:hover { transform: scale(1.02); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.3); }
 
         /* =========================================
            6. صفحة تفاصيل المشروع
            ========================================= */
         #view-project {
             background-color: var(--bg-main); position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%; z-index: 200;
-            overflow-y: auto; padding-bottom: 80px;
-            display: block; 
-            
-            opacity: 0; 
-            visibility: hidden; 
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: 200; overflow-y: auto; padding-bottom: 80px;
+            display: block; opacity: 0; visibility: hidden; transform: translateY(30px);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
         }
-        
-        #view-project.active { 
-            opacity: 1; 
-            visibility: visible; 
-        }
+        #view-project.active { opacity: 1; visibility: visible; transform: translateY(0); }
         
         .project-top-bar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: rgba(9, 8, 13, 0.9);
-            position: sticky; top: 0; z-index: 10;
-            border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            padding: 15px; background-color: rgba(5, 4, 10, 0.9);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
         }
         .back-btn {
             background: rgba(57, 255, 20, 0.05); border: 1px solid var(--primary);
             color: var(--primary); font-size: 14px; cursor: pointer; font-weight: bold;
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 15px; border-radius: 20px; transition: 0.3s;
+            display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 20px; transition: 0.3s;
         }
-        .back-btn:hover { background: rgba(57, 255, 20, 0.15); }
 
-        .main-project-image {
-            width: 100%; padding: 15px;
-            opacity: 0;
-            animation: contentFadeIn 0.5s ease 0.1s forwards;
-            position: relative;
-        }
-        
-        .main-project-image img {
-            width: 100%; border-radius: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-        }
+        .main-project-image { width: 100%; padding: 15px; opacity: 0; animation: contentFadeIn 0.5s ease 0.1s forwards; position: relative; }
+        .main-project-image img { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
 
         .swipe-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 15px 15px 15px;
-            opacity: 0; animation: contentFadeIn 0.5s ease 0.2s forwards;
+            padding: 10px 15px 15px 15px; opacity: 0; animation: contentFadeIn 0.5s ease 0.15s forwards;
         }
-        .swipe-header span { font-size: 13px; color: var(--primary); font-weight: bold;}
+        .swipe-header span { font-size: 14px; color: var(--primary); font-weight: bold;}
 
-        .project-gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 15px 20px 15px;
-            align-items: start; 
-        }
+        .project-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px 20px 15px; align-items: start; }
 
         .gallery-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            background-color: var(--bg-card); 
-            
-            opacity: 0;
-            animation: contentFadeIn 0.5s ease forwards; 
+            position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color);
+            cursor: pointer; background-color: var(--bg-card); 
+            opacity: 0; animation: contentFadeIn 0.5s ease forwards; 
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
+        .gallery-item img { width: 100%; height: auto; display: block; object-fit: cover; }
 
-        .gallery-item:hover {
-            transform: scale(1.02);
-            border-color: var(--primary);
-            box-shadow: 0 10px 25px rgba(57, 255, 20, 0.3);
-            z-index: 2;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: auto; 
-            display: block;
-            object-fit: cover;
-        }
-
-        @keyframes contentFadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes contentFadeIn { to { opacity: 1; } }
 
         .gallery-item::after {
             content: '\f00e'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-size: 24px; color: var(--primary);
-            opacity: 0; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            pointer-events: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-size: 24px; color: var(--primary); opacity: 0; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.8); pointer-events: none;
         }
         .gallery-item:hover::after { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 
@@ -437,10 +465,8 @@
            7. الشاشة المكبرة للصور (Lightbox)
            ========================================= */
         #lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 999;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: 0.4s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999;
+            display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s;
         }
         #lightbox.active { opacity: 1; visibility: visible; }
         #lightbox img {
@@ -450,12 +476,9 @@
         }
         #lightbox.active img { transform: scale(1); }
         .close-lightbox {
-            position: absolute; top: 20px; right: 20px;
-            color: var(--primary); font-size: 30px; cursor: pointer;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--primary);
-            width: 50px; height: 50px;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            transition: 0.3s;
+            position: absolute; top: 20px; right: 20px; color: var(--primary); font-size: 30px; cursor: pointer;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--primary); width: 50px; height: 50px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: 0.3s;
         }
         .close-lightbox:hover { background: rgba(57, 255, 20, 0.2); transform: rotate(90deg); }
 
@@ -463,72 +486,154 @@
            8. الشريط السفلي
            ========================================= */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; max-width: 600px;
-            background-color: rgba(9, 8, 13, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around;
+            position: fixed; bottom: 0; width: 100%; max-width: 600px; background-color: rgba(5, 4, 10, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
             padding: 12px 0; z-index: 100; transition: transform 0.4s ease;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: var(--text-gray); font-size: 11px; cursor: pointer; transition: 0.3s;
         }
-        .nav-item i { font-size: 18px; transition: transform 0.3s; }
+        .nav-item i { font-size: 20px; transition: transform 0.3s; }
         .nav-item.active { color: var(--primary); }
         .nav-item.active i { transform: translateY(-3px); text-shadow: 0 0 10px var(--primary); }
 
         /* =========================================
-           9. صفحة عني وتواصل
+           9. صفحة عني وتواصل (مع الإضافات الجديدة)
            ========================================= */
         .page-content { padding: 20px 15px; }
         
-        .profile-img { 
-            width: 130px; height: 130px; border-radius: 50%; 
-            border: 3px solid var(--accent-red); object-fit: cover; 
-            margin: 0 auto 15px auto; display: block; 
-            box-shadow: 0 0 30px rgba(230, 57, 70, 0.4);
-            animation: pulseGlow 2s infinite alternate;
-        }
-        
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 20px rgba(230, 57, 70, 0.3); }
-            100% { box-shadow: 0 0 40px rgba(123, 44, 191, 0.6); }
+        .about-badge-top { text-align: left; margin-bottom: 20px; }
+        .about-badge {
+            background: rgba(123, 44, 191, 0.2); color: var(--text-white);
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+            border: 1px solid var(--accent-purple); display: inline-flex; align-items: center; gap: 8px;
         }
 
-        .about-text { text-align: center; color: var(--text-gray); font-size: 14px; line-height: 1.8; margin-bottom: 25px; }
-        .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .social-icon {
-            width: 45px; height: 45px; border-radius: 50%;
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            display: flex; justify-content: center; align-items: center;
-            color: var(--text-white); font-size: 20px; text-decoration: none;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .about-name { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 5px; }
+        .about-title { text-align: center; color: var(--accent-purple); font-size: 14px; font-weight: 700; margin-bottom: 20px; }
+        .about-headline { text-align: center; font-size: 20px; font-weight: 800; margin-bottom: 20px; color: var(--text-white); }
+        .about-desc { text-align: center; color: var(--text-gray); font-size: 14px; line-height: 1.8; margin-bottom: 15px; }
+
+        .about-location {
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            color: var(--text-gray); font-size: 13px; margin-bottom: 25px; font-weight: 600;
         }
-        .social-icon:hover { background-color: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px) scale(1.1); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.4); }
+        .about-location i { color: var(--primary); }
+
+        .about-actions { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
         
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; margin-bottom: 5px; color: var(--text-gray); }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border-radius: 10px;
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            color: white; outline: none; font-family: inherit; transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
-        
-        .submit-btn {
-            width: 100%; padding: 14px; border-radius: 12px;
+        .btn-about-primary {
             background-color: var(--primary); color: #000;
-            border: none; font-weight: 900; font-size: 16px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
+            padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900;
+            border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
         }
-        .submit-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
+        .btn-about-whatsapp {
+            background-color: #25D366; color: #fff;
+            padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+
+        .about-social-wrapper { text-align: center; margin-bottom: 30px; }
+        .btn-about-social {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-white); padding: 8px 20px; border-radius: 30px;
+            font-size: 13px; font-weight: 700; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .btn-about-social:hover { background-color: var(--bg-card); border-color: var(--primary); color: var(--primary); }
+
+        .about-photo-container {
+            width: 100%; max-width: 450px; margin: 0 auto 40px auto;
+            border-radius: 24px; overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        .about-photo-container img { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        /* --- تنسيقات الخدمات وخطوات العمل --- */
+        .about-section-title {
+            font-size: 20px; font-weight: 900; color: var(--text-white);
+            margin: 30px 0 20px 0; display: flex; align-items: center; gap: 10px;
+            border-right: 4px solid var(--primary); padding-right: 10px;
+        }
+        .about-section-title span { font-size: 12px; color: var(--accent-purple); letter-spacing: 1px; }
+
+        /* الخدمات */
+        .services-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
+        .service-item {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 20px; display: flex; align-items: flex-start; gap: 15px;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .service-item:hover { border-color: var(--primary); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.1); transform: translateX(-5px); }
+        .service-num {
+            background: rgba(123, 44, 191, 0.2); color: var(--primary);
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: 900; font-size: 16px; flex-shrink: 0;
+        }
+        .service-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-white); }
+        .service-info p { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+
+        /* خطوات العمل */
+        .steps-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
+        .step-item {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 20px; position: relative; overflow: hidden;
+            display: flex; align-items: flex-start; gap: 15px;
+            transition: 0.3s;
+        }
+        .step-item:hover { border-color: var(--accent-purple); box-shadow: 0 10px 20px rgba(123, 44, 191, 0.2); transform: translateX(-5px); }
+        .step-bg-num {
+            position: absolute; top: -10px; left: 10px;
+            font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.03);
+            z-index: 0; pointer-events: none; font-family: sans-serif;
+        }
+        .step-num {
+            background: linear-gradient(45deg, var(--accent-purple), var(--primary));
+            color: #000; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: 900; font-size: 14px; flex-shrink: 0; z-index: 1;
+        }
+        .step-info { z-index: 1; }
+        .step-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-white); }
+        .step-info p { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+
+        /* صندوق الدعوة للتواصل (CTA) */
+        .cta-box {
+            background: linear-gradient(180deg, rgba(28, 7, 43, 0.8) 0%, rgba(17, 14, 26, 0.8) 100%);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 30px 20px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(123, 44, 191, 0.15);
+        }
+        .cta-box h3 { font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--text-white); }
+        .cta-box p { font-size: 13px; color: var(--text-gray); margin-bottom: 20px; line-height: 1.6; }
+        .cta-btns { display: flex; justify-content: center; gap: 10px; }
+        .cta-btn {
+            padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 700;
+            text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .cta-btn-primary { background: var(--primary); color: #000; }
+        .cta-btn-whatsapp { background: #25D366; color: #fff; }
+        .cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
+        .cta-btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); }
+
+        /* أنيميشن الظهور */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
     </style>
 </head>
 <body>
 
-    <!-- =========================================
-         شاشة البداية (Preloader)
-         ========================================= -->
+    <!-- مؤشر الماوس المخصص -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- شاشة البداية -->
     <div id="preloader">
         <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="preloader-logo" alt="YUOSSEF&M Logo">
         <h1 class="preloader-name">YUOSSEF Mahmoud</h1>
@@ -546,10 +651,10 @@
             <h1 style="font-size: 16px;">YUOSSEF Mahmoud</h1>
         </div>
         <div class="header-btns">
-            <a href="https://wa.me/201154012821" target="_blank" class="btn-icon">
+            <a href="https://wa.me/201154012821" target="_blank" class="btn-icon magnetic">
                 <i class="fab fa-whatsapp"></i>
             </a>
-            <a href="https://wa.me/201154012821" target="_blank" class="btn-primary">
+            <a href="https://wa.me/201154012821" target="_blank" class="btn-primary magnetic">
                 اطلب تصميمًا <i class="fas fa-arrow-left"></i>
             </a>
         </div>
@@ -558,50 +663,79 @@
     <!-- الصفحة الرئيسية -->
     <section id="view-home" class="view active">
         
-        <div class="hero-section">
-            <div class="hero-tag"><i class="fas fa-bolt"></i> مصمم جرافيك وهوية بصرية</div>
-            <h1 class="hero-title">تصميم جرافيك يترك أثراً</h1>
-            <p class="hero-desc">هوية بصرية، شعارات، تصميم سوشيال ميديا ومطبوعات — كل مشروع هنا حكاية علامة تجارية صنعتها بحب التفاصيل.</p>
-            
-            <div class="hero-actions">
-                <a href="#projects" class="hero-btn hero-btn-primary">شاهد أعمالي <i class="fas fa-arrow-left"></i></a>
-                <a href="https://wa.me/201154012821" target="_blank" class="hero-btn hero-btn-dark"><i class="fab fa-whatsapp"></i> ابدأ مشروعاً</a>
-            </div>
+        <div class="hero-section" id="hero-section">
+            <div class="hero-grid-bg"></div>
+            <div class="hero-content">
+                <div class="hero-tag"><i class="fas fa-bolt"></i> مصمم جرافيك وهوية بصرية</div>
+                <h1 class="hero-title" id="typewriter-title"></h1>
+                <p class="hero-desc">هوية بصرية، شعارات، تصميم سوشيال ميديا ومطبوعات — كل مشروع هنا حكاية علامة تجارية صنعتها بحب التفاصيل.</p>
+                
+                <div class="hero-actions">
+                    <a href="#projects" class="hero-btn hero-btn-primary magnetic">شاهد أعمالي <i class="fas fa-arrow-left"></i></a>
+                    <a href="https://wa.me/201154012821" target="_blank" class="hero-btn hero-btn-dark magnetic"><i class="fab fa-whatsapp"></i> ابدأ مشروعاً</a>
+                </div>
 
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-val" data-target="40">0</div>
-                    <div class="stat-lbl">مشروع منشور</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-val" data-target="25">0</div>
-                    <div class="stat-lbl">عميل سعيد</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-val" data-target="4">0</div>
-                    <div class="stat-lbl">سنوات خبرة</div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-val" data-target="40">0</div>
+                        <div class="stat-lbl">مشروع منشور</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" data-target="25">0</div>
+                        <div class="stat-lbl">عميل سعيد</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" data-target="4">0</div>
+                        <div class="stat-lbl">سنوات خبرة</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- المشروع البارز (المشروع الجديد) -->
-        <div class="featured-project">
-            <div class="featured-card" onclick="openProjectDetail(11)">
-                <!-- شارة "جديد" المميزة -->
+        <!-- المشروع البارز (المشروع الجديد - الفريق خميس) -->
+        <div class="featured-project reveal">
+            <div class="featured-card tilt-effect" onclick="openProjectDetail(12)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
-                
-                <img src="https://i.postimg.cc/xd0DLF4c/FB-IMG-1793399730053.jpg" alt="New Campaign">
+                <img src="https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg" alt="حملة الفريق خميس">
                 <div class="bookmark-btn"><i class="far fa-bookmark"></i></div>
                 <div class="featured-overlay">
                     <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
-                    <h3 style="font-size: 18px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
-                    <p style="font-size: 12px; color: var(--text-gray);">مشروع جديد</p>
+                    <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
+                    <p style="font-size: 12px; color: var(--text-gray);">الفريق خميس</p>
                 </div>
             </div>
         </div>
 
-        <!-- شبكة الأعمال -->
-        <h2 class="section-title" id="projects">معرض الأعمال</h2>
+        <!-- معرض الأعمال -->
+        <h2 class="section-title reveal" id="projects">معرض الأعمال</h2>
+        
+        <div class="marquee-container reveal">
+            <div class="marquee-content">
+                <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
+                <div class="category-chip" onclick="filterCategory('identity', this)"><i class="fas fa-fingerprint"></i> هوية بصرية كاملة</div>
+                <div class="category-chip" onclick="filterCategory('social', this)"><i class="fas fa-mobile-alt"></i> سوشيال ميديا</div>
+                <div class="category-chip" onclick="filterCategory('print', this)"><i class="fas fa-print"></i> مطبوعات وتغليف</div>
+                <div class="category-chip" onclick="filterCategory('ads', this)"><i class="fas fa-bullhorn"></i> إعلانات</div>
+                
+                <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
+                <div class="category-chip" onclick="filterCategory('identity', this)"><i class="fas fa-fingerprint"></i> هوية بصرية كاملة</div>
+                <div class="category-chip" onclick="filterCategory('social', this)"><i class="fas fa-mobile-alt"></i> سوشيال ميديا</div>
+                <div class="category-chip" onclick="filterCategory('print', this)"><i class="fas fa-print"></i> مطبوعات وتغليف</div>
+                <div class="category-chip" onclick="filterCategory('ads', this)"><i class="fas fa-bullhorn"></i> إعلانات</div>
+            </div>
+        </div>
+
+        <div class="search-container reveal">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث في المشاريع..." onkeyup="searchProjects()">
+        </div>
+
+        <div class="filter-pills reveal">
+            <button class="pill active" onclick="filterCategory('all', this)">الكل</button>
+            <button class="pill" onclick="filterCategory('social', this)">تصميم سوشيال ميديا</button>
+            <button class="pill" onclick="filterCategory('identity', this)">تصميمات</button>
+        </div>
+
         <div class="projects-grid" id="home-projects-grid">
             <!-- سيتم توليد المشاريع هنا -->
         </div>
@@ -615,8 +749,7 @@
         </div>
         
         <div class="packages-container">
-            <!-- الباقة الأولى: السوشيال ميديا -->
-            <div class="pricing-card">
+            <div class="pricing-card tilt-effect">
                 <div class="discount-badge">خصم 25%</div>
                 <h3 class="package-title">باقة السوشيال ميديا</h3>
                 <div class="package-price">
@@ -630,13 +763,12 @@
                     <li><i class="fas fa-check-circle"></i> تسليم سريع خلال 3 أيام</li>
                     <li><i class="fas fa-check-circle"></i> تعديلات غير محدودة</li>
                 </ul>
-                <button class="order-btn" onclick="orderPackage('باقة السوشيال ميديا (10 تصميمات)', '1500')">
+                <button class="order-btn magnetic" onclick="orderPackage('باقة السوشيال ميديا (10 تصميمات)', '1500')">
                     اطلب الباقة الآن <i class="fab fa-whatsapp"></i>
                 </button>
             </div>
 
-            <!-- الباقة الثانية: التصميمين -->
-            <div class="pricing-card">
+            <div class="pricing-card tilt-effect">
                 <h3 class="package-title">باقة التصميمين</h3>
                 <div class="package-price">
                     <span class="current-price">250</span>
@@ -648,7 +780,7 @@
                     <li><i class="fas fa-check-circle"></i> تسليم خلال 24 ساعة</li>
                     <li><i class="fas fa-check-circle"></i> مراجعة وتعديل واحد</li>
                 </ul>
-                <button class="order-btn" onclick="orderPackage('باقة التصميمين', '250')">
+                <button class="order-btn magnetic" onclick="orderPackage('باقة التصميمين', '250')">
                     اطلب الباقة الآن <i class="fab fa-whatsapp"></i>
                 </button>
             </div>
@@ -658,7 +790,7 @@
     <!-- صفحة تفاصيل المشروع -->
     <section id="view-project">
         <div class="project-top-bar">
-            <button class="back-btn" onclick="closeProjectDetail()"><i class="fas fa-chevron-right"></i> رجوع للمعرض</button>
+            <button class="back-btn magnetic" onclick="closeProjectDetail()"><i class="fas fa-chevron-right"></i> رجوع للمعرض</button>
             <span style="font-size: 12px; color: var(--primary); font-weight: 700;">تفاصيل الحملة</span>
         </div>
 
@@ -670,7 +802,6 @@
             <span><i class="fas fa-hand-pointer"></i> اضغط على أي صورة لتكبيرها</span>
         </div>
         
-        <!-- شبكة الصور -->
         <div class="project-gallery-grid" id="detail-gallery">
             <!-- سيتم توليد الصور الفرعية هنا -->
         </div>
@@ -678,40 +809,151 @@
 
     <!-- شاشة عرض الصورة المكبرة -->
     <div id="lightbox" onclick="closeLightbox()">
-        <div class="close-lightbox"><i class="fas fa-times"></i></div>
+        <div class="close-lightbox magnetic"><i class="fas fa-times"></i></div>
         <img id="lightbox-img" src="" alt="Zoomed Image" onclick="event.stopPropagation()">
     </div>
 
     <!-- صفحة عني -->
     <section id="view-about" class="view">
         <div class="page-content">
-            <img src="https://i.postimg.cc/6qsVRC12/FB-IMG-1793394032018.jpg" id="about-profile-img" alt="Yuossef" class="profile-img">
             
-            <h2 style="text-align: center; margin-bottom: 5px;">YUOSSEF Mahmoud</h2>
-            <p style="text-align: center; color: var(--primary); font-size: 13px; font-weight: bold; margin-bottom: 20px;">مصمم جرافيك وهوية بصرية</p>
-            
-            <p class="about-text">
-                مرحباً، أنا يوسف، مصمم جرافيك متخصص في بناء الهويات البصرية المتكاملة. 
-                أؤمن أن التصميم ليس مجرد شكل جميل، بل هو لغة تواصل تروي قصة علامتك التجارية وتترك أثراً في ذهن العميل.<br><br>
-                أعمل عن بُعد مع عملاء في مصر والخليج والوطن العربي، وأحرص دائماً على تقديم حلول بصرية مبتكرة تجمع بين الإبداع والاحترافية.
-            </p>
-            
-            <div class="social-links">
-                <a href="https://www.facebook.com/share/1EqptCPXaj/" target="_blank" class="social-icon" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" target="_blank" class="social-icon" title="انستجرام"><i class="fab fa-instagram"></i></a>
-                <a href="#" target="_blank" class="social-icon" title="بيهانس"><i class="fab fa-behance"></i></a>
-                <a href="https://wa.me/201154012821" target="_blank" class="social-icon" title="واتساب"><i class="fab fa-whatsapp"></i></a>
+            <div class="about-badge-top reveal">
+                <span class="about-badge"><i class="fas fa-magic"></i> عني</span>
             </div>
+
+            <h2 class="about-name reveal">YUOSSEF Mahmoud</h2>
+            <p class="about-title reveal">مصمم جرافيك وهوية بصرية</p>
+
+            <h3 class="about-headline reveal">أصنع هويات بصرية وتصاميم تُروى بالعين</h3>
+
+            <p class="about-desc reveal">
+                مرحباً، أنا مصمم جرافيك متخصص في بناء الهويات البصرية وابتكار تصاميم تجعل العلامة تُعرف من أول نظرة. أعمل مع أصحاب المشاريع على تحويل الفكرة إلى نظام بصري متكامل: شعار، ألوان، خطوط، وتطبيقات على السوشيال ميديا والمطبوعات.
+            </p>
+            <p class="about-desc reveal">
+                أعمل عن بُعد مع عملاء في مصر والخليج، وأؤمن أن التصميم الجيد يبدأ بالاستماع قبل الرسم.
+            </p>
+
+            <div class="about-location reveal">
+                <i class="fas fa-map-marker-alt"></i> القاهرة. أرد عادةً في أقل من ٢٤ ساعة.
+            </div>
+
+            <div class="about-actions reveal">
+                <button onclick="switchView('contact', document.querySelector('.nav-item:nth-child(4)'))" class="btn-about-primary magnetic">
+                    ابدأ مشروعاً معي <i class="fas fa-arrow-left"></i>
+                </button>
+                <a href="https://wa.me/201154012821" target="_blank" class="btn-about-whatsapp magnetic">
+                    واتساب <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            
+            <div class="about-social-wrapper reveal">
+                <a href="https://www.facebook.com/share/1EqptCPXaj/" target="_blank" class="btn-about-social magnetic">
+                    Facebook <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
+
+            <div class="about-photo-container reveal">
+                <img src="https://i.postimg.cc/6qsVRC12/FB-IMG-1793394032018.jpg" alt="Yuossef">
+            </div>
+
+            <!-- قسم الخدمات -->
+            <div class="about-section-title reveal">
+                <span>WHAT I DO</span>
+                كيف أساعد علامتك
+            </div>
+            
+            <div class="services-list reveal">
+                <div class="service-item">
+                    <div class="service-num">01</div>
+                    <div class="service-info">
+                        <h4>هوية بصرية كاملة</h4>
+                        <p>شعار، نظام ألوان، خطوط، ودليل استخدام احترافي.</p>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-num">02</div>
+                    <div class="service-info">
+                        <h4>سوشيال ميديا</h4>
+                        <p>تصاميم منشورات وحملات متناسقة مع هوية العلامة.</p>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-num">03</div>
+                    <div class="service-info">
+                        <h4>مطبوعات وتغليف</h4>
+                        <p>بروشورات، أكياس، صناديق، وبطاقات عمل جاهزة للطباعة.</p>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-num">04</div>
+                    <div class="service-info">
+                        <h4>إعلانات وتصاميم رقمية</h4>
+                        <p>بانرات وحملات إعلانية للويب والمتاجر الإلكترونية.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم خطوات العمل -->
+            <div class="about-section-title reveal">
+                <span>HOW IT WORKS</span>
+                خطوات العمل معي
+            </div>
+
+            <div class="steps-list reveal">
+                <div class="step-item">
+                    <div class="step-bg-num">01</div>
+                    <div class="step-num">1</div>
+                    <div class="step-info">
+                        <h4>نستمع ونفهم</h4>
+                        <p>جلسة قصيرة أفهم فيها علامتك وجمهورك وما يميزك عن غيرك.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-bg-num">02</div>
+                    <div class="step-num">2</div>
+                    <div class="step-info">
+                        <h4>نرسم الاتجاه</h4>
+                        <p>لوحات اتجاه بصري نتفق فيها على الإحساس العام للعلامة.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-bg-num">03</div>
+                    <div class="step-num">3</div>
+                    <div class="step-info">
+                        <h4>نبني النظام</h4>
+                        <p>شعار، ألوان، خطوط، وقواعد استخدام متكاملة وقابلة للتطبيق.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-bg-num">04</div>
+                    <div class="step-num">4</div>
+                    <div class="step-info">
+                        <h4>نسلم ونطلقك</h4>
+                        <p>ملفات جاهزة للطباعة والاستخدام الرقمي مع دليل استخدام الهوية.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- صندوق الدعوة للتواصل (CTA) -->
+            <div class="cta-box reveal">
+                <h3>عندك فكرة مشروع؟</h3>
+                <p>احكي لي عن علامتك وما تريد الوصول إليه، وأعدك بتصور بصرياً كاملاً! أرد عادةً في أقل من ٢٤ ساعة.</p>
+                <div class="cta-btns">
+                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(4)')); return false;" class="cta-btn cta-btn-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
+                    <a href="https://wa.me/201154012821" target="_blank" class="cta-btn cta-btn-whatsapp magnetic"><i class="fab fa-whatsapp"></i> واتساب</a>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <!-- صفحة تواصل -->
     <section id="view-contact" class="view">
         <div class="page-content">
-            <h2 style="text-align: center; margin-bottom: 10px;">لنبدأ مشروعاً</h2>
-            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 25px;">احكِ لي عن علامتك وما تحتاجه، أرد عادةً في أقل من 24 ساعة.</p>
+            <h2 style="text-align: center; margin-bottom: 10px;" class="reveal">لنبدأ مشروعاً</h2>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 25px;" class="reveal">احكِ لي عن علامتك وما تحتاجه، أرد عادةً في أقل من 24 ساعة.</p>
             
-            <form onsubmit="sendToWhatsApp(event)">
+            <form onsubmit="sendToWhatsApp(event)" class="reveal">
                 <div class="form-group">
                     <label>الاسم</label>
                     <input type="text" id="cName" required>
@@ -720,23 +962,23 @@
                     <label>تفاصيل المشروع</label>
                     <textarea id="cDetails" rows="4" required></textarea>
                 </div>
-                <button type="submit" class="submit-btn">إرسال عبر واتساب <i class="fab fa-whatsapp"></i></button>
+                <button type="submit" class="submit-btn magnetic">إرسال عبر واتساب <i class="fab fa-whatsapp"></i></button>
             </form>
         </div>
     </section>
 
     <!-- الشريط السفلي -->
     <nav class="bottom-nav" id="bottom-nav">
-        <div class="nav-item active" onclick="switchView('home', this)">
+        <div class="nav-item active magnetic" onclick="switchView('home', this)">
             <i class="fas fa-th-large"></i><span>الأعمال</span>
         </div>
-        <div class="nav-item" onclick="switchView('packages', this)">
+        <div class="nav-item magnetic" onclick="switchView('packages', this)">
             <i class="fas fa-tags"></i><span>الباكجات</span>
         </div>
-        <div class="nav-item" onclick="switchView('about', this)">
+        <div class="nav-item magnetic" onclick="switchView('about', this)">
             <i class="fas fa-user"></i><span>عني</span>
         </div>
-        <div class="nav-item" onclick="switchView('contact', this)">
+        <div class="nav-item magnetic" onclick="switchView('contact', this)">
             <i class="fas fa-envelope"></i><span>تواصل</span>
         </div>
     </nav>
@@ -744,14 +986,26 @@
     <script>
         // =====================================================================
         // [1] بيانات المشاريع 
-        // تم إضافة isNew: true للمشروع الجديد فقط
         // =====================================================================
-        const projectsData = [
+        let projectsData = [
+            {
+                id: 12,
+                title: "حملة سوشيال ميديا - الفريق خميس",
+                category: "social",
+                coverImage: "https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg",
+                isNew: true,
+                gallery: [
+                    "https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg",
+                    "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg",
+                    "https://i.postimg.cc/hGvYcJZQ/FB-IMG-1793404909274.jpg",
+                    "https://i.postimg.cc/wBrGv6nJ/FB-IMG-1793404984329.jpg"
+                ]
+            },
             {
                 id: 11,
                 title: "حملة سوشيال ميديا - مشروع جديد",
+                category: "social",
                 coverImage: "https://i.postimg.cc/xd0DLF4c/FB-IMG-1793399730053.jpg",
-                isNew: true, // <--- الشارة هتظهر هنا بس
                 gallery: [
                     "https://i.postimg.cc/MXkgHsBy/FB-IMG-1793399734239.jpg",
                     "https://i.postimg.cc/44KdKmcS/FB-IMG-1793399737652.jpg",
@@ -762,6 +1016,7 @@
             {
                 id: 10,
                 title: "حملة سوشيال ميديا - مشروع مميز",
+                category: "social",
                 coverImage: "https://i.postimg.cc/hP7Cvbpq/FB-IMG-1793399051535.jpg",
                 gallery: [
                     "https://i.postimg.cc/gJTDknhd/FB-IMG-1793399059640.jpg",
@@ -773,6 +1028,7 @@
             {
                 id: 9,
                 title: "حملة سوشيال ميديا - OREO",
+                category: "social",
                 coverImage: "https://i.postimg.cc/yx0Z4dXM/FB-IMG-1793398218764.jpg",
                 gallery: [
                     "https://i.postimg.cc/3xtDHzpP/FB-IMG-1793398223707.jpg",
@@ -784,6 +1040,7 @@
             {
                 id: 8,
                 title: "حملة سوشيال ميديا - WE SONIC",
+                category: "social",
                 coverImage: "https://i.postimg.cc/BnVRkQhR/FB-IMG-1793397469863.jpg",
                 gallery: [
                     "https://i.postimg.cc/pTD7mQ2d/FB-IMG-1793397476305.jpg",
@@ -795,6 +1052,7 @@
             {
                 id: 7,
                 title: "حملة سوشيال ميديا - Tabby",
+                category: "social",
                 coverImage: "https://i.postimg.cc/GmVv6Zv7/FB-IMG-1793397047122.jpg",
                 gallery: [
                     "https://i.postimg.cc/6pv84TGj/FB-IMG-1793397051863.jpg",
@@ -806,6 +1064,7 @@
             {
                 id: 6,
                 title: "حملة KOSMOLITA CLINIC",
+                category: "identity",
                 coverImage: "https://i.postimg.cc/k5bLdv84/IMG-20261029-WA0264.jpg",
                 gallery: [
                     "https://i.postimg.cc/1t0T8Rv4/FB-IMG-1793395553117.jpg",
@@ -817,6 +1076,7 @@
             {
                 id: 5,
                 title: "حملة سوشيال ميديا - دجاج مقرمش",
+                category: "social",
                 coverImage: "https://i.postimg.cc/ZqMhxqmq/485893870-1793390740785796.jpg",
                 gallery: [
                     "https://i.postimg.cc/FKBQVKvs/176635013-1793390744359588.jpg",
@@ -828,29 +1088,205 @@
         ];
 
         // =====================================================================
-        // [2] شاشة البداية (Preloader Logic) - مع تحميل الموقع
+        // [2] تشغيل الموقع والأنيميشن التفاعلي المتقدم
         // =====================================================================
         window.addEventListener('load', () => {
-            renderHomeProjects();
+            renderHomeProjects(projectsData);
             startCounters();
+            initCustomCursor();
+            initMagneticButtons();
+            init3DTilt();
+            initScrollReveal();
+            typeWriterEffect();
 
+            // إخفاء شاشة البداية
             setTimeout(() => {
                 const preloader = document.getElementById('preloader');
                 preloader.classList.add('hide'); 
                 
                 setTimeout(() => {
                     document.getElementById('welcome-toast').classList.add('show');
-                }, 500);
+                }, 400);
 
                 setTimeout(() => {
                     document.getElementById('welcome-toast').classList.remove('show');
-                }, 4500);
+                }, 4000);
                 
-            }, 2500); 
+            }, 1500); 
         });
 
+        // --- 1. مؤشر الماوس المخصص ---
+        function initCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+            const follower = document.querySelector('.cursor-follower');
+            
+            let mouseX = 0, mouseY = 0;
+            let followerX = 0, followerY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+            });
+
+            function animateFollower() {
+                followerX += (mouseX - followerX) * 0.15;
+                followerY += (mouseY - followerY) * 0.15;
+                follower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+                requestAnimationFrame(animateFollower);
+            }
+            animateFollower();
+
+            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
+                link.addEventListener('mouseleave', () => follower.classList.remove('hovering'));
+            });
+        }
+
+        // --- 2. الأزرار المغناطيسية ---
+        function initMagneticButtons() {
+            if(window.innerWidth <= 768) return; 
+            
+            const magneticBtns = document.querySelectorAll('.magnetic');
+            
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = `translate(0px, 0px)`;
+                });
+            });
+        }
+
+        // --- 3. تأثير 3D Tilt ---
+        function init3DTilt() {
+            if(window.innerWidth <= 768) return;
+            
+            const cards = document.querySelectorAll('.tilt-effect');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateY = ((x - centerX) / centerX) * 15;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    card.style.boxShadow = `${-rotateY}px ${rotateX}px 30px rgba(57, 255, 20, 0.15)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    card.style.boxShadow = 'none';
+                });
+            });
+        }
+
+        // --- 4. ظهور العناصر أثناء التمرير ---
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            reveals.forEach(reveal => observer.observe(reveal));
+        }
+
+        // --- 5. تأثير الكتابة ---
+        function typeWriterEffect() {
+            const text = "تصميم جرافيك يترك أثراً";
+            const titleElement = document.getElementById('typewriter-title');
+            let i = 0;
+            titleElement.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    titleElement.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 80); 
+                }
+            }
+            setTimeout(type, 1200); 
+        }
+
         // =====================================================================
-        // [3] وظائف التنقل والتحكم
+        // [3] نظام الفلترة والبحث
+        // =====================================================================
+        function renderHomeProjects(projectsToRender) {
+            const grid = document.getElementById('home-projects-grid');
+            grid.innerHTML = '';
+
+            if(projectsToRender.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-gray); padding: 30px;">لا توجد مشاريع مطابقة لبحثك.</div>`;
+                return;
+            }
+
+            projectsToRender.forEach((project) => {
+                const newBadgeHtml = project.isNew ? `<div class="new-badge"><i class="fas fa-star"></i> جديد</div>` : '';
+
+                const card = `
+                    <div class="project-card tilt-effect" onclick="openProjectDetail(${project.id})">
+                        ${newBadgeHtml}
+                        <img src="${project.coverImage}" class="card-img" alt="${project.title}">
+                        <div class="card-info">
+                            <div class="card-title">${project.title}</div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+            
+            // إعادة تفعيل المغناطيسية والـ 3D للعناصر الجديدة
+            init3DTilt();
+            initMagneticButtons();
+            initCustomCursor();
+        }
+
+        function filterCategory(category, element) {
+            document.querySelectorAll('.category-chip, .pill').forEach(el => el.classList.remove('active'));
+            
+            if(element.classList.contains('category-chip')) {
+                document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
+            } else if(element.classList.contains('pill')) {
+                document.querySelectorAll('.pill').forEach(el => el.classList.remove('active'));
+            }
+            element.classList.add('active');
+
+            let filtered = [];
+            if (category === 'all') {
+                filtered = projectsData;
+            } else {
+                filtered = projectsData.filter(p => p.category === category);
+            }
+            
+            renderHomeProjects(filtered);
+        }
+
+        function searchProjects() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = projectsData.filter(project => 
+                project.title.toLowerCase().includes(searchTerm)
+            );
+            renderHomeProjects(filtered);
+        }
+
+        // =====================================================================
+        // [4] باقي وظائف التنقل والتحكم
         // =====================================================================
         function switchView(viewName, navItem) {
             document.querySelectorAll('.view').forEach(v => {
@@ -869,27 +1305,6 @@
                 navItem.classList.add('active');
             }
             window.scrollTo(0, 0);
-        }
-
-        function renderHomeProjects() {
-            const grid = document.getElementById('home-projects-grid');
-            grid.innerHTML = '';
-
-            projectsData.forEach((project) => {
-                // التحقق لو المشروع جديد عشان نضيف الشارة
-                const newBadgeHtml = project.isNew ? `<div class="new-badge"><i class="fas fa-star"></i> جديد</div>` : '';
-
-                const card = `
-                    <div class="project-card" onclick="openProjectDetail(${project.id})">
-                        ${newBadgeHtml}
-                        <img src="${project.coverImage}" class="card-img" alt="${project.title}">
-                        <div class="card-info">
-                            <div class="card-title">${project.title}</div>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML += card;
-            });
         }
 
         function openProjectDetail(projectId) {
@@ -935,7 +1350,7 @@
             document.getElementById('lightbox').classList.remove('active');
             setTimeout(() => {
                 document.getElementById('lightbox-img').src = '';
-            }, 400);
+            }, 300);
         }
 
         function orderPackage(packageName, price) {
@@ -957,7 +1372,7 @@
 
         function startCounters() {
             const counters = document.querySelectorAll('.stat-val');
-            const duration = 3500; 
+            const duration = 1500; 
             
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
