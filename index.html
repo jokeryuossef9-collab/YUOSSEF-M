@@ -412,6 +412,76 @@
         }
 
         /* =========================================
+           5.1 قسم الكورسات المخصص (الجديد)
+           ========================================= */
+        .course-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; overflow: hidden;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.1s ease-out;
+            margin-bottom: 30px;
+        }
+        
+        .course-image-container {
+            position: relative;
+        }
+        
+        .course-image-container img {
+            width: 100%;
+            display: block;
+        }
+        
+        .course-discount-badge {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: #fbbf24; /* لون أصفر */
+            color: #000;
+            font-weight: 900;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+            animation: pulseNew 1.5s infinite;
+        }
+
+        .course-content {
+            padding: 25px 20px;
+        }
+        
+        .course-title {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--text-white);
+        }
+        
+        .course-desc {
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .course-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        
+        .course-features li {
+            font-size: 14px;
+            color: var(--text-white);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .course-features li i {
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* =========================================
            6. صفحة تفاصيل المشروع
            ========================================= */
         #view-project {
@@ -787,6 +857,45 @@
         </div>
     </section>
 
+    <!-- صفحة الكورسات (الجديدة) -->
+    <section id="view-courses" class="view">
+        <div class="page-content">
+            <h2 style="text-align: center; margin-bottom: 10px; color: var(--primary);">كورسات ودبلومات</h2>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">طور مهاراتك مع YUOSSEF&M Academy</p>
+        </div>
+        
+        <div style="padding: 0 15px 30px 15px;">
+            <div class="course-card tilt-effect">
+                <div class="course-image-container">
+                    <div class="course-discount-badge">خصم 50%</div>
+                    <img src="https://i.postimg.cc/4yYLRjWW/644684898-1793407016330626.jpg" alt="دبلومة الذكاء الاصطناعي">
+                </div>
+                
+                <div class="course-content">
+                    <h3 class="course-title">دبلومة الذكاء الاصطناعي</h3>
+                    <p class="course-desc">ابدأ رحلتك في عالم الذكاء الاصطناعي وتعلم أحدث الأدوات والتطبيقات العملية من الصفر حتى الاحتراف.</p>
+                    
+                    <ul class="course-features">
+                        <li><i class="fas fa-check-circle"></i> فيديوهات مسجلة بجودة عالية</li>
+                        <li><i class="fas fa-check-circle"></i> متابعة ودعم فني مستمر</li>
+                        <li><i class="fas fa-check-circle"></i> شهادة معتمدة بعد إتمام الكورس</li>
+                        <li><i class="fas fa-check-circle"></i> عرض محدود لفترة قصيرة</li>
+                    </ul>
+
+                    <div class="package-price">
+                        <span class="current-price">750</span>
+                        <span class="currency">ج.م</span>
+                        <span class="old-price">1500 ج.م</span>
+                    </div>
+
+                    <button class="order-btn magnetic" onclick="orderCourse('دبلومة الذكاء الاصطناعي', '750')">
+                        احجز مكانك الآن <i class="fab fa-whatsapp"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- صفحة تفاصيل المشروع -->
     <section id="view-project">
         <div class="project-top-bar">
@@ -838,7 +947,7 @@
             </div>
 
             <div class="about-actions reveal">
-                <button onclick="switchView('contact', document.querySelector('.nav-item:nth-child(4)'))" class="btn-about-primary magnetic">
+                <button onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)'))" class="btn-about-primary magnetic">
                     ابدأ مشروعاً معي <i class="fas fa-arrow-left"></i>
                 </button>
                 <a href="https://wa.me/201154012821" target="_blank" class="btn-about-whatsapp magnetic">
@@ -939,7 +1048,7 @@
                 <h3>عندك فكرة مشروع؟</h3>
                 <p>احكي لي عن علامتك وما تريد الوصول إليه، وأعدك بتصور بصرياً كاملاً! أرد عادةً في أقل من ٢٤ ساعة.</p>
                 <div class="cta-btns">
-                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(4)')); return false;" class="cta-btn cta-btn-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
+                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)')); return false;" class="cta-btn cta-btn-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
                     <a href="https://wa.me/201154012821" target="_blank" class="cta-btn cta-btn-whatsapp magnetic"><i class="fab fa-whatsapp"></i> واتساب</a>
                 </div>
             </div>
@@ -967,13 +1076,16 @@
         </div>
     </section>
 
-    <!-- الشريط السفلي -->
+    <!-- الشريط السفلي (تمت إضافة الكورسات) -->
     <nav class="bottom-nav" id="bottom-nav">
         <div class="nav-item active magnetic" onclick="switchView('home', this)">
             <i class="fas fa-th-large"></i><span>الأعمال</span>
         </div>
         <div class="nav-item magnetic" onclick="switchView('packages', this)">
             <i class="fas fa-tags"></i><span>الباكجات</span>
+        </div>
+        <div class="nav-item magnetic" onclick="switchView('courses', this)">
+            <i class="fas fa-graduation-cap"></i><span>الكورسات</span>
         </div>
         <div class="nav-item magnetic" onclick="switchView('about', this)">
             <i class="fas fa-user"></i><span>عني</span>
@@ -986,7 +1098,6 @@
     <script>
         // =====================================================================
         // [1] بيانات المشاريع 
-        // تم إضافة مشروع طلبات كأحدث مشروع في المقدمة (ID: 13)
         // =====================================================================
         let projectsData = [
             {
@@ -1369,6 +1480,13 @@
         function orderPackage(packageName, price) {
             const phoneNumber = "201154012821";
             const text = `مرحباً YUOSSEF&M،%0Aأود طلب *${packageName}* بسعر *${price}* ج.م. يرجى تزويدي بالتفاصيل.`;
+            window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
+        }
+
+        // --- دالة طلب الكورس الجديدة ---
+        function orderCourse(courseName, price) {
+            const phoneNumber = "201154012821";
+            const text = `مرحباً YUOSSEF&M،%0Aأود حجز *${courseName}* بسعر *${price}* ج.م. (خصم 50%). يرجى تزويدي بالتفاصيل.`;
             window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
         }
 
