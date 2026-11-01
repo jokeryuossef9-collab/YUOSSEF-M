@@ -7,7 +7,7 @@
     <title>YUOSSEF&M | مصمم جرافيك وهوية بصرية</title>
     <meta name="description" content="أصنع هويات بصرية وتصاميم تُروى بالعين. مصمم جرافيك متخصص في بناء الهويات، السوشيال ميديا، والمطبوعات.">
     
-    <link rel="manifest" href='data:application/manifest+json,{"name":"YUOSSEF&M","short_name":"Y&M","start_url":".","display":"standalone","background_color":"%2305040a","theme_color":"%2339ff14","icons":[{"src":"https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg","sizes":"192x192","type":"image/jpeg"}]}'>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"YUOSSEF&M","short_name":"Y&M","start_url":".","display":"standalone","background_color":"%2305040a","theme_color":"%2339ff14","icons":[{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"192x192","type":"image/png"}]}'>
     <meta name="theme-color" content="#05040a">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
         :root {
             --bg-main: #05040a;       
             --bg-card: #110e1a;       
-            --bg-hero: linear-gradient(180deg, #1c072b 0%, #05040a 100%); 
+            --bg-hero: linear-gradient(180deg, rgba(28, 7, 43, 0.7) 0%, rgba(5, 4, 10, 0.9) 100%); 
             --primary: #39ff14;       
             --primary-hover: #28cc0d; 
             --accent-red: #e63946;    
@@ -44,8 +44,15 @@
             .custom-cursor, .cursor-follower { display: none !important; }
         }
 
+        /* تعديل الخلفية الرئيسية للموقع هنا */
         body {
-            background-color: var(--bg-main);
+            background-color: var(--bg-main); /* لون احتياطي */
+            background-image: linear-gradient(rgba(5, 4, 10, 0.85), rgba(5, 4, 10, 0.95)), url('https://i.postimg.cc/ZngMXCqn/Duck-ai-image-2026-11-01-04-02.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* تثبيت الخلفية أثناء التمرير */
+            background-repeat: no-repeat;
+            
             color: var(--text-white);
             max-width: 600px;
             margin: 0 auto;
@@ -75,26 +82,55 @@
         .cursor-follower.hovering { width: 60px; height: 60px; background: rgba(57, 255, 20, 0.1); opacity: 1; border-width: 2px;}
 
         /* =========================================
-           شاشة البداية ورسالة الترحيب
+           شاشة البداية
            ========================================= */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-main); display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+            background-image: linear-gradient(rgba(5, 4, 10, 0.7), rgba(5, 4, 10, 0.9)), url('https://i.postimg.cc/ZngMXCqn/Duck-ai-image-2026-11-01-04-02.jpg');
+            background-size: 110%;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; 
+            transition: clip-path 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
             clip-path: circle(150% at 50% 50%);
+            animation: bgZoom 10s infinite alternate linear;
         }
-        #preloader.hide { clip-path: circle(0% at 50% 50%); opacity: 0; }
+        @keyframes bgZoom {
+            0% { background-size: 100%; }
+            100% { background-size: 115%; }
+        }
+        #preloader.hide { clip-path: circle(0% at 50% 50%); opacity: 0; pointer-events: none; }
+        
         .preloader-logo {
-            width: 150px; height: 150px; object-fit: cover; border-radius: 50%;
-            border: 3px solid var(--primary); box-shadow: 0 0 40px rgba(57, 255, 20, 0.4);
-            animation: pulseLogo 1s infinite alternate;
+            width: 180px; height: 180px; 
+            object-fit: contain;
+            filter: drop-shadow(0 0 25px rgba(57, 255, 20, 0.6)); 
+            opacity: 0;
+            transform: scale(0) rotate(-180deg);
+            animation: dramaticLogoEntry 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
         }
-        @keyframes pulseLogo { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
+        @keyframes dramaticLogoEntry {
+            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+            70% { transform: scale(1.1) rotate(10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
         .preloader-name {
-            color: var(--text-white); font-size: 26px; font-weight: 900; margin-top: 25px;
-            animation: glitch 1s linear infinite;
+            color: var(--text-white); font-size: 28px; font-weight: 900; margin-top: 30px;
+            text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.3);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: nameSlideUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards, glitch 2s infinite linear 2s;
         }
-        @keyframes glitch { 2%, 64% { transform: translate(2px,0); } 4%, 60% { transform: translate(-2px,0); } 62% { transform: translate(0,0) skew(5deg); } }
+        @keyframes nameSlideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0); }
+            4%, 60% { transform: translate(-2px,0); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
 
         .welcome-toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
@@ -115,7 +151,13 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        
+        .logo-icon { 
+            width: 55px; height: 55px; 
+            object-fit: contain; 
+            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.4)); 
+        }
+
         .header-btns { display: flex; align-items: center; gap: 10px; }
         .btn-icon {
             background: transparent; border: 1px solid var(--border-color); color: var(--primary);
@@ -139,8 +181,16 @@
            الصفحة الرئيسية (Hero)
            ========================================= */
         .hero-section {
-            background: var(--bg-hero); padding: 40px 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden;
+            background: var(--bg-hero); 
+            padding: 40px 20px; 
+            border-bottom-left-radius: 30px; 
+            border-bottom-right-radius: 30px;
+            text-align: center; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            position: relative; 
+            overflow: hidden;
+            backdrop-filter: blur(5px); /* لإعطاء تأثير زجاجي خفيف */
         }
         .hero-grid-bg {
             position: absolute; top: 0; left: 0; width: 200%; height: 200%;
@@ -150,29 +200,44 @@
         }
         @keyframes moveGrid { 0% { background-position: 0 0; } 100% { background-position: 0 30px; } }
         .hero-content { position: relative; z-index: 1; }
+
         .hero-tag {
             background-color: rgba(123, 44, 191, 0.2); color: #d8b4fe; padding: 6px 15px; border-radius: 20px;
             font-size: 12px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(123, 44, 191, 0.5);
-            opacity: 0; animation: fadeInUp 0.6s ease 0.2s forwards;
+            opacity: 0; transform: translateY(20px); animation: heroFadeUp 0.8s ease 0.2s forwards;
         }
         .hero-title { 
             font-size: 30px; font-weight: 900; line-height: 1.3; margin-bottom: 15px; text-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
-            opacity: 0; animation: fadeInUp 0.6s ease 0.3s forwards; min-height: 40px;
+            opacity: 0; transform: translateY(20px); animation: heroFadeUp 0.8s ease 0.5s forwards; min-height: 40px;
         }
-        .hero-desc { color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; opacity: 0; animation: fadeInUp 0.6s ease 0.4s forwards; }
-        .hero-actions { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; opacity: 0; animation: fadeInUp 0.6s ease 0.5s forwards; }
+        .hero-desc { 
+            color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; 
+            opacity: 0; transform: translateY(20px); animation: heroFadeUp 0.8s ease 0.8s forwards; 
+        }
+        .hero-actions { 
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; 
+            opacity: 0; transform: translateY(20px); animation: heroFadeUp 0.8s ease 1.1s forwards; 
+        }
         .hero-btn {
             padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 900;
             text-decoration: none; display: flex; align-items: center; gap: 8px; transition: transform 0.1s ease-out;
         }
         .hero-btn-primary { background-color: var(--primary); color: #000; }
-        .hero-btn-dark { background-color: var(--bg-card); color: white; border: 1px solid var(--border-color); }
-        .stats-row { display: flex; justify-content: center; gap: 30px; opacity: 0; animation: fadeInUp 0.6s ease 0.6s forwards; }
+        .hero-btn-dark { background-color: rgba(17, 14, 26, 0.8); color: white; border: 1px solid var(--border-color); }
+        
+        .stats-row { 
+            display: flex; justify-content: center; gap: 30px; 
+            opacity: 0; transform: translateY(20px); animation: heroFadeUp 0.8s ease 1.4s forwards; 
+        }
         .stat-item { text-align: center; transition: transform 0.3s; }
         .stat-item:hover { transform: scale(1.1); }
         .stat-val { color: var(--accent-red); font-size: 24px; font-weight: 900; text-shadow: 0 0 10px rgba(230, 57, 70, 0.4); }
         .stat-lbl { color: var(--text-gray); font-size: 11px; margin-top: 5px; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes heroFadeUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         /* =========================================
            شارة "جديد" والمشروع البارز
@@ -197,21 +262,48 @@
         }
 
         /* =========================================
-           شريط التصنيفات والبحث
+           شريط التصنيفات (يدوي)
            ========================================= */
         .marquee-container {
-            overflow: hidden; padding: 15px 0; position: relative; background: var(--bg-main);
-            border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
+            padding: 15px 0; 
+            position: relative; 
+            background: rgba(5, 4, 10, 0.6); /* خلفية شبه شفافة */
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255,255,255,0.05); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            margin-bottom: 10px;
         }
-        .marquee-content { display: flex; gap: 15px; width: max-content; animation: scrollMarquee 25s linear infinite; }
-        .marquee-container:hover .marquee-content { animation-play-state: paused; }
-        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+        
+        .marquee-content { 
+            display: flex; 
+            gap: 15px; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
+            -webkit-overflow-scrolling: touch; 
+            scrollbar-width: none; 
+            padding: 0 15px; 
+        }
+        .marquee-content::-webkit-scrollbar { display: none; }
+
         .category-chip {
-            background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-white);
-            padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
-            transition: 0.3s; display: flex; align-items: center; gap: 8px;
+            background-color: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-white);
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            white-space: nowrap; 
+            cursor: pointer;
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            scroll-snap-align: start; 
+            flex-shrink: 0; 
         }
         .category-chip.active, .category-chip:hover { background-color: var(--primary); color: #000; border-color: var(--primary); }
+        
         .search-container { margin: 10px 15px; position: relative; }
         .search-container input {
             width: 100%; padding: 14px 40px 14px 15px; border-radius: 12px; background-color: var(--bg-card);
@@ -219,7 +311,7 @@
         }
         .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); }
 
-        .section-title { padding: 0 15px; font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title { padding: 0 15px; font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 10px rgba(0,0,0,0.8);}
         .section-title::before { content: ''; width: 4px; height: 20px; background-color: var(--primary); border-radius: 2px; }
 
         /* شبكة الأعمال */
@@ -411,7 +503,7 @@
         .step-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-white); }
         .step-info p { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
 
-        .cta-box { background: linear-gradient(180deg, rgba(28, 7, 43, 0.8) 0%, rgba(17, 14, 26, 0.8) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px 20px; text-align: center; margin-bottom: 20px; }
+        .cta-box { background: linear-gradient(180deg, rgba(28, 7, 43, 0.8) 0%, rgba(17, 14, 26, 0.8) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px 20px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(5px);}
         .cta-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
         
         .btn-about-primary { background-color: var(--primary); color: #000; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; }
@@ -442,7 +534,7 @@
         .contact-card span { font-size: 14px; font-weight: 700; }
         .contact-card small { font-size: 12px; color: var(--text-gray); direction: ltr; }
 
-        .contact-form { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px 20px; }
+        .contact-form { background: rgba(17, 14, 26, 0.8); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 13px; margin-bottom: 8px; color: var(--text-gray); font-weight: 600; }
         .form-group input, .form-group textarea, .form-group select { 
@@ -488,7 +580,7 @@
 
         .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; color: var(--primary); text-align: center; }
         
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background-color: rgba(5, 4, 10, 0.95); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background-color: rgba(5, 4, 10, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-gray); font-size: 10px; cursor: pointer; }
         .nav-item i { font-size: 20px; }
         .nav-item.active { color: var(--primary); }
@@ -505,7 +597,7 @@
 
     <!-- شاشة البداية -->
     <div id="preloader">
-        <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="preloader-logo" alt="Logo">
+        <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="preloader-logo" alt="Logo">
         <h1 class="preloader-name">YUOSSEF Mahmoud</h1>
     </div>
 
@@ -517,7 +609,7 @@
     <!-- الهيدر -->
     <header id="main-header">
         <div class="logo-area">
-            <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="logo-icon" alt="Logo">
+            <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="logo-icon" alt="Logo">
             <h1 style="font-size: 16px;">YUOSSEF Mahmoud</h1>
         </div>
         <div class="header-btns">
@@ -569,6 +661,7 @@
         <!-- معرض الأعمال -->
         <h2 class="section-title reveal" id="projects">معرض الأعمال</h2>
         
+        <!-- شريط التصنيفات -->
         <div class="marquee-container reveal">
             <div class="marquee-content">
                 <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
@@ -1006,117 +1099,53 @@
 
     <script>
         // =========================================
-        // [1] بيانات المشاريع (تم إرجاع كل الصور كاملة)
+        // [1] بيانات المشاريع
         // =========================================
         let projectsData = [
             {
-                id: 13,
-                title: "حملة سوشيال ميديا - طلبات",
-                category: "social",
-                coverImage: "https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg",
-                isNew: true,
-                gallery: [
-                    "https://i.postimg.cc/ht1JcvQP/FB-IMG-1793405878950.jpg",
-                    "https://i.postimg.cc/x13kn8N1/FB-IMG-1793405882435.jpg",
-                    "https://i.postimg.cc/XYkZ4qBJ/FB-IMG-1793405884683.jpg",
-                    "https://i.postimg.cc/RZL34hJC/FB-IMG-1793405886957.jpg"
-                ]
+                id: 13, title: "حملة سوشيال ميديا - طلبات", category: "social",
+                coverImage: "https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg", isNew: true,
+                gallery: ["https://i.postimg.cc/ht1JcvQP/FB-IMG-1793405878950.jpg", "https://i.postimg.cc/x13kn8N1/FB-IMG-1793405882435.jpg", "https://i.postimg.cc/XYkZ4qBJ/FB-IMG-1793405884683.jpg", "https://i.postimg.cc/RZL34hJC/FB-IMG-1793405886957.jpg"]
             },
             {
-                id: 12,
-                title: "حملة سوشيال ميديا - الفريق خميس",
-                category: "social",
+                id: 12, title: "حملة سوشيال ميديا - الفريق خميس", category: "social",
                 coverImage: "https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg",
-                gallery: [
-                    "https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg",
-                    "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg",
-                    "https://i.postimg.cc/hGvYcJZQ/FB-IMG-1793404909274.jpg",
-                    "https://i.postimg.cc/wBrGv6nJ/FB-IMG-1793404984329.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg", "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg", "https://i.postimg.cc/hGvYcJZQ/FB-IMG-1793404909274.jpg", "https://i.postimg.cc/wBrGv6nJ/FB-IMG-1793404984329.jpg"]
             },
             {
-                id: 11,
-                title: "حملة سوشيال ميديا - مشروع جديد",
-                category: "social",
+                id: 11, title: "حملة سوشيال ميديا - مشروع جديد", category: "social",
                 coverImage: "https://i.postimg.cc/xd0DLF4c/FB-IMG-1793399730053.jpg",
-                gallery: [
-                    "https://i.postimg.cc/MXkgHsBy/FB-IMG-1793399734239.jpg",
-                    "https://i.postimg.cc/44KdKmcS/FB-IMG-1793399737652.jpg",
-                    "https://i.postimg.cc/HjGFnSM3/FB-IMG-1793399747014.jpg",
-                    "https://i.postimg.cc/LhdG5yPD/FB-IMG-1793399750224.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/MXkgHsBy/FB-IMG-1793399734239.jpg", "https://i.postimg.cc/44KdKmcS/FB-IMG-1793399737652.jpg", "https://i.postimg.cc/HjGFnSM3/FB-IMG-1793399747014.jpg", "https://i.postimg.cc/LhdG5yPD/FB-IMG-1793399750224.jpg"]
             },
             {
-                id: 10,
-                title: "حملة سوشيال ميديا - مشروع مميز",
-                category: "social",
+                id: 10, title: "حملة سوشيال ميديا - مشروع مميز", category: "social",
                 coverImage: "https://i.postimg.cc/hP7Cvbpq/FB-IMG-1793399051535.jpg",
-                gallery: [
-                    "https://i.postimg.cc/gJTDknhd/FB-IMG-1793399059640.jpg",
-                    "https://i.postimg.cc/W3HnbhZ3/FB-IMG-1793399063223.jpg",
-                    "https://i.postimg.cc/wvGVT7NT/FB-IMG-1793399069307.jpg",
-                    "https://i.postimg.cc/0QBf2bSq/FB-IMG-1793399073362.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/gJTDknhd/FB-IMG-1793399059640.jpg", "https://i.postimg.cc/W3HnbhZ3/FB-IMG-1793399063223.jpg", "https://i.postimg.cc/wvGVT7NT/FB-IMG-1793399069307.jpg", "https://i.postimg.cc/0QBf2bSq/FB-IMG-1793399073362.jpg"]
             },
             {
-                id: 9,
-                title: "حملة سوشيال ميديا - OREO",
-                category: "social",
+                id: 9, title: "حملة سوشيال ميديا - OREO", category: "social",
                 coverImage: "https://i.postimg.cc/yx0Z4dXM/FB-IMG-1793398218764.jpg",
-                gallery: [
-                    "https://i.postimg.cc/3xtDHzpP/FB-IMG-1793398223707.jpg",
-                    "https://i.postimg.cc/zGzR6qbz/FB-IMG-1793398226964.jpg",
-                    "https://i.postimg.cc/Bnm1GRH9/FB-IMG-1793398230828.jpg",
-                    "https://i.postimg.cc/6pWGgB26/FB-IMG-1793398234474.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/3xtDHzpP/FB-IMG-1793398223707.jpg", "https://i.postimg.cc/zGzR6qbz/FB-IMG-1793398226964.jpg", "https://i.postimg.cc/Bnm1GRH9/FB-IMG-1793398230828.jpg", "https://i.postimg.cc/6pWGgB26/FB-IMG-1793398234474.jpg"]
             },
             {
-                id: 8,
-                title: "حملة سوشيال ميديا - WE SONIC",
-                category: "social",
+                id: 8, title: "حملة سوشيال ميديا - WE SONIC", category: "social",
                 coverImage: "https://i.postimg.cc/BnVRkQhR/FB-IMG-1793397469863.jpg",
-                gallery: [
-                    "https://i.postimg.cc/pTD7mQ2d/FB-IMG-1793397476305.jpg",
-                    "https://i.postimg.cc/wvhP156j/FB-IMG-1793397480710.jpg",
-                    "https://i.postimg.cc/rmSbDG8m/FB-IMG-1793397485155.jpg",
-                    "https://i.postimg.cc/qR8YNckq/FB-IMG-1793397488672.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/pTD7mQ2d/FB-IMG-1793397476305.jpg", "https://i.postimg.cc/wvhP156j/FB-IMG-1793397480710.jpg", "https://i.postimg.cc/rmSbDG8m/FB-IMG-1793397485155.jpg", "https://i.postimg.cc/qR8YNckq/FB-IMG-1793397488672.jpg"]
             },
             {
-                id: 7,
-                title: "حملة سوشيال ميديا - Tabby",
-                category: "social",
+                id: 7, title: "حملة سوشيال ميديا - Tabby", category: "social",
                 coverImage: "https://i.postimg.cc/GmVv6Zv7/FB-IMG-1793397047122.jpg",
-                gallery: [
-                    "https://i.postimg.cc/6pv84TGj/FB-IMG-1793397051863.jpg",
-                    "https://i.postimg.cc/rwrDRztf/FB-IMG-1793397056179.jpg",
-                    "https://i.postimg.cc/kgb2RDtj/FB-IMG-1793397058833.jpg",
-                    "https://i.postimg.cc/rwrDRztg/FB-IMG-1793397061941.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/6pv84TGj/FB-IMG-1793397051863.jpg", "https://i.postimg.cc/rwrDRztf/FB-IMG-1793397056179.jpg", "https://i.postimg.cc/kgb2RDtj/FB-IMG-1793397058833.jpg", "https://i.postimg.cc/rwrDRztg/FB-IMG-1793397061941.jpg"]
             },
             {
-                id: 6,
-                title: "حملة KOSMOLITA CLINIC",
-                category: "identity",
+                id: 6, title: "حملة KOSMOLITA CLINIC", category: "identity",
                 coverImage: "https://i.postimg.cc/k5bLdv84/IMG-20261029-WA0264.jpg",
-                gallery: [
-                    "https://i.postimg.cc/1t0T8Rv4/FB-IMG-1793395553117.jpg",
-                    "https://i.postimg.cc/d1RXhQ5V/FB-IMG-1793395556773.jpg",
-                    "https://i.postimg.cc/SsL5nQgR/FB-IMG-1793395560665.jpg",
-                    "https://i.postimg.cc/pTQ7mVsd/FB-IMG-1793395657468.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/1t0T8Rv4/FB-IMG-1793395553117.jpg", "https://i.postimg.cc/d1RXhQ5V/FB-IMG-1793395556773.jpg", "https://i.postimg.cc/SsL5nQgR/FB-IMG-1793395560665.jpg", "https://i.postimg.cc/pTQ7mVsd/FB-IMG-1793395657468.jpg"]
             },
             {
-                id: 5,
-                title: "حملة سوشيال ميديا - دجاج مقرمش",
-                category: "social",
+                id: 5, title: "حملة سوشيال ميديا - دجاج مقرمش", category: "social",
                 coverImage: "https://i.postimg.cc/ZqMhxqmq/485893870-1793390740785796.jpg",
-                gallery: [
-                    "https://i.postimg.cc/FKBQVKvs/176635013-1793390744359588.jpg",
-                    "https://i.postimg.cc/YSswzS74/479785028-1793390743585459.jpg",
-                    "https://i.postimg.cc/mD1WXGZk/697932327-1793390742700277.jpg",
-                    "https://i.postimg.cc/fbrhfbsz/995122413-1793390741768358.jpg"
-                ]
+                gallery: ["https://i.postimg.cc/FKBQVKvs/176635013-1793390744359588.jpg", "https://i.postimg.cc/YSswzS74/479785028-1793390743585459.jpg", "https://i.postimg.cc/mD1WXGZk/697932327-1793390742700277.jpg", "https://i.postimg.cc/fbrhfbsz/995122413-1793390741768358.jpg"]
             }
         ];
 
@@ -1126,20 +1155,15 @@
         function switchAboutTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
             document.getElementById('tab-' + tabId).classList.add('active');
             btn.classList.add('active');
 
             if(tabId === 'skills') {
                 setTimeout(() => {
-                    document.querySelectorAll('.skill-progress-bar').forEach(bar => {
-                        bar.style.width = bar.getAttribute('data-width');
-                    });
+                    document.querySelectorAll('.skill-progress-bar').forEach(bar => { bar.style.width = bar.getAttribute('data-width'); });
                 }, 100);
             } else {
-                document.querySelectorAll('.skill-progress-bar').forEach(bar => {
-                    bar.style.width = '0';
-                });
+                document.querySelectorAll('.skill-progress-bar').forEach(bar => { bar.style.width = '0'; });
             }
         }
 
@@ -1268,18 +1292,24 @@
         // =========================================
         window.addEventListener('load', () => {
             renderHomeProjects(projectsData);
-            startCounters();
+            
             initCustomCursor();
             initMagneticButtons();
             init3DTilt();
             initScrollReveal();
             typeWriterEffect();
 
+            // إخفاء شاشة البداية
             setTimeout(() => {
                 document.getElementById('preloader').classList.add('hide'); 
+                
+                // تشغيل عداد الأرقام
+                setTimeout(startCounters, 1400);
+
+                // إظهار رسالة الترحيب
                 setTimeout(() => document.getElementById('welcome-toast').classList.add('show'), 400);
                 setTimeout(() => document.getElementById('welcome-toast').classList.remove('show'), 4000);
-            }, 1500); 
+            }, 2500); 
         });
 
         // --- باقي الدوال الأساسية ---
@@ -1346,7 +1376,7 @@
             function type() {
                 if (i < text.length) { titleElement.innerHTML += text.charAt(i); i++; setTimeout(type, 80); }
             }
-            setTimeout(type, 1200); 
+            setTimeout(type, 2600); 
         }
 
         function renderHomeProjects(projectsToRender) {
