@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YUOSSEF&M - تصميم جرافيك وهوية بصرية</title>
     
-    <!-- استدعاء خط Cairo -->
+    <title>YUOSSEF&M | مصمم جرافيك وهوية بصرية</title>
+    <meta name="description" content="أصنع هويات بصرية وتصاميم تُروى بالعين. مصمم جرافيك متخصص في بناء الهويات، السوشيال ميديا، والمطبوعات.">
+    
+    <link rel="manifest" href='data:application/manifest+json,{"name":"YUOSSEF&M","short_name":"Y&M","start_url":".","display":"standalone","background_color":"%2305040a","theme_color":"%2339ff14","icons":[{"src":"https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg","sizes":"192x192","type":"image/jpeg"}]}'>
+    <meta name="theme-color" content="#05040a">
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- استدعاء أيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -47,7 +50,7 @@
             max-width: 600px;
             margin: 0 auto;
             min-height: 100vh;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
             position: relative;
             overflow-x: hidden;
             transition: overflow 0.3s;
@@ -55,664 +58,443 @@
         body.modal-open { overflow: hidden; }
 
         /* =========================================
-           مؤشر الماوس المخصص (Custom Cursor)
+           مؤشر الماوس المخصص
            ========================================= */
         .custom-cursor {
-            width: 8px; height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
+            width: 8px; height: 8px; background: var(--primary);
+            border-radius: 50%; position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
             box-shadow: 0 0 10px var(--primary);
         }
         .cursor-follower {
-            width: 40px; height: 40px;
-            border: 1px solid var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background 0.2s;
-            opacity: 0.5;
+            width: 40px; height: 40px; border: 1px solid var(--primary);
+            border-radius: 50%; position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s; opacity: 0.5;
         }
         .cursor-follower.hovering { width: 60px; height: 60px; background: rgba(57, 255, 20, 0.1); opacity: 1; border-width: 2px;}
 
         /* =========================================
-           شاشة البداية السينمائية (Preloader)
+           شاشة البداية ورسالة الترحيب
            ========================================= */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-main);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+            background-color: var(--bg-main); display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
             clip-path: circle(150% at 50% 50%);
         }
         #preloader.hide { clip-path: circle(0% at 50% 50%); opacity: 0; }
-
         .preloader-logo {
-            width: 150px; height: 150px; object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 40px rgba(57, 255, 20, 0.4);
+            width: 150px; height: 150px; object-fit: cover; border-radius: 50%;
+            border: 3px solid var(--primary); box-shadow: 0 0 40px rgba(57, 255, 20, 0.4);
             animation: pulseLogo 1s infinite alternate;
         }
-        @keyframes pulseLogo {
-            0% { transform: scale(1); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
-            100% { transform: scale(1.05); box-shadow: 0 0 50px rgba(57, 255, 20, 0.6); }
-        }
-
+        @keyframes pulseLogo { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
         .preloader-name {
-            color: var(--text-white);
-            font-size: 26px; font-weight: 900; margin-top: 25px;
-            text-shadow: 0 0 15px rgba(255,255,255,0.2);
+            color: var(--text-white); font-size: 26px; font-weight: 900; margin-top: 25px;
             animation: glitch 1s linear infinite;
         }
-        @keyframes glitch {
-            2%, 64% { transform: translate(2px,0) skew(0deg); }
-            4%, 60% { transform: translate(-2px,0) skew(0deg); }
-            62% { transform: translate(0,0) skew(5deg); }
-        }
+        @keyframes glitch { 2%, 64% { transform: translate(2px,0); } 4%, 60% { transform: translate(-2px,0); } 62% { transform: translate(0,0) skew(5deg); } }
 
-        /* =========================================
-           رسالة الترحيب
-           ========================================= */
         .welcome-toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(90deg, var(--accent-purple), var(--primary));
             color: #000; padding: 12px 25px; border-radius: 30px;
-            font-weight: 900; font-size: 14px; box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
-            z-index: 1000; display: flex; align-items: center; gap: 10px;
+            font-weight: 900; font-size: 14px; z-index: 1000; display: flex; align-items: center; gap: 10px;
             transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .welcome-toast.show { top: 20px; }
 
         /* =========================================
-           2. الهيدر العلوي
+           الهيدر العلوي
            ========================================= */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: rgba(5, 4, 10, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100;
-            transition: transform 0.4s ease;
+            padding: 15px; background-color: rgba(5, 4, 10, 0.8); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100; transition: transform 0.4s ease;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-icon {
-            width: 42px; height: 42px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
-        }
-
+        .logo-icon { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
         .header-btns { display: flex; align-items: center; gap: 10px; }
         .btn-icon {
-            background: transparent; border: 1px solid var(--border-color);
-            color: var(--primary); width: 38px; height: 38px;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            background: transparent; border: 1px solid var(--border-color); color: var(--primary);
+            width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 18px; text-decoration: none; transition: 0.3s;
         }
-        .btn-icon:hover { background: rgba(57, 255, 20, 0.1); border-color: var(--primary); transform: scale(1.1); }
-
+        .btn-icon:hover { background: rgba(57, 255, 20, 0.1); transform: scale(1.1); }
         .btn-primary {
-            background-color: var(--primary); color: #000;
-            text-decoration: none; padding: 8px 20px; border-radius: 10px;
-            font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 5px;
+            background-color: var(--primary); color: #000; text-decoration: none; padding: 8px 20px;
+            border-radius: 10px; font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 5px;
             transition: transform 0.1s ease-out, box-shadow 0.3s; 
         }
 
         /* =========================================
-           3. إعدادات التنقل بين الصفحات
+           إعدادات الصفحات
            ========================================= */
-        .view {
-            display: none; opacity: 0; transform: translateY(20px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
+        .view { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
         .view.active { display: block; opacity: 1; transform: translateY(0); }
 
         /* =========================================
-           4. الصفحة الرئيسية
+           الصفحة الرئيسية (Hero)
            ========================================= */
         .hero-section {
-            background: var(--bg-hero); padding: 40px 20px;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            text-align: center; margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            position: relative; overflow: hidden;
+            background: var(--bg-hero); padding: 40px 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden;
         }
-
         .hero-grid-bg {
             position: absolute; top: 0; left: 0; width: 200%; height: 200%;
-            background-image: 
-                linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: moveGrid 10s linear infinite;
-            z-index: 0; pointer-events: none;
+            background-image: linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: moveGrid 10s linear infinite; z-index: 0; pointer-events: none;
         }
-        @keyframes moveGrid {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 30px; }
-        }
-
+        @keyframes moveGrid { 0% { background-position: 0 0; } 100% { background-position: 0 30px; } }
         .hero-content { position: relative; z-index: 1; }
-
         .hero-tag {
-            background-color: rgba(123, 44, 191, 0.2); color: #d8b4fe;
-            padding: 6px 15px; border-radius: 20px; font-size: 12px;
-            display: inline-block; margin-bottom: 15px;
-            border: 1px solid rgba(123, 44, 191, 0.5);
+            background-color: rgba(123, 44, 191, 0.2); color: #d8b4fe; padding: 6px 15px; border-radius: 20px;
+            font-size: 12px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(123, 44, 191, 0.5);
             opacity: 0; animation: fadeInUp 0.6s ease 0.2s forwards;
         }
-
         .hero-title { 
-            font-size: 30px; font-weight: 900; line-height: 1.3; margin-bottom: 15px; 
-            text-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
-            opacity: 0; animation: fadeInUp 0.6s ease 0.3s forwards;
-            min-height: 40px;
+            font-size: 30px; font-weight: 900; line-height: 1.3; margin-bottom: 15px; text-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+            opacity: 0; animation: fadeInUp 0.6s ease 0.3s forwards; min-height: 40px;
         }
-
-        .hero-desc { 
-            color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; 
-            opacity: 0; animation: fadeInUp 0.6s ease 0.4s forwards;
-        }
-
-        .hero-actions { 
-            display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; 
-            opacity: 0; animation: fadeInUp 0.6s ease 0.5s forwards;
-        }
+        .hero-desc { color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 25px; opacity: 0; animation: fadeInUp 0.6s ease 0.4s forwards; }
+        .hero-actions { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; opacity: 0; animation: fadeInUp 0.6s ease 0.5s forwards; }
         .hero-btn {
-            padding: 12px 24px; border-radius: 12px; font-size: 15px;
-            font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 8px;
-            transition: transform 0.1s ease-out, box-shadow 0.3s;
+            padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 900;
+            text-decoration: none; display: flex; align-items: center; gap: 8px; transition: transform 0.1s ease-out;
         }
         .hero-btn-primary { background-color: var(--primary); color: #000; }
         .hero-btn-dark { background-color: var(--bg-card); color: white; border: 1px solid var(--border-color); }
-        
-        .stats-row { 
-            display: flex; justify-content: center; gap: 30px; 
-            opacity: 0; animation: fadeInUp 0.6s ease 0.6s forwards;
-        }
+        .stats-row { display: flex; justify-content: center; gap: 30px; opacity: 0; animation: fadeInUp 0.6s ease 0.6s forwards; }
         .stat-item { text-align: center; transition: transform 0.3s; }
         .stat-item:hover { transform: scale(1.1); }
         .stat-val { color: var(--accent-red); font-size: 24px; font-weight: 900; text-shadow: 0 0 10px rgba(230, 57, 70, 0.4); }
         .stat-lbl { color: var(--text-gray); font-size: 11px; margin-top: 5px; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- شارة "جديد" --- */
+        /* =========================================
+           شارة "جديد" والمشروع البارز
+           ========================================= */
         .new-badge {
-            position: absolute; top: 15px; left: 15px;
-            background: linear-gradient(45deg, var(--accent-red), #f97316);
-            color: white; padding: 5px 12px; border-radius: 8px;
-            font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 5px;
-            z-index: 10; box-shadow: 0 0 15px rgba(230, 57, 70, 0.8);
-            animation: pulseNew 1.5s infinite;
+            position: absolute; top: 15px; left: 15px; background: linear-gradient(45deg, var(--accent-red), #f97316);
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 900;
+            display: flex; align-items: center; gap: 5px; z-index: 10; animation: pulseNew 1.5s infinite;
         }
-        .new-badge i { font-size: 10px; color: #fbbf24; }
-        @keyframes pulseNew {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(230, 57, 70, 0.5); }
-            50% { transform: scale(1.08); box-shadow: 0 0 25px rgba(230, 57, 70, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 10px rgba(230, 57, 70, 0.5); }
-        }
-
-        /* --- المشروع البارز --- */
+        @keyframes pulseNew { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
         .featured-project { padding: 0 15px; margin-bottom: 30px; perspective: 1000px; }
         .featured-card {
-            position: relative; border-radius: 20px; overflow: hidden;
-            border: 1px solid var(--border-color); aspect-ratio: 4/5;
-            cursor: pointer; transform-style: preserve-3d;
-            transition: box-shadow 0.3s ease, border-color 0.3s, transform 0.1s ease-out;
+            position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); aspect-ratio: 4/5;
+            cursor: pointer; transform-style: preserve-3d; transition: box-shadow 0.3s ease, border-color 0.3s, transform 0.1s ease-out;
             animation: floatCard 4s infinite alternate ease-in-out;
         }
-        @keyframes floatCard {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-8px); }
-        }
-        .featured-card img { width: 100%; height: 100%; object-fit: cover; transform: translateZ(20px) scale(1.05); transition: transform 0.3s; pointer-events: none;}
+        @keyframes floatCard { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
+        .featured-card img { width: 100%; height: 100%; object-fit: cover; transform: translateZ(20px) scale(1.05); pointer-events: none;}
         .featured-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
-            transform: translateZ(30px); pointer-events: none;
-        }
-        .bookmark-btn {
-            position: absolute; top: 15px; right: 15px;
-            background: rgba(0,0,0,0.6); border: 1px solid var(--border-color);
-            color: var(--primary); width: 35px; height: 35px; border-radius: 10px;
-            display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(5px); z-index: 10; transition: 0.3s; transform: translateZ(40px);
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transform: translateZ(30px); pointer-events: none;
         }
 
         /* =========================================
-           شريط التصنيفات المتحرك
+           شريط التصنيفات والبحث
            ========================================= */
         .marquee-container {
-            overflow: hidden; padding: 15px 0; position: relative;
-            background: var(--bg-main); border-top: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
+            overflow: hidden; padding: 15px 0; position: relative; background: var(--bg-main);
+            border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
         }
-        .marquee-container::before, .marquee-container::after {
-            content: ''; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 2; pointer-events: none;
-        }
-        .marquee-container::before { right: 0; background: linear-gradient(to left, var(--bg-main), transparent); }
-        .marquee-container::after { left: 0; background: linear-gradient(to right, var(--bg-main), transparent); }
-
-        .marquee-content {
-            display: flex; gap: 15px; width: max-content;
-            animation: scrollMarquee 25s linear infinite;
-        }
+        .marquee-content { display: flex; gap: 15px; width: max-content; animation: scrollMarquee 25s linear infinite; }
         .marquee-container:hover .marquee-content { animation-play-state: paused; }
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
-
         .category-chip {
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            color: var(--text-white); padding: 8px 20px; border-radius: 20px;
-            font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
+            background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-white);
+            padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
             transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        .category-chip i { color: var(--primary); font-size: 12px; }
-        .category-chip.active, .category-chip:hover {
-            background-color: var(--primary); color: #000; border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); transform: translateY(-2px);
-        }
-        .category-chip.active i, .category-chip:hover i { color: #000; }
-
-        /* =========================================
-           البحث وأزرار الفلترة
-           ========================================= */
+        .category-chip.active, .category-chip:hover { background-color: var(--primary); color: #000; border-color: var(--primary); }
         .search-container { margin: 10px 15px; position: relative; }
         .search-container input {
-            width: 100%; padding: 14px 40px 14px 15px; border-radius: 12px;
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            color: var(--text-white); font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.3s;
+            width: 100%; padding: 14px 40px 14px 15px; border-radius: 12px; background-color: var(--bg-card);
+            border: 1px solid var(--border-color); color: var(--text-white); font-size: 14px; outline: none;
         }
-        .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); }
-        .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 16px; }
+        .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); }
 
-        .filter-pills { display: flex; gap: 10px; padding: 5px 15px 15px 15px; overflow-x: auto; scrollbar-width: none; }
-        .filter-pills::-webkit-scrollbar { display: none; }
-        .pill {
-            background-color: transparent; border: 1px solid var(--border-color);
-            color: var(--text-white); padding: 8px 16px; border-radius: 20px;
-            font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s;
-        }
-        .pill.active { background-color: var(--primary); color: #000; border-color: var(--primary); font-weight: 900; }
+        .section-title { padding: 0 15px; font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title::before { content: ''; width: 4px; height: 20px; background-color: var(--primary); border-radius: 2px; }
 
-        .section-title {
-            padding: 0 15px; font-size: 20px; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .section-title::before {
-            content: ''; width: 4px; height: 20px; background-color: var(--primary); border-radius: 2px;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        /* --- شبكة الأعمال --- */
+        /* شبكة الأعمال */
         .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; perspective: 1000px; }
-
         .project-card {
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 16px; overflow: hidden; cursor: pointer;
-            transform-style: preserve-3d;
-            transition: box-shadow 0.3s ease, border-color 0.3s, transform 0.1s ease-out;
-            position: relative;
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden;
+            cursor: pointer; transform-style: preserve-3d; transition: box-shadow 0.3s ease, transform 0.1s ease-out; position: relative;
         }
-        .project-card .new-badge { top: 10px; left: 10px; font-size: 10px; padding: 3px 8px; border-radius: 6px; }
         .card-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; pointer-events: none; transform: translateZ(10px); }
         .card-info { padding: 12px; transform: translateZ(20px); pointer-events: none;}
         .card-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* =========================================
-           5. صفحة الباكجات والأسعار
+           آراء العملاء (Testimonials)
+           ========================================= */
+        .testimonials-wrapper {
+            display: flex; gap: 15px; overflow-x: auto; padding: 0 15px 20px 15px; scrollbar-width: none;
+        }
+        .testimonials-wrapper::-webkit-scrollbar { display: none; }
+        .testimonial-card {
+            flex: 0 0 80%; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 20px; position: relative;
+        }
+        .testimonial-card i.fa-quote-right {
+            position: absolute; top: 15px; left: 15px; font-size: 30px; color: rgba(57, 255, 20, 0.1);
+        }
+        .testimonial-text { font-size: 13px; color: var(--text-gray); line-height: 1.6; margin-bottom: 15px; }
+        .testimonial-author { display: flex; align-items: center; gap: 10px; }
+        .testimonial-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent-purple); display: flex; justify-content: center; align-items: center; font-weight: 900; }
+        .testimonial-name { font-size: 14px; font-weight: 700; }
+        .testimonial-role { font-size: 11px; color: var(--primary); }
+
+        /* =========================================
+           الباكجات وحاسبة الأسعار
            ========================================= */
         .packages-container { padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; perspective: 1000px;}
-
         .pricing-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden;
-            transform-style: preserve-3d;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.1s ease-out;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px 20px;
+            position: relative; overflow: hidden; transform-style: preserve-3d; transition: 0.3s;
         }
-
         .discount-badge {
             position: absolute; top: 20px; left: -35px; background: linear-gradient(45deg, var(--accent-red), #f97316);
-            color: white; padding: 5px 40px; font-size: 12px; font-weight: 900;
-            transform: rotate(-45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 2; animation: pulseBadge 2s infinite;
+            color: white; padding: 5px 40px; font-size: 12px; font-weight: 900; transform: rotate(-45deg);
         }
-        @keyframes pulseBadge {
-            0% { transform: rotate(-45deg) scale(1); }
-            50% { transform: rotate(-45deg) scale(1.05); }
-            100% { transform: rotate(-45deg) scale(1); }
-        }
-
         .package-title { font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--primary); transform: translateZ(30px); }
         .package-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; transform: translateZ(25px); }
         .current-price { font-size: 36px; font-weight: 900; color: var(--accent-red); }
-        .currency { font-size: 16px; color: var(--text-gray); }
-        .old-price { font-size: 18px; color: var(--text-gray); text-decoration: line-through; opacity: 0.7; }
         .package-features { list-style: none; margin-bottom: 25px; transform: translateZ(20px); }
         .package-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .package-features li i { color: var(--primary); font-size: 16px; }
-
         .order-btn {
             width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(90deg, var(--primary), #1f9e0f);
-            color: #000; border: none; font-size: 16px; font-weight: 900; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
-            transform: translateZ(30px);
+            color: #000; border: none; font-size: 16px; font-weight: 900; cursor: pointer; transition: 0.3s; transform: translateZ(30px);
         }
 
+        .limited-offer-banner {
+            background: linear-gradient(90deg, #e63946, #f97316);
+            color: white; padding: 10px; border-radius: 10px; text-align: center;
+            font-weight: 900; margin-bottom: 15px; font-size: 14px;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        .package-details-btn {
+            background: transparent; border: 1px solid var(--border-color); color: var(--primary);
+            width: 100%; padding: 10px; border-radius: 10px; margin-bottom: 15px; cursor: pointer;
+            font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        }
+        .package-details-btn:hover { background: rgba(57, 255, 20, 0.05); border-color: var(--primary); }
+        .package-details-content {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+            background: var(--bg-main); border-radius: 10px; margin-bottom: 15px;
+        }
+        .package-details-content ul { padding: 15px; list-style: none; }
+        .package-details-content li { font-size: 13px; color: var(--text-gray); margin-bottom: 8px; display: flex; gap: 8px; }
+        .package-details-content li i { color: var(--primary); margin-top: 4px; }
+
+        .calculator-box {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 25px 20px; margin: 0 15px 30px 15px;
+        }
+        .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .calc-row label { font-size: 14px; cursor: pointer; }
+        .calc-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+        .calc-total { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 20px; font-weight: 900; color: var(--primary); }
+
         /* =========================================
-           5.1 قسم الكورسات المخصص
+           صفحة الكورسات
            ========================================= */
         .course-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 20px; overflow: hidden;
-            transform-style: preserve-3d;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.1s ease-out;
-            margin-bottom: 30px;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
+            margin: 0 15px 30px 15px; position: relative;
         }
-        
         .course-image-container { position: relative; }
         .course-image-container img { width: 100%; display: block; }
-        
-        .course-discount-badge {
-            position: absolute; top: 15px; right: 15px;
-            background: #fbbf24; color: #000; font-weight: 900;
-            padding: 8px 20px; border-radius: 30px; font-size: 16px;
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
-            animation: pulseNew 1.5s infinite;
-        }
-
+        .course-discount-badge { position: absolute; top: 15px; right: 15px; background: #fbbf24; color: #000; font-weight: 900; padding: 8px 20px; border-radius: 30px; font-size: 16px; animation: pulseNew 1.5s infinite; }
         .course-content { padding: 25px 20px; }
-        .course-title { font-size: 26px; font-weight: 900; margin-bottom: 10px; color: var(--text-white); }
+        .course-title { font-size: 24px; font-weight: 900; margin-bottom: 10px; color: var(--text-white); }
         .course-desc { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-        .course-features { list-style: none; margin-bottom: 25px; }
-        .course-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .course-features li i { color: var(--primary); font-size: 16px; }
 
-        /* =========================================
-           6. صفحة تفاصيل المشروع
-           ========================================= */
-        #view-project {
-            background-color: var(--bg-main); position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%; z-index: 200; overflow-y: auto; padding-bottom: 80px;
-            display: block; opacity: 0; visibility: hidden; transform: translateY(30px);
-            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        .course-modules { margin-bottom: 20px; }
+        .module-btn {
+            background-color: var(--bg-main); color: var(--text-white); cursor: pointer;
+            padding: 15px; width: 100%; border: none; text-align: right; outline: none;
+            font-size: 14px; font-weight: 700; border-radius: 10px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid var(--border-color); transition: 0.3s;
         }
-        #view-project.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .module-btn:hover { border-color: var(--primary); }
+        .module-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); }
+        .module-btn i { transition: transform 0.3s; }
+        .module-btn.active i { transform: rotate(180deg); }
         
-        .project-top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: rgba(5, 4, 10, 0.9);
-            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+        .module-content {
+            padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+            background-color: transparent; color: var(--text-gray); font-size: 13px;
         }
-        .back-btn {
-            background: rgba(57, 255, 20, 0.05); border: 1px solid var(--primary);
-            color: var(--primary); font-size: 14px; cursor: pointer; font-weight: bold;
-            display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 20px; transition: 0.3s;
-        }
+        .module-content p { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        .main-project-image { width: 100%; padding: 15px; opacity: 0; animation: contentFadeIn 0.5s ease 0.1s forwards; position: relative; }
-        .main-project-image img { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-
-        .swipe-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 15px 15px 15px; opacity: 0; animation: contentFadeIn 0.5s ease 0.15s forwards;
-        }
-        .swipe-header span { font-size: 14px; color: var(--primary); font-weight: bold;}
-
-        .project-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px 20px 15px; align-items: start; }
-
-        .gallery-item {
-            position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color);
-            cursor: pointer; background-color: var(--bg-card); 
-            opacity: 0; animation: contentFadeIn 0.5s ease forwards; 
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .gallery-item img { width: 100%; height: auto; display: block; object-fit: cover; }
-
-        @keyframes contentFadeIn { to { opacity: 1; } }
-
-        .gallery-item::after {
-            content: '\f00e'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            font-size: 24px; color: var(--primary); opacity: 0; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.8); pointer-events: none;
-        }
-        .gallery-item:hover::after { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .course-features { list-style: none; margin-bottom: 20px; }
+        .course-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .course-features li i { color: var(--primary); }
 
         /* =========================================
-           7. الشاشة المكبرة للصور (Lightbox)
-           ========================================= */
-        #lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999;
-            display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s;
-        }
-        #lightbox.active { opacity: 1; visibility: visible; }
-        #lightbox img {
-            max-width: 95%; max-height: 90%; border-radius: 12px;
-            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 50px rgba(57, 255, 20, 0.2);
-        }
-        #lightbox.active img { transform: scale(1); }
-        .close-lightbox {
-            position: absolute; top: 20px; right: 20px; color: var(--primary); font-size: 30px; cursor: pointer;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--primary); width: 50px; height: 50px;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: 0.3s;
-        }
-        .close-lightbox:hover { background: rgba(57, 255, 20, 0.2); transform: rotate(90deg); }
-
-        /* =========================================
-           8. الشريط السفلي
-           ========================================= */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; max-width: 600px; background-color: rgba(5, 4, 10, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
-            padding: 12px 0; z-index: 100; transition: transform 0.4s ease;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: var(--text-gray); font-size: 11px; cursor: pointer; transition: 0.3s;
-        }
-        .nav-item i { font-size: 20px; transition: transform 0.3s; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active i { transform: translateY(-3px); text-shadow: 0 0 10px var(--primary); }
-
-        /* =========================================
-           9. صفحة عني وتواصل
+           صفحة عني (المطورة والتفاعلية)
            ========================================= */
         .page-content { padding: 20px 15px; }
         
-        .about-badge-top { text-align: left; margin-bottom: 20px; }
-        .about-badge {
-            background: rgba(123, 44, 191, 0.2); color: var(--text-white);
-            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
-            border: 1px solid var(--accent-purple); display: inline-flex; align-items: center; gap: 8px;
-        }
-
-        .about-name { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 5px; }
-        .about-title { text-align: center; color: var(--accent-purple); font-size: 14px; font-weight: 700; margin-bottom: 20px; }
-        .about-headline { text-align: center; font-size: 20px; font-weight: 800; margin-bottom: 20px; color: var(--text-white); }
-        .about-desc { text-align: center; color: var(--text-gray); font-size: 14px; line-height: 1.8; margin-bottom: 15px; }
-
-        .about-location {
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            color: var(--text-gray); font-size: 13px; margin-bottom: 25px; font-weight: 600;
-        }
-        .about-location i { color: var(--primary); }
-
-        .about-actions { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        
-        .btn-about-primary {
-            background-color: var(--primary); color: #000;
-            padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900;
-            border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
-            transition: 0.3s;
-        }
-        .btn-about-whatsapp {
-            background-color: #25D366; color: #fff;
-            padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900;
-            text-decoration: none; display: flex; align-items: center; gap: 8px;
-            transition: 0.3s;
-        }
-
-        .about-social-wrapper { text-align: center; margin-bottom: 30px; }
-        .btn-about-social {
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            color: var(--text-white); padding: 8px 20px; border-radius: 30px;
-            font-size: 13px; font-weight: 700; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
-        }
-        .btn-about-social:hover { background-color: var(--bg-card); border-color: var(--primary); color: var(--primary); }
-
-        .about-photo-container {
-            width: 100%; max-width: 450px; margin: 0 auto 40px auto;
-            border-radius: 24px; overflow: hidden;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
+        .about-header { text-align: center; margin-bottom: 30px; }
+        .about-badge { background: rgba(123, 44, 191, 0.2); color: var(--text-white); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1px solid var(--accent-purple); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .about-name { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .about-title { color: var(--accent-purple); font-size: 15px; font-weight: 700; }
+        .about-photo-container { width: 100%; max-width: 300px; margin: 20px auto 30px auto; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3); }
         .about-photo-container img { width: 100%; height: auto; display: block; object-fit: cover; }
 
-        /* --- تنسيقات الخدمات وخطوات العمل --- */
-        .about-section-title {
-            font-size: 20px; font-weight: 900; color: var(--text-white);
-            margin: 30px 0 20px 0; display: flex; align-items: center; gap: 10px;
-            border-right: 4px solid var(--primary); padding-right: 10px;
+        /* التابات التفاعلية */
+        .about-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray);
+            padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s;
         }
-        .about-section-title span { font-size: 12px; color: var(--accent-purple); letter-spacing: 1px; }
+        .tab-btn.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 15px rgba(57, 255, 20, 0.3); }
 
-        /* الخدمات */
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* محتوى تاب "رحلتي" */
+        .journey-text { color: var(--text-gray); font-size: 14px; line-height: 1.8; text-align: center; margin-bottom: 30px; }
+        
+        /* الخط الزمني */
+        .timeline { position: relative; padding-right: 20px; margin-bottom: 30px; }
+        .timeline::before {
+            content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--border-color);
+        }
+        .timeline-item { position: relative; margin-bottom: 20px; padding-right: 25px; }
+        .timeline-item::before {
+            content: ''; position: absolute; right: -5px; top: 5px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--primary); border: 3px solid var(--bg-main); box-shadow: 0 0 10px var(--primary);
+        }
+        .timeline-date { font-size: 12px; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
+        .timeline-title { font-size: 16px; font-weight: 700; color: var(--text-white); margin-bottom: 5px; }
+        .timeline-desc { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+
+        /* محتوى تاب "مهاراتي" */
+        .skills-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
+        .skill-item { background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .skill-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+        .skill-progress-bg { width: 100%; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
+        .skill-progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent-purple)); border-radius: 4px; width: 0; transition: width 1s ease-out; }
+
+        /* محتوى تاب "حقائق" */
+        .fun-facts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
+        .fact-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px 15px; border-radius: 16px; text-align: center; }
+        .fact-card i { font-size: 30px; color: var(--primary); margin-bottom: 10px; display: block; }
+        .fact-card span { font-size: 14px; font-weight: 700; color: var(--text-white); display: block; }
+
+        /* الخدمات وخطوات العمل */
+        .about-section-title { font-size: 20px; font-weight: 900; color: var(--text-white); margin: 30px 0 20px 0; display: flex; align-items: center; gap: 10px; border-right: 4px solid var(--primary); padding-right: 10px; }
         .services-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-        .service-item {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 20px; display: flex; align-items: flex-start; gap: 15px;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .service-item:hover { border-color: var(--primary); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.1); transform: translateX(-5px); }
-        .service-num {
-            background: rgba(123, 44, 191, 0.2); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: 900; font-size: 16px; flex-shrink: 0;
-        }
+        .service-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: flex-start; gap: 15px; position: relative; overflow: hidden; }
+        .service-num { background: rgba(123, 44, 191, 0.2); color: var(--primary); width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; flex-shrink: 0; }
         .service-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-white); }
         .service-info p { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
 
-        /* خطوات العمل */
         .steps-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-        .step-item {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 20px; position: relative; overflow: hidden;
-            display: flex; align-items: flex-start; gap: 15px;
-            transition: 0.3s;
-        }
-        .step-item:hover { border-color: var(--accent-purple); box-shadow: 0 10px 20px rgba(123, 44, 191, 0.2); transform: translateX(-5px); }
-        .step-bg-num {
-            position: absolute; top: -10px; left: 10px;
-            font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.03);
-            z-index: 0; pointer-events: none; font-family: sans-serif;
-        }
-        .step-num {
-            background: linear-gradient(45deg, var(--accent-purple), var(--primary));
-            color: #000; width: 35px; height: 35px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: 900; font-size: 14px; flex-shrink: 0; z-index: 1;
-        }
+        .step-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; display: flex; align-items: flex-start; gap: 15px; }
+        .step-bg-num { position: absolute; top: -10px; left: 10px; font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.03); z-index: 0; font-family: sans-serif; }
+        .step-num { background: linear-gradient(45deg, var(--accent-purple), var(--primary)); color: #000; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 14px; flex-shrink: 0; z-index: 1; }
         .step-info { z-index: 1; }
         .step-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-white); }
         .step-info p { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
 
-        /* صندوق الدعوة للتواصل (CTA) */
-        .cta-box {
-            background: linear-gradient(180deg, rgba(28, 7, 43, 0.8) 0%, rgba(17, 14, 26, 0.8) 100%);
-            border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 30px 20px; text-align: center; margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(123, 44, 191, 0.15);
-        }
-        .cta-box h3 { font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--text-white); }
-        .cta-box p { font-size: 13px; color: var(--text-gray); margin-bottom: 20px; line-height: 1.6; }
-        .cta-btns { display: flex; justify-content: center; gap: 10px; }
-        .cta-btn {
-            padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 700;
-            text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.3s;
-        }
-        .cta-btn-primary { background: var(--primary); color: #000; }
-        .cta-btn-whatsapp { background: #25D366; color: #fff; }
-        .cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
-        .cta-btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); }
+        .cta-box { background: linear-gradient(180deg, rgba(28, 7, 43, 0.8) 0%, rgba(17, 14, 26, 0.8) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px 20px; text-align: center; margin-bottom: 20px; }
+        .cta-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        
+        .btn-about-primary { background-color: var(--primary); color: #000; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-about-whatsapp { background-color: #25D366; color: #fff; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 8px; }
 
         /* =========================================
-           10. صفحة التواصل الاحترافية
+           صفحة تفاصيل المشروع والتواصل
            ========================================= */
+        #view-project { background-color: var(--bg-main); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 200; overflow-y: auto; padding-bottom: 80px; opacity: 0; visibility: hidden; transform: translateY(30px); transition: 0.4s; }
+        #view-project.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .project-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: rgba(5, 4, 10, 0.9); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .back-btn { background: rgba(57, 255, 20, 0.05); border: 1px solid var(--primary); color: var(--primary); font-size: 14px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 20px; }
+        .main-project-image { width: 100%; padding: 15px; }
+        .main-project-image img { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); }
+        .project-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px 20px 15px; }
+        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); cursor: pointer; }
+        .gallery-item img { width: 100%; height: auto; display: block; }
+
+        #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+        #lightbox.active { opacity: 1; visibility: visible; }
+        #lightbox img { max-width: 95%; max-height: 90%; border-radius: 12px; }
+        .close-lightbox { position: absolute; top: 20px; right: 20px; color: var(--primary); font-size: 30px; cursor: pointer; }
+
         .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
-        
-        .contact-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 20px 15px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            text-decoration: none; color: var(--text-white); transition: 0.3s;
-        }
+        .contact-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: var(--text-white); transition: 0.3s; }
         .contact-card:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(57, 255, 20, 0.15); transform: translateY(-5px); }
         .contact-card i { font-size: 28px; color: var(--primary); margin-bottom: 5px; }
         .contact-card span { font-size: 14px; font-weight: 700; }
         .contact-card small { font-size: 12px; color: var(--text-gray); direction: ltr; }
 
-        .contact-form {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 25px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .form-group { margin-bottom: 20px; position: relative; }
+        .contact-form { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px 20px; }
+        .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 13px; margin-bottom: 8px; color: var(--text-gray); font-weight: 600; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 14px 15px; border-radius: 12px;
-            background-color: var(--bg-main); border: 1px solid var(--border-color);
-            color: var(--text-white); font-size: 14px; outline: none; font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; padding: 14px 15px; border-radius: 12px; 
+            background-color: var(--bg-main); border: 1px solid var(--border-color); 
+            color: white; outline: none; font-family: inherit; transition: 0.3s;
         }
         .form-group select { appearance: none; -webkit-appearance: none; cursor: pointer; }
         .form-group select option { background-color: var(--bg-main); color: white; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(57, 255, 20, 0.15); }
         
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
-        }
-
-        .submit-btn {
-            width: 100%; padding: 16px; border-radius: 12px;
-            background: linear-gradient(90deg, var(--primary), #1f9e0f);
-            color: #000; border: none; font-weight: 900; font-size: 16px;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
-            transition: 0.3s;
-        }
+        .submit-btn { width: 100%; padding: 16px; border-radius: 12px; background: linear-gradient(90deg, var(--primary), #1f9e0f); color: #000; border: none; font-weight: 900; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(57, 255, 20, 0.3); }
 
-        .contact-socials {
-            display: flex; justify-content: center; gap: 15px; margin-top: 30px; margin-bottom: 20px;
-        }
-        .contact-socials a {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            display: flex; justify-content: center; align-items: center;
-            color: var(--text-white); font-size: 22px; text-decoration: none;
-            transition: 0.3s;
-        }
+        .contact-socials { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        .contact-socials a { width: 50px; height: 50px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; color: var(--text-white); font-size: 22px; text-decoration: none; transition: 0.3s; }
         .contact-socials a:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(57, 255, 20, 0.3); }
 
-        /* أنيميشن الظهور */
+        /* =========================================
+           المودال (Modal)
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            z-index: 1000; display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: var(--bg-card); border: 1px solid var(--primary);
+            border-radius: 20px; padding: 25px; width: 90%; max-width: 400px;
+            position: relative; transform: translateY(20px); transition: transform 0.3s ease;
+            box-shadow: 0 15px 40px rgba(57, 255, 20, 0.2);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .close-modal {
+            position: absolute; top: 15px; left: 15px; color: var(--accent-red);
+            font-size: 24px; cursor: pointer; transition: 0.3s;
+        }
+        .close-modal:hover { transform: rotate(90deg); }
+
+        .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; color: var(--primary); text-align: center; }
+        
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background-color: rgba(5, 4, 10, 0.95); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-gray); font-size: 10px; cursor: pointer; }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: var(--primary); }
+
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
-
     </style>
 </head>
 <body>
@@ -723,7 +505,7 @@
 
     <!-- شاشة البداية -->
     <div id="preloader">
-        <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="preloader-logo" alt="YUOSSEF&M Logo">
+        <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="preloader-logo" alt="Logo">
         <h1 class="preloader-name">YUOSSEF Mahmoud</h1>
     </div>
 
@@ -732,7 +514,7 @@
         <i class="fas fa-hand-sparkles"></i> أهلاً بك في بورتفوليو YUOSSEF&M
     </div>
 
-    <!-- الهيدر الرئيسي -->
+    <!-- الهيدر -->
     <header id="main-header">
         <div class="logo-area">
             <img src="https://i.postimg.cc/VNtkvh2Y/471356828-1793396405919210.jpg" class="logo-icon" alt="Logo">
@@ -764,18 +546,9 @@
                 </div>
 
                 <div class="stats-row">
-                    <div class="stat-item">
-                        <div class="stat-val" data-target="40">0</div>
-                        <div class="stat-lbl">مشروع منشور</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-val" data-target="25">0</div>
-                        <div class="stat-lbl">عميل سعيد</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-val" data-target="4">0</div>
-                        <div class="stat-lbl">سنوات خبرة</div>
-                    </div>
+                    <div class="stat-item"><div class="stat-val" data-target="40">0</div><div class="stat-lbl">مشروع منشور</div></div>
+                    <div class="stat-item"><div class="stat-val" data-target="25">0</div><div class="stat-lbl">عميل سعيد</div></div>
+                    <div class="stat-item"><div class="stat-val" data-target="4">0</div><div class="stat-lbl">سنوات خبرة</div></div>
                 </div>
             </div>
         </div>
@@ -785,7 +558,6 @@
             <div class="featured-card tilt-effect" onclick="openProjectDetail(13)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
                 <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Talabat Campaign">
-                <div class="bookmark-btn"><i class="far fa-bookmark"></i></div>
                 <div class="featured-overlay">
                     <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
                     <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
@@ -800,16 +572,9 @@
         <div class="marquee-container reveal">
             <div class="marquee-content">
                 <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
-                <div class="category-chip" onclick="filterCategory('identity', this)"><i class="fas fa-fingerprint"></i> هوية بصرية كاملة</div>
+                <div class="category-chip" onclick="filterCategory('identity', this)"><i class="fas fa-fingerprint"></i> هوية بصرية</div>
                 <div class="category-chip" onclick="filterCategory('social', this)"><i class="fas fa-mobile-alt"></i> سوشيال ميديا</div>
-                <div class="category-chip" onclick="filterCategory('print', this)"><i class="fas fa-print"></i> مطبوعات وتغليف</div>
-                <div class="category-chip" onclick="filterCategory('ads', this)"><i class="fas fa-bullhorn"></i> إعلانات</div>
-                
-                <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
-                <div class="category-chip" onclick="filterCategory('identity', this)"><i class="fas fa-fingerprint"></i> هوية بصرية كاملة</div>
-                <div class="category-chip" onclick="filterCategory('social', this)"><i class="fas fa-mobile-alt"></i> سوشيال ميديا</div>
-                <div class="category-chip" onclick="filterCategory('print', this)"><i class="fas fa-print"></i> مطبوعات وتغليف</div>
-                <div class="category-chip" onclick="filterCategory('ads', this)"><i class="fas fa-bullhorn"></i> إعلانات</div>
+                <div class="category-chip" onclick="filterCategory('print', this)"><i class="fas fa-print"></i> مطبوعات</div>
             </div>
         </div>
 
@@ -818,98 +583,164 @@
             <input type="text" id="searchInput" placeholder="ابحث في المشاريع..." onkeyup="searchProjects()">
         </div>
 
-        <div class="filter-pills reveal">
-            <button class="pill active" onclick="filterCategory('all', this)">الكل</button>
-            <button class="pill" onclick="filterCategory('social', this)">تصميم سوشيال ميديا</button>
-            <button class="pill" onclick="filterCategory('identity', this)">تصميمات</button>
-        </div>
-
         <div class="projects-grid" id="home-projects-grid">
             <!-- سيتم توليد المشاريع هنا -->
         </div>
+
+        <!-- آراء العملاء -->
+        <h2 class="section-title reveal">آراء العملاء</h2>
+        <div class="testimonials-wrapper reveal">
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right"></i>
+                <p class="testimonial-text">"شغل احترافي جداً، يوسف فهم فكرة البراند بتاعنا من أول مرة وطلع الهوية أحلى من اللي كنا متخيلينه."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">أ</div>
+                    <div>
+                        <div class="testimonial-name">أحمد محمود</div>
+                        <div class="testimonial-role">صاحب مطعم</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right"></i>
+                <p class="testimonial-text">"التزام في المواعيد، وأفكار إبداعية في تصميمات السوشيال ميديا. بنشتغل معاه من سنتين ومستمرين."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">م</div>
+                    <div>
+                        <div class="testimonial-name">منة الله سامي</div>
+                        <div class="testimonial-role">مديرة تسويق</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- صفحة الباكجات والأسعار -->
+    <!-- صفحة الباكجات والحاسبة -->
     <section id="view-packages" class="view">
         <div class="page-content">
             <h2 style="text-align: center; margin-bottom: 10px; color: var(--primary);">باكجات التصميم</h2>
-            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 10px;">اختر الباقة المناسبة لعلامتك التجارية وابدأ رحلة النجاح.</p>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">اختر الباقة المناسبة لعلامتك التجارية.</p>
+            
+            <div class="limited-offer-banner">
+                <i class="fas fa-fire"></i>
+                <span>عرض لفترة محدودة</span>
+            </div>
         </div>
         
         <div class="packages-container">
+            <!-- الباقة الأولى -->
             <div class="pricing-card tilt-effect">
                 <div class="discount-badge">خصم 25%</div>
                 <h3 class="package-title">باقة السوشيال ميديا</h3>
                 <div class="package-price">
-                    <span class="current-price">1500</span>
-                    <span class="currency">ج.م</span>
-                    <span class="old-price">2000 ج.م</span>
+                    <span class="current-price">1500</span> <span class="currency">ج.م</span> <span class="old-price">2000 ج.م</span>
                 </div>
-                <ul class="package-features">
-                    <li><i class="fas fa-check-circle"></i> 10 تصميمات سوشيال ميديا</li>
-                    <li><i class="fas fa-check-circle"></i> تصميمات عالية الجودة (HD)</li>
-                    <li><i class="fas fa-check-circle"></i> تسليم سريع خلال 3 أيام</li>
-                    <li><i class="fas fa-check-circle"></i> تعديلات غير محدودة</li>
-                </ul>
-                <button class="order-btn magnetic" onclick="orderPackage('باقة السوشيال ميديا (10 تصميمات)', '1500')">
-                    اطلب الباقة الآن <i class="fab fa-whatsapp"></i>
+                
+                <button class="package-details-btn" onclick="togglePackageDetails(this)">
+                    <span>تفاصيل الباقة</span> <i class="fas fa-chevron-down"></i>
                 </button>
+                <div class="package-details-content">
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> 10 تصميمات سوشيال ميديا عالية الجودة</li>
+                        <li><i class="fas fa-check-circle"></i> تصميمات HD وجاهزة للنشر</li>
+                        <li><i class="fas fa-check-circle"></i> تسليم سريع خلال 3 أيام عمل</li>
+                        <li><i class="fas fa-check-circle"></i> تعديلات مجانية حتى الرضا التام</li>
+                    </ul>
+                </div>
+
+                <button class="order-btn magnetic" onclick="openPackageModal('باقة السوشيال ميديا', '1500')">اطلب الباقة الآن <i class="fas fa-arrow-left"></i></button>
             </div>
 
+            <!-- الباقة الثانية -->
             <div class="pricing-card tilt-effect">
                 <h3 class="package-title">باقة التصميمين</h3>
-                <div class="package-price">
-                    <span class="current-price">250</span>
-                    <span class="currency">ج.م</span>
-                </div>
-                <ul class="package-features">
-                    <li><i class="fas fa-check-circle"></i> تصميمين سوشيال ميديا</li>
-                    <li><i class="fas fa-check-circle"></i> تصميمات عالية الجودة (HD)</li>
-                    <li><i class="fas fa-check-circle"></i> تسليم خلال 24 ساعة</li>
-                    <li><i class="fas fa-check-circle"></i> مراجعة وتعديل واحد</li>
-                </ul>
-                <button class="order-btn magnetic" onclick="orderPackage('باقة التصميمين', '250')">
-                    اطلب الباقة الآن <i class="fab fa-whatsapp"></i>
+                <div class="package-price"><span class="current-price">250</span> <span class="currency">ج.م</span></div>
+                
+                <button class="package-details-btn" onclick="togglePackageDetails(this)">
+                    <span>تفاصيل الباقة</span> <i class="fas fa-chevron-down"></i>
                 </button>
+                <div class="package-details-content">
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> تصميمين سوشيال ميديا</li>
+                        <li><i class="fas fa-check-circle"></i> تسليم خلال 24 ساعة</li>
+                        <li><i class="fas fa-check-circle"></i> جودة عالية ومناسبة للاستخدام</li>
+                    </ul>
+                </div>
+
+                <button class="order-btn magnetic" onclick="openPackageModal('باقة التصميمين', '250')">اطلب الباقة الآن <i class="fas fa-arrow-left"></i></button>
             </div>
+        </div>
+
+        <h2 class="section-title reveal">احسب تكلفة مشروعك</h2>
+        <div class="calculator-box reveal">
+            <div class="calc-row">
+                <label><input type="checkbox" value="1000" onchange="calculateTotal()"> تصميم لوجو (1000 ج.م)</label>
+            </div>
+            <div class="calc-row">
+                <label><input type="checkbox" value="500" onchange="calculateTotal()"> هوية بصرية أساسية (500 ج.م)</label>
+            </div>
+            <div class="calc-row">
+                <label><input type="checkbox" value="1500" onchange="calculateTotal()"> باقة سوشيال ميديا (1500 ج.م)</label>
+            </div>
+            <div class="calc-row">
+                <label><input type="checkbox" value="300" onchange="calculateTotal()"> تصميم مطبوعات (300 ج.م)</label>
+            </div>
+            <div class="calc-total">
+                <span>الإجمالي التقريبي:</span>
+                <span id="total-price">0 ج.م</span>
+            </div>
+            <button class="order-btn magnetic" style="margin-top: 20px;" onclick="sendCalcToWhatsApp()">اطلب هذا العرض <i class="fab fa-whatsapp"></i></button>
         </div>
     </section>
 
     <!-- صفحة الكورسات -->
     <section id="view-courses" class="view">
         <div class="page-content">
-            <h2 style="text-align: center; margin-bottom: 10px; color: var(--primary);">كورسات ودبلومات</h2>
-            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">طور مهاراتك مع YUOSSEF&M Academy</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary);">كورسات YUOSSEF&M</h2>
         </div>
         
-        <div style="padding: 0 15px 30px 15px;">
-            <div class="course-card tilt-effect">
-                <div class="course-image-container">
-                    <div class="course-discount-badge">خصم 50%</div>
-                    <img src="https://i.postimg.cc/4yYLRjWW/644684898-1793407016330626.jpg" alt="دبلومة الذكاء الاصطناعي">
-                </div>
-                
-                <div class="course-content">
-                    <h3 class="course-title">دبلومة الذكاء الاصطناعي</h3>
-                    <p class="course-desc">ابدأ رحلتك في عالم الذكاء الاصطناعي وتعلم أحدث الأدوات والتطبيقات العملية من الصفر حتى الاحتراف.</p>
-                    
-                    <ul class="course-features">
-                        <li><i class="fas fa-check-circle"></i> فيديوهات مسجلة بجودة عالية</li>
-                        <li><i class="fas fa-check-circle"></i> متابعة ودعم فني مستمر</li>
-                        <li><i class="fas fa-check-circle"></i> شهادة معتمدة بعد إتمام الكورس</li>
-                        <li><i class="fas fa-check-circle"></i> عرض محدود لفترة قصيرة</li>
-                    </ul>
+        <div class="course-card tilt-effect reveal">
+            <div class="course-image-container">
+                <div class="course-discount-badge">خصم 50%</div>
+                <img src="https://i.postimg.cc/4yYLRjWW/644684898-1793407016330626.jpg" alt="دبلومة الذكاء الاصطناعي">
+            </div>
+            <div class="course-content">
 
-                    <div class="package-price">
-                        <span class="current-price">750</span>
-                        <span class="currency">ج.م</span>
-                        <span class="old-price">1500 ج.م</span>
+                <h3 class="course-title">دبلومة الذكاء الاصطناعي</h3>
+                <p class="course-desc">ابدأ رحلتك في عالم الذكاء الاصطناعي وتعلم أحدث الأدوات من الصفر للاحتراف.</p>
+                
+                <ul class="course-features">
+                    <li><i class="fas fa-check-circle"></i> فيديوهات مسجلة بجودة عالية</li>
+                    <li><i class="fas fa-check-circle"></i> شهادة معتمدة بعد التخرج</li>
+                    <li><i class="fas fa-check-circle"></i> متابعة ودعم فني مستمر</li>
+                </ul>
+
+                <h4 style="margin-bottom: 10px; color: var(--text-white);">محتوى الكورس:</h4>
+                <div class="course-modules">
+                    <button class="module-btn">الوحدة الأولى: مقدمة في الذكاء الاصطناعي <i class="fas fa-chevron-down"></i></button>
+                    <div class="module-content">
+                        <p>- ما هو الذكاء الاصطناعي؟</p>
+                        <p>- تطبيقاته في سوق العمل.</p>
                     </div>
 
-                    <button class="order-btn magnetic" onclick="orderCourse('دبلومة الذكاء الاصطناعي', '750')">
-                        احجز مكانك الآن <i class="fab fa-whatsapp"></i>
-                    </button>
+                    <button class="module-btn">الوحدة الثانية: هندسة الأوامر (Prompt Engineering) <i class="fas fa-chevron-down"></i></button>
+                    <div class="module-content">
+                        <p>- أساسيات كتابة الأوامر.</p>
+                        <p>- أدوات متقدمة لتوليد الصور والنصوص.</p>
+                    </div>
+
+                    <button class="module-btn">الوحدة الثالثة: مشاريع عملية <i class="fas fa-chevron-down"></i></button>
+                    <div class="module-content">
+                        <p>- بناء شات بوت بسيط.</p>
+                        <p>- استخدام الذكاء الاصطناعي في التصميم.</p>
+                    </div>
                 </div>
+
+                <div class="package-price" style="margin-top: 20px;">
+                    <span class="current-price">750</span> <span class="currency">ج.م</span> <span class="old-price">1500 ج.م</span>
+                </div>
+
+                <button class="order-btn magnetic" onclick="openEnrollModal('دبلومة الذكاء الاصطناعي')">احجز مكانك الآن <i class="fas fa-arrow-left"></i></button>
             </div>
         </div>
     </section>
@@ -917,160 +748,136 @@
     <!-- صفحة تفاصيل المشروع -->
     <section id="view-project">
         <div class="project-top-bar">
-            <button class="back-btn magnetic" onclick="closeProjectDetail()"><i class="fas fa-chevron-right"></i> رجوع للمعرض</button>
+            <button class="back-btn magnetic" onclick="closeProjectDetail()"><i class="fas fa-chevron-right"></i> رجوع</button>
             <span style="font-size: 12px; color: var(--primary); font-weight: 700;">تفاصيل الحملة</span>
         </div>
-
         <div class="main-project-image">
             <img id="detail-main-img" src="" alt="Main Project Image">
         </div>
-
-        <div class="swipe-header">
-            <span><i class="fas fa-hand-pointer"></i> اضغط على أي صورة لتكبيرها</span>
-        </div>
-        
-        <div class="project-gallery-grid" id="detail-gallery">
-            <!-- سيتم توليد الصور الفرعية هنا -->
-        </div>
+        <div class="project-gallery-grid" id="detail-gallery"></div>
     </section>
 
-    <!-- شاشة عرض الصورة المكبرة -->
+    <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
         <div class="close-lightbox magnetic"><i class="fas fa-times"></i></div>
-        <img id="lightbox-img" src="" alt="Zoomed Image" onclick="event.stopPropagation()">
+        <img id="lightbox-img" src="" onclick="event.stopPropagation()">
     </div>
 
-    <!-- صفحة عني -->
+    <!-- صفحة عني (المطورة والتفاعلية) -->
     <section id="view-about" class="view">
         <div class="page-content">
             
-            <div class="about-badge-top reveal">
+            <div class="about-header reveal">
                 <span class="about-badge"><i class="fas fa-magic"></i> عني</span>
+                <h2 class="about-name">YUOSSEF Mahmoud</h2>
+                <p class="about-title">مصمم جرافيك وهوية بصرية</p>
+                <div class="about-photo-container tilt-effect">
+                    <img src="https://i.postimg.cc/6qsVRC12/FB-IMG-1793394032018.jpg" alt="Yuossef">
+                </div>
             </div>
 
-            <h2 class="about-name reveal">YUOSSEF Mahmoud</h2>
-            <p class="about-title reveal">مصمم جرافيك وهوية بصرية</p>
-
-            <h3 class="about-headline reveal">أصنع هويات بصرية وتصاميم تُروى بالعين</h3>
-
-            <p class="about-desc reveal">
-                مرحباً، أنا مصمم جرافيك متخصص في بناء الهويات البصرية وابتكار تصاميم تجعل العلامة تُعرف من أول نظرة. أعمل مع أصحاب المشاريع على تحويل الفكرة إلى نظام بصري متكامل: شعار، ألوان، خطوط، وتطبيقات على السوشيال ميديا والمطبوعات.
-            </p>
-            <p class="about-desc reveal">
-                أعمل عن بُعد مع عملاء في مصر والخليج، وأؤمن أن التصميم الجيد يبدأ بالاستماع قبل الرسم.
-            </p>
-
-            <div class="about-location reveal">
-                <i class="fas fa-map-marker-alt"></i> القاهرة. أرد عادةً في أقل من ٢٤ ساعة.
+            <!-- التابات التفاعلية -->
+            <div class="about-tabs reveal">
+                <button class="tab-btn active" onclick="switchAboutTab('journey', this)">رحلتي</button>
+                <button class="tab-btn" onclick="switchAboutTab('skills', this)">مهاراتي</button>
+                <button class="tab-btn" onclick="switchAboutTab('facts', this)">حقائق عني</button>
             </div>
 
-            <div class="about-actions reveal">
-                <button onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)'))" class="btn-about-primary magnetic">
-                    ابدأ مشروعاً معي <i class="fas fa-arrow-left"></i>
-                </button>
-                <a href="https://wa.me/201154012821" target="_blank" class="btn-about-whatsapp magnetic">
-                    واتساب <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
-            
-            <div class="about-social-wrapper reveal">
-                <a href="https://www.facebook.com/share/1EqptCPXaj/" target="_blank" class="btn-about-social magnetic">
-                    Facebook <i class="fab fa-facebook-f"></i>
-                </a>
+            <!-- محتوى التابات -->
+            <div class="tab-content active" id="tab-journey">
+                <p class="journey-text">
+                    مرحباً، أنا يوسف. بدأت رحلتي في عالم التصميم بدافع الشغف، ومنذ ذلك الحين وأنا أؤمن أن التصميم الجيد ليس مجرد شكل جميل، بل هو لغة تواصل تروي قصة علامتك التجارية وتترك أثراً لا يُنسى في ذهن العميل.
+                </p>
+                
+                <h3 class="about-section-title" style="margin-top: 0;">محطات في مسيرتي</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2020</div>
+                        <div class="timeline-title">بداية الشغف</div>
+                        <div class="timeline-desc">بدأت تعلم برامج التصميم الأساسية واكتشاف عالم الهوية البصرية.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2021</div>
+                        <div class="timeline-title">أول عميل حقيقي</div>
+                        <div class="timeline-desc">صممت أول هوية بصرية متكاملة لمشروع محلي، وكانت نقطة تحول كبيرة.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">التوسع للخليج</div>
+                        <div class="timeline-desc">بدأت العمل مع عملاء من السعودية والإمارات عن بُعد في مشاريع سوشيال ميديا.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">الآن</div>
+                        <div class="timeline-title">YUOSSEF&M Academy</div>
+                        <div class="timeline-desc">توسعت لنقل الخبرة وتدريب المصممين الجدد على أدوات الذكاء الاصطناعي.</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="about-photo-container reveal">
-                <img src="https://i.postimg.cc/6qsVRC12/FB-IMG-1793394032018.jpg" alt="Yuossef">
+            <div class="tab-content" id="tab-skills">
+                <div class="skills-container">
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Adobe Photoshop</span> <span>95%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="95%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Adobe Illustrator</span> <span>90%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Figma (UI/UX)</span> <span>85%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>AI Tools (Midjourney, ChatGPT)</span> <span>98%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="98%"></div></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- قسم الخدمات -->
-            <div class="about-section-title reveal">
-                <span>WHAT I DO</span>
-                كيف أساعد علامتك
+            <div class="tab-content" id="tab-facts">
+                <div class="fun-facts-grid">
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-coffee"></i>
+                        <span>قهوة لا تنتهي</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-book-open"></i>
+                        <span>قارئ نهم للكتب</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-gamepad"></i>
+                        <span>لاعب فيديو جيمز</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-plane"></i>
+                        <span>أعشق السفر</span>
+                    </div>
+                </div>
             </div>
-            
+
+            <!-- الخدمات (تظهر دائماً) -->
+            <h3 class="about-section-title reveal">كيف أساعد علامتك</h3>
             <div class="services-list reveal">
-                <div class="service-item">
+                <div class="service-item tilt-effect">
                     <div class="service-num">01</div>
-                    <div class="service-info">
-                        <h4>هوية بصرية كاملة</h4>
-                        <p>شعار، نظام ألوان، خطوط، ودليل استخدام احترافي.</p>
-                    </div>
+                    <div class="service-info"><h4>هوية بصرية كاملة</h4><p>شعار، نظام ألوان، خطوط، ودليل استخدام احترافي.</p></div>
                 </div>
-                <div class="service-item">
+                <div class="service-item tilt-effect">
                     <div class="service-num">02</div>
-                    <div class="service-info">
-                        <h4>سوشيال ميديا</h4>
-                        <p>تصاميم منشورات وحملات متناسقة مع هوية العلامة.</p>
-                    </div>
-                </div>
-                <div class="service-item">
-                    <div class="service-num">03</div>
-                    <div class="service-info">
-                        <h4>مطبوعات وتغليف</h4>
-                        <p>بروشورات، أكياس، صناديق، وبطاقات عمل جاهزة للطباعة.</p>
-                    </div>
-                </div>
-                <div class="service-item">
-                    <div class="service-num">04</div>
-                    <div class="service-info">
-                        <h4>إعلانات وتصاميم رقمية</h4>
-                        <p>بانرات وحملات إعلانية للويب والمتاجر الإلكترونية.</p>
-                    </div>
+                    <div class="service-info"><h4>سوشيال ميديا</h4><p>تصاميم منشورات وحملات متناسقة مع هوية العلامة.</p></div>
                 </div>
             </div>
 
-            <!-- قسم خطوات العمل -->
-            <div class="about-section-title reveal">
-                <span>HOW IT WORKS</span>
-                خطوات العمل معي
-            </div>
-
-            <div class="steps-list reveal">
-                <div class="step-item">
-                    <div class="step-bg-num">01</div>
-                    <div class="step-num">1</div>
-                    <div class="step-info">
-                        <h4>نستمع ونفهم</h4>
-                        <p>جلسة قصيرة أفهم فيها علامتك وجمهورك وما يميزك عن غيرك.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-bg-num">02</div>
-                    <div class="step-num">2</div>
-                    <div class="step-info">
-                        <h4>نرسم الاتجاه</h4>
-                        <p>لوحات اتجاه بصري نتفق فيها على الإحساس العام للعلامة.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-bg-num">03</div>
-                    <div class="step-num">3</div>
-                    <div class="step-info">
-                        <h4>نبني النظام</h4>
-                        <p>شعار، ألوان، خطوط، وقواعد استخدام متكاملة وقابلة للتطبيق.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-bg-num">04</div>
-                    <div class="step-num">4</div>
-                    <div class="step-info">
-                        <h4>نسلم ونطلقك</h4>
-                        <p>ملفات جاهزة للطباعة والاستخدام الرقمي مع دليل استخدام الهوية.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صندوق الدعوة للتواصل (CTA) -->
+            <!-- صندوق الدعوة للتواصل -->
             <div class="cta-box reveal">
                 <h3>عندك فكرة مشروع؟</h3>
-                <p>احكي لي عن علامتك وما تريد الوصول إليه، وأعدك بتصور بصرياً كاملاً! أرد عادةً في أقل من ٢٤ ساعة.</p>
+                <p>احكي لي عن علامتك وما تريد الوصول إليه، وأعدك بتصور بصري كامل.</p>
                 <div class="cta-btns">
-                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)')); return false;" class="cta-btn cta-btn-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
-                    <a href="https://wa.me/201154012821" target="_blank" class="cta-btn cta-btn-whatsapp magnetic"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)')); return false;" class="btn-about-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
+                    <a href="https://wa.me/201154012821" target="_blank" class="btn-about-whatsapp magnetic"><i class="fab fa-whatsapp"></i> واتساب</a>
                 </div>
             </div>
-
         </div>
     </section>
 
@@ -1142,33 +949,65 @@
                 <a href="#" target="_blank" title="بيهانس"><i class="fab fa-behance"></i></a>
                 <a href="#" target="_blank" title="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
             </div>
-
         </div>
     </section>
 
+    <!-- نافذة الحجز المنبثقة للكورسات (Modal) -->
+    <div id="enrollModal" class="modal-overlay" onclick="closeEnrollModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closeEnrollModal(event)"></i>
+            <h3 class="modal-title">حجز كورس</h3>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;" id="modalCourseName">دبلومة الذكاء الاصطناعي</p>
+            
+            <form id="enrollForm" onsubmit="submitEnrollment(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="eName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" id="ePhone" required>
+                </div>
+                <button type="submit" class="submit-btn">تأكيد الحجز عبر واتساب <i class="fab fa-whatsapp"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة الحجز المنبثقة للباكجات (Modal) -->
+    <div id="packageModal" class="modal-overlay" onclick="closePackageModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closePackageModal(event)"></i>
+            <h3 class="modal-title">طلب باقة</h3>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;" id="modalPackageName">باقة السوشيال ميديا</p>
+            <p style="text-align: center; color: var(--primary); font-size: 16px; font-weight: 900; margin-bottom: 20px;" id="modalPackagePrice">1500 ج.م</p>
+            
+            <form id="packageForm" onsubmit="submitPackageOrder(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="pName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" id="pPhone" required>
+                </div>
+                <button type="submit" class="submit-btn">تأكيد الطلب عبر واتساب <i class="fab fa-whatsapp"></i></button>
+            </form>
+        </div>
+    </div>
+
     <!-- الشريط السفلي -->
     <nav class="bottom-nav" id="bottom-nav">
-        <div class="nav-item active magnetic" onclick="switchView('home', this)">
-            <i class="fas fa-th-large"></i><span>الأعمال</span>
-        </div>
-        <div class="nav-item magnetic" onclick="switchView('packages', this)">
-            <i class="fas fa-tags"></i><span>الباكجات</span>
-        </div>
-        <div class="nav-item magnetic" onclick="switchView('courses', this)">
-            <i class="fas fa-graduation-cap"></i><span>الكورسات</span>
-        </div>
-        <div class="nav-item magnetic" onclick="switchView('about', this)">
-            <i class="fas fa-user"></i><span>عني</span>
-        </div>
-        <div class="nav-item magnetic" onclick="switchView('contact', this)">
-            <i class="fas fa-envelope"></i><span>تواصل</span>
-        </div>
+        <div class="nav-item active magnetic" onclick="switchView('home', this)"><i class="fas fa-th-large"></i><span>الأعمال</span></div>
+        <div class="nav-item magnetic" onclick="switchView('packages', this)"><i class="fas fa-tags"></i><span>الباكجات</span></div>
+        <div class="nav-item magnetic" onclick="switchView('courses', this)"><i class="fas fa-graduation-cap"></i><span>الكورسات</span></div>
+        <div class="nav-item magnetic" onclick="switchView('about', this)"><i class="fas fa-user"></i><span>عني</span></div>
+        <div class="nav-item magnetic" onclick="switchView('contact', this)"><i class="fas fa-envelope"></i><span>تواصل</span></div>
     </nav>
 
     <script>
-        // =====================================================================
-        // [1] بيانات المشاريع 
-        // =====================================================================
+        // =========================================
+        // [1] بيانات المشاريع (تم إرجاع كل الصور كاملة)
+        // =========================================
         let projectsData = [
             {
                 id: 13,
@@ -1281,9 +1120,152 @@
             }
         ];
 
-        // =====================================================================
-        // [2] تشغيل الموقع والأنيميشن التفاعلي المتقدم
-        // =====================================================================
+        // =========================================
+        // [2] التابات التفاعلية لقسم "عني"
+        // =========================================
+        function switchAboutTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if(tabId === 'skills') {
+                setTimeout(() => {
+                    document.querySelectorAll('.skill-progress-bar').forEach(bar => {
+                        bar.style.width = bar.getAttribute('data-width');
+                    });
+                }, 100);
+            } else {
+                document.querySelectorAll('.skill-progress-bar').forEach(bar => {
+                    bar.style.width = '0';
+                });
+            }
+        }
+
+        // =========================================
+        // [3] الأكورديون (محتوى الكورس)
+        // =========================================
+        let acc = document.getElementsByClassName("module-btn");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                let panel = this.nextElementSibling;
+                if (panel.style.maxHeight) { panel.style.maxHeight = null; } 
+                else { panel.style.maxHeight = panel.scrollHeight + "px"; }
+            });
+        }
+
+        // =========================================
+        // [4] تفاصيل الباقة التفاعلية (أكورديون)
+        // =========================================
+        function togglePackageDetails(btn) {
+            btn.classList.toggle("active");
+            let panel = btn.nextElementSibling;
+            let icon = btn.querySelector("i");
+            
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                icon.style.transform = "rotate(180deg)";
+            }
+        }
+
+        // =========================================
+        // [5] المودال (الحجز والطلب)
+        // =========================================
+        function openEnrollModal(courseName) {
+            document.getElementById('modalCourseName').innerText = courseName;
+            document.getElementById('enrollModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEnrollModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('enrollModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('enrollForm').reset();
+        }
+
+        function submitEnrollment(e) {
+            e.preventDefault();
+            const name = document.getElementById('eName').value;
+            const phone = document.getElementById('ePhone').value;
+            const courseName = document.getElementById('modalCourseName').innerText;
+            const text = `مرحباً YUOSSEF&M،%0Aأود حجز مكاني في *${courseName}*%0A%0A*الاسم:* ${name}%0A*رقم الواتساب:* ${phone}%0A%0Aأرجو إرسال تفاصيل الدفع.`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+            closeEnrollModal();
+        }
+
+        function openPackageModal(packageName, price) {
+            document.getElementById('modalPackageName').innerText = packageName;
+            document.getElementById('modalPackagePrice').innerText = price + " ج.م";
+            document.getElementById('packageModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        function closePackageModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('packageModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('packageForm').reset();
+        }
+
+        function submitPackageOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const phone = document.getElementById('pPhone').value;
+            const packageName = document.getElementById('modalPackageName').innerText;
+            const price = document.getElementById('modalPackagePrice').innerText;
+            
+            const text = `مرحباً YUOSSEF&M،%0Aأود طلب *${packageName}* بسعر *${price}*%0A%0A*الاسم:* ${name}%0A*رقم الواتساب:* ${phone}`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+            closePackageModal();
+        }
+
+        // =========================================
+        // [6] المؤثرات الصوتية
+        // =========================================
+        const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        document.querySelectorAll('button, a, .category-chip, .module-btn, .package-details-btn, .tab-btn').forEach(el => {
+            el.addEventListener('click', () => {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => console.log("Audio blocked"));
+            });
+        });
+
+        // =========================================
+        // [7] حاسبة الأسعار
+        // =========================================
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.calculator-box input[type="checkbox"]:checked').forEach(cb => {
+                total += parseInt(cb.value);
+            });
+            document.getElementById('total-price').innerText = total + ' ج.م';
+        }
+
+        function sendCalcToWhatsApp() {
+            let selectedServices = [];
+            document.querySelectorAll('.calculator-box input[type="checkbox"]:checked').forEach(cb => {
+                selectedServices.push(cb.parentElement.innerText.split('(')[0].trim());
+            });
+            let total = document.getElementById('total-price').innerText;
+            
+            if (selectedServices.length === 0) {
+                alert("الرجاء اختيار خدمة واحدة على الأقل.");
+                return;
+            }
+
+            const text = `مرحباً YUOSSEF&M،%0Aأود طلب العرض التالي:%0A- ${selectedServices.join('%0A- ')}%0A%0A*الإجمالي التقريبي:* ${total}`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+        }
+
+        // =========================================
+        // [8] تشغيل الموقع
+        // =========================================
         window.addEventListener('load', () => {
             renderHomeProjects(projectsData);
             startCounters();
@@ -1293,210 +1275,127 @@
             initScrollReveal();
             typeWriterEffect();
 
-            // إخفاء شاشة البداية
             setTimeout(() => {
-                const preloader = document.getElementById('preloader');
-                preloader.classList.add('hide'); 
-                
-                setTimeout(() => {
-                    document.getElementById('welcome-toast').classList.add('show');
-                }, 400);
-
-                setTimeout(() => {
-                    document.getElementById('welcome-toast').classList.remove('show');
-                }, 4000);
-                
+                document.getElementById('preloader').classList.add('hide'); 
+                setTimeout(() => document.getElementById('welcome-toast').classList.add('show'), 400);
+                setTimeout(() => document.getElementById('welcome-toast').classList.remove('show'), 4000);
             }, 1500); 
         });
 
-        // --- 1. مؤشر الماوس المخصص ---
+        // --- باقي الدوال الأساسية ---
         function initCustomCursor() {
             const cursor = document.querySelector('.custom-cursor');
             const follower = document.querySelector('.cursor-follower');
-            
-            let mouseX = 0, mouseY = 0;
-            let followerX = 0, followerY = 0;
-
+            let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
             document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
+                mouseX = e.clientX; mouseY = e.clientY;
                 cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
             });
-
             function animateFollower() {
-                followerX += (mouseX - followerX) * 0.15;
-                followerY += (mouseY - followerY) * 0.15;
+                followerX += (mouseX - followerX) * 0.15; followerY += (mouseY - followerY) * 0.15;
                 follower.style.transform = `translate(${followerX}px, ${followerY}px)`;
                 requestAnimationFrame(animateFollower);
             }
             animateFollower();
-
-            const links = document.querySelectorAll('a, button, .project-card, .category-chip, .service-item, .step-item, .contact-card');
-            links.forEach(link => {
+            document.querySelectorAll('a, button, .project-card, .tab-btn').forEach(link => {
                 link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
                 link.addEventListener('mouseleave', () => follower.classList.remove('hovering'));
             });
         }
 
-        // --- 2. الأزرار المغناطيسية ---
         function initMagneticButtons() {
             if(window.innerWidth <= 768) return; 
-            
-            const magneticBtns = document.querySelectorAll('.magnetic');
-            
-            magneticBtns.forEach(btn => {
+            document.querySelectorAll('.magnetic').forEach(btn => {
                 btn.addEventListener('mousemove', (e) => {
                     const rect = btn.getBoundingClientRect();
                     const x = e.clientX - rect.left - rect.width / 2;
                     const y = e.clientY - rect.top - rect.height / 2;
                     btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
                 });
-                
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = `translate(0px, 0px)`;
-                });
+                btn.addEventListener('mouseleave', () => btn.style.transform = `translate(0px, 0px)`);
             });
         }
 
-        // --- 3. تأثير 3D Tilt ---
         function init3DTilt() {
             if(window.innerWidth <= 768) return;
-            
-            const cards = document.querySelectorAll('.tilt-effect');
-            cards.forEach(card => {
+            document.querySelectorAll('.tilt-effect').forEach(card => {
                 card.addEventListener('mousemove', e => {
                     const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateX = ((y - centerY) / centerY) * -15; 
-                    const rotateY = ((x - centerX) / centerX) * 15;
-                    
+                    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height/2) / (rect.height/2)) * -10; 
+                    const rotateY = ((x - rect.width/2) / (rect.width/2)) * 10;
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                    card.style.boxShadow = `${-rotateY}px ${rotateX}px 30px rgba(57, 255, 20, 0.15)`;
                 });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-                    card.style.boxShadow = 'none';
-                });
+                card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)');
             });
         }
 
-        // --- 4. ظهور العناصر أثناء التمرير ---
         function initScrollReveal() {
-            const reveals = document.querySelectorAll('.reveal');
-            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if(entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); 
-                    }
+                    if(entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
                 });
             }, { threshold: 0.1 });
-            
-            reveals.forEach(reveal => observer.observe(reveal));
+            document.querySelectorAll('.reveal').forEach(reveal => observer.observe(reveal));
         }
 
-        // --- 5. تأثير الكتابة ---
         function typeWriterEffect() {
             const text = "تصميم جرافيك يترك أثراً";
             const titleElement = document.getElementById('typewriter-title');
-            let i = 0;
-            titleElement.innerHTML = '';
-            
+            let i = 0; titleElement.innerHTML = '';
             function type() {
-                if (i < text.length) {
-                    titleElement.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, 80); 
-                }
+                if (i < text.length) { titleElement.innerHTML += text.charAt(i); i++; setTimeout(type, 80); }
             }
             setTimeout(type, 1200); 
         }
 
-        // =====================================================================
-        // [3] نظام الفلترة والبحث
-        // =====================================================================
         function renderHomeProjects(projectsToRender) {
             const grid = document.getElementById('home-projects-grid');
             grid.innerHTML = '';
-
-            if(projectsToRender.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-gray); padding: 30px;">لا توجد مشاريع مطابقة لبحثك.</div>`;
-                return;
-            }
-
             projectsToRender.forEach((project) => {
                 const newBadgeHtml = project.isNew ? `<div class="new-badge"><i class="fas fa-star"></i> جديد</div>` : '';
-
-                const card = `
+                grid.innerHTML += `
                     <div class="project-card tilt-effect" onclick="openProjectDetail(${project.id})">
                         ${newBadgeHtml}
                         <img src="${project.coverImage}" class="card-img" alt="${project.title}">
-                        <div class="card-info">
-                            <div class="card-title">${project.title}</div>
-                        </div>
+                        <div class="card-info"><div class="card-title">${project.title}</div></div>
                     </div>
                 `;
-                grid.innerHTML += card;
             });
-            
-            // إعادة تفعيل المغناطيسية والـ 3D للعناصر الجديدة
             init3DTilt();
-            initMagneticButtons();
-            initCustomCursor();
         }
 
         function filterCategory(category, element) {
-            document.querySelectorAll('.category-chip, .pill').forEach(el => el.classList.remove('active'));
-            
-            if(element.classList.contains('category-chip')) {
-                document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
-            } else if(element.classList.contains('pill')) {
-                document.querySelectorAll('.pill').forEach(el => el.classList.remove('active'));
-            }
+            document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-
-            let filtered = [];
-            if (category === 'all') {
-                filtered = projectsData;
-            } else {
-                filtered = projectsData.filter(p => p.category === category);
-            }
-            
+            let filtered = category === 'all' ? projectsData : projectsData.filter(p => p.category === category);
             renderHomeProjects(filtered);
         }
 
         function searchProjects() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = projectsData.filter(project => 
-                project.title.toLowerCase().includes(searchTerm)
-            );
-            renderHomeProjects(filtered);
+            renderHomeProjects(projectsData.filter(p => p.title.toLowerCase().includes(searchTerm)));
         }
 
-        // =====================================================================
-        // [4] باقي وظائف التنقل والتحكم
-        // =====================================================================
         function switchView(viewName, navItem) {
-            document.querySelectorAll('.view').forEach(v => {
-                v.classList.remove('active');
-                v.style.display = 'none';
+            document.querySelectorAll('.view').forEach(v => { 
+                v.classList.remove('active'); 
+                v.style.display = 'none'; 
             });
             
             const activeView = document.getElementById('view-' + viewName);
-            setTimeout(() => {
-                activeView.style.display = 'block';
-                setTimeout(() => activeView.classList.add('active'), 10);
+            
+            setTimeout(() => { 
+                activeView.style.display = 'block'; 
+                setTimeout(() => {
+                    activeView.classList.add('active');
+                    activeView.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+                }, 10); 
             }, 50);
-
-            if(navItem) {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                navItem.classList.add('active');
+            
+            if(navItem) { 
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+                navItem.classList.add('active'); 
             }
             window.scrollTo(0, 0);
         }
@@ -1504,33 +1403,21 @@
         function openProjectDetail(projectId) {
             const project = projectsData.find(p => p.id === projectId);
             if(!project) return;
-
             document.getElementById('detail-main-img').src = project.coverImage;
-
             const galleryContainer = document.getElementById('detail-gallery');
             galleryContainer.innerHTML = '';
-            
-            project.gallery.forEach((imgUrl, index) => {
-                galleryContainer.innerHTML += `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}')" style="animation-delay: ${0.1 + (index * 0.1)}s;">
-                        <img src="${imgUrl}" alt="Project Image" loading="lazy">
-                    </div>
-                `;
+            project.gallery.forEach((imgUrl) => {
+                galleryContainer.innerHTML += `<div class="gallery-item" onclick="openLightbox('${imgUrl}')"><img src="${imgUrl}"></div>`;
             });
-
             document.getElementById('view-project').classList.add('active');
             document.body.classList.add('modal-open');
-            
             document.getElementById('main-header').style.transform = 'translateY(-100%)';
             document.getElementById('bottom-nav').style.transform = 'translateY(100%)';
-            
-            window.scrollTo(0, 0);
         }
 
         function closeProjectDetail() {
             document.getElementById('view-project').classList.remove('active');
             document.body.classList.remove('modal-open');
-            
             document.getElementById('main-header').style.transform = 'translateY(0)';
             document.getElementById('bottom-nav').style.transform = 'translateY(0)';
         }
@@ -1542,21 +1429,6 @@
 
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
-            setTimeout(() => {
-                document.getElementById('lightbox-img').src = '';
-            }, 300);
-        }
-
-        function orderPackage(packageName, price) {
-            const phoneNumber = "201154012821";
-            const text = `مرحباً YUOSSEF&M،%0Aأود طلب *${packageName}* بسعر *${price}* ج.م. يرجى تزويدي بالتفاصيل.`;
-            window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
-        }
-
-        function orderCourse(courseName, price) {
-            const phoneNumber = "201154012821";
-            const text = `مرحباً YUOSSEF&M،%0Aأود حجز *${courseName}* بسعر *${price}* ج.م. (خصم 50%). يرجى تزويدي بالتفاصيل.`;
-            window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
         }
 
         function sendToWhatsApp(e) {
@@ -1565,39 +1437,22 @@
             const phone = document.getElementById('cPhone').value;
             const service = document.getElementById('cService').value;
             const details = document.getElementById('cDetails').value;
-            
-            const phoneNumber = "201154012821";
-            const text = `مرحباً YUOSSEF&M،%0A%0A*الاسم:* ${name}%0A*رقم الهاتف:* ${phone}%0A*الخدمة المطلوبة:* ${service}%0A%0A*التفاصيل:* ${details}`;
-            
-            window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
-            
-            document.getElementById('cName').value = '';
-            document.getElementById('cPhone').value = '';
-            document.getElementById('cService').value = '';
+            window.open(`https://wa.me/201154012821?text=مرحباً YUOSSEF&M،%0A%0A*الاسم:* ${name}%0A*الهاتف:* ${phone}%0A*الخدمة:* ${service}%0A*التفاصيل:* ${details}`, '_blank');
+            document.getElementById('cName').value = ''; 
+            document.getElementById('cPhone').value = ''; 
+            document.getElementById('cService').value = ''; 
             document.getElementById('cDetails').value = '';
         }
 
         function startCounters() {
-            const counters = document.querySelectorAll('.stat-val');
-            const duration = 1500; 
-            
-            counters.forEach(counter => {
+            document.querySelectorAll('.stat-val').forEach(counter => {
                 const target = +counter.getAttribute('data-target');
                 let startTime = null;
-                
                 function animate(currentTime) {
                     if (!startTime) startTime = currentTime;
                     const progress = currentTime - startTime;
-                    const easeOut = 1 - Math.pow(1 - Math.min(progress / duration, 1), 2);
-                    const current = Math.floor(easeOut * target);
-                    
-                    counter.innerText = current;
-                    
-                    if (progress < duration) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        counter.innerText = target;
-                    }
+                    counter.innerText = Math.floor((1 - Math.pow(1 - Math.min(progress / 1500, 1), 2)) * target);
+                    if (progress < 1500) requestAnimationFrame(animate); else counter.innerText = target;
                 }
                 requestAnimationFrame(animate);
             });
