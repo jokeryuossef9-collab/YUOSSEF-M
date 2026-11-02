@@ -36,7 +36,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* أهم سطر لمنع أي كلاس من التغلب على خاصية hidden */
         [hidden] { display: none !important; }
 
         html, body { min-height: 100vh; }
@@ -322,12 +321,33 @@
         .field-checkbox:hover { border-color: var(--primary); }
         .field-checkbox input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
         .field-checkbox span { font-size: 13px; font-weight: 700; }
-        .field-preview {
-            margin-top: 10px; max-width: 200px; max-height: 200px;
-            border-radius: 10px; border: 1px solid var(--border-color);
-            object-fit: cover; display: none;
+        
+        /* Image Upload Styles */
+        .img-upload-wrapper {
+            background: var(--bg-input);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.3s;
         }
-        .field-preview.visible { display: block; }
+        .img-upload-wrapper:hover { border-color: var(--primary); }
+        .btn-upload {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(57, 255, 20, 0.1); color: var(--primary);
+            border: 1px solid var(--primary); padding: 10px 20px;
+            border-radius: 8px; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-upload:hover { background: var(--primary); color: #000; }
+        .or-divider { font-size: 11px; color: var(--text-gray); margin: 10px 0; }
+        .field-preview {
+            margin-top: 15px; max-width: 100%; max-height: 250px;
+            border-radius: 10px; border: 1px solid var(--border-color);
+            object-fit: cover; display: none; width: 100%;
+        }
+        .field-preview.visible { display: inline-block; width: auto; }
+        .upload-status { font-size: 12px; font-weight: 700; margin-top: 10px; display: block; }
 
         .form-actions {
             display: flex; gap: 10px; margin-top: 24px;
@@ -526,7 +546,7 @@
             f: [
                 ['title', 'العنوان', 'text', null, 'اسم المشروع كما يظهر للزائر'],
                 ['category', 'التصنيف', 'sel', 'social|identity|print', 'social=سوشيال، identity=هوية، print=مطبوعات'],
-                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'الصورة اللي تظهر كغلاف. الصق رابط الصورة هنا'],
+                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'ارفع صورة من جهازك أو الصق رابطاً مباشراً'],
                 ['gallery', 'صور المعرض', 'list', null, 'روابط صور إضافية — كل رابط في سطر منفصل'],
                 ['is_new', 'جديد', 'bool', null, 'لو مفعّل، تظهر شارة "جديد" (الأحدث ياخدها تلقائياً)'],
                 ['published', 'منشور', 'bool', null, 'لو مقفول، المشروع مش هيظهر في الموقع'],
@@ -554,7 +574,7 @@
             f: [
                 ['title', 'اسم الكورس', 'text', null, 'اسم الكورس'],
                 ['description', 'الوصف', 'area', null, 'وصف مختصر للكورس'],
-                ['image', 'رابط الصورة', 'img', null, 'صورة غلاف الكورس'],
+                ['image', 'رابط الصورة', 'img', null, 'ارفع صورة الكورس من جهازك أو الصق رابطاً'],
                 ['price', 'السعر', 'text', null, 'السعر الحالي'],
                 ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم (اختياري)'],
                 ['discount_label', 'شارة الخصم', 'text', null, 'مثال: خصم 50%'],
@@ -624,14 +644,66 @@
     }
 
     // ==========================================
-    // دالة التحقق من تسجيل الدخول (إصلاح مشكلة التداخل والتعليق)
+    // دالة رفع الصور لـ Supabase Storage
+    // ==========================================
+    async function uploadImage(fileInput, fieldKey) {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        // التحقق من الحجم (بحد أقصى 5 ميجا)
+        if (file.size > 5 * 1024 * 1024) {
+            toast('✗ حجم الصورة كبير جداً (الحد الأقصى 5 ميجابايت)', false);
+            fileInput.value = '';
+            return;
+        }
+
+        const statusEl = document.getElementById(`upload-status-${fieldKey}`);
+        const inputEl = document.getElementById(`input-${fieldKey}`);
+        const previewEl = document.getElementById(`preview-${fieldKey}`);
+
+        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصورة...</span>';
+
+        // إنشاء اسم فريد للصورة
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
+
+        // الرفع إلى Bucket اسمه images
+        const { data, error } = await sb.storage
+            .from('images')
+            .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+        if (error) {
+            statusEl.innerHTML = '<span style="color: var(--accent-red);"><i class="fas fa-times"></i> فشل الرفع</span>';
+            toast('✗ خطأ في الرفع: ' + error.message, false);
+            fileInput.value = '';
+            return;
+        }
+
+        // جلب الرابط المباشر للصورة
+        const { data: publicUrlData } = sb.storage
+            .from('images')
+            .getPublicUrl(filePath);
+
+        const publicUrl = publicUrlData.publicUrl;
+
+        // تحديث الخانة والمعاينة
+        inputEl.value = publicUrl;
+        previewEl.src = publicUrl;
+        previewEl.classList.add('visible');
+
+        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-check"></i> تم الرفع بنجاح</span>';
+        setTimeout(() => statusEl.innerHTML = '', 3000);
+    }
+
+    // ==========================================
+    // دالة التحقق من تسجيل الدخول
     // ==========================================
     async function checkAuth() {
         try {
             const { data } = await sb.auth.getSession();
             
             if (data && data.session) {
-                // إذا كان مسجل دخول: إخفاء اللوجين وإظهار التطبيق
                 $('#login-screen').style.display = 'none';
                 $('#login-screen').hidden = true;
                 
@@ -641,7 +713,6 @@
                 tabs();
                 load();
             } else {
-                // إذا لم يكن مسجل دخول: إظهار اللوجين وإخفاء التطبيق
                 $('#login-screen').style.display = 'flex';
                 $('#login-screen').hidden = false;
                 
@@ -785,10 +856,20 @@
                     ${opts.split('|').map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${x}</option>`).join('')}
                 </select>`;
             } else if (t === 'img') {
-                input = `<input class="field-input" data-k="${k}" data-t="text" value="${esc(val)}"
-                    oninput="updatePreview(this, '${k}')" placeholder="https://..." dir="ltr">
-                    <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
-                        onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">`;
+                // ====== التعديل هنا: إضافة واجهة رفع الصور ======
+                input = `
+                    <div class="img-upload-wrapper">
+                        <label class="btn-upload">
+                            <i class="fas fa-cloud-upload-alt"></i> رفع صورة من الجهاز
+                            <input type="file" accept="image/*" onchange="uploadImage(this, '${k}')" style="display: none;">
+                        </label>
+                        <div class="or-divider">— أو —</div>
+                        <input class="field-input" id="input-${k}" data-k="${k}" data-t="text" value="${esc(val)}" oninput="updatePreview(this, '${k}')" placeholder="https://..." dir="ltr">
+                        <span id="upload-status-${k}" class="upload-status"></span>
+                        <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
+                            onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">
+                    </div>
+                `;
             } else {
                 input = `<input class="field-input" data-k="${k}" data-t="${t}" value="${esc(val)}">`;
             }
@@ -940,7 +1021,7 @@
     }
 
     // ==========================================
-    // تسجيل الدخول والخروج (معالج ضد التعليق)
+    // تسجيل الدخول والخروج
     // ==========================================
     $('#loginBtn').onclick = async () => {
         const btn = $('#loginBtn');
@@ -964,7 +1045,6 @@
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
             } else {
-                // نجاح: استدعاء دالة التحقق لإخفاء اللوجين وفتح الموقع
                 await checkAuth();
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
@@ -976,12 +1056,10 @@
         }
     };
 
-    // تسجيل الدخول بزرار Enter
     $('#pw').addEventListener('keypress', e => {
         if (e.key === 'Enter') $('#loginBtn').click();
     });
 
-    // تسجيل الخروج
     $('#logout').onclick = async () => {
         if (!confirm('تسجيل الخروج؟')) return;
         await sb.auth.signOut();
@@ -991,7 +1069,6 @@
     // ==========================================
     // تشغيل التطبيق
     // ==========================================
-    // الاستماع لتغيير حالة الدخول (لو اليوزر عمل ريفريش أو سجل خروج من تاب تاني)
     sb.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
             if (session) checkAuth();
@@ -1000,10 +1077,8 @@
         }
     });
 
-    // تشغيل التحقق فور فتح الصفحة
     checkAuth();
 
-    // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     }
