@@ -1,4 +1,4 @@
-const CACHE = 'ym-admin-v1';
+const CACHE = 'ym-admin-v2';
 const ASSETS = [
   './admin.html',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',

@@ -36,6 +36,9 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* أهم سطر لمنع أي كلاس من التغلب على خاصية hidden */
+        [hidden] { display: none !important; }
+
         html, body { min-height: 100vh; }
 
         body {
@@ -108,8 +111,8 @@
             box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
         }
         .login-err {
-            color: var(--accent-red); font-size: 12px; margin-top: 10px;
-            text-align: center; min-height: 16px;
+            color: var(--accent-red); font-size: 13px; margin-top: 15px;
+            text-align: center; min-height: 20px; font-weight: 700;
         }
 
         /* ===== Header ===== */
@@ -449,22 +452,6 @@
             border-bottom: 1px dashed var(--border-color);
         }
 
-        /* Install banner */
-        .install-banner {
-            background: linear-gradient(90deg, rgba(123, 44, 191, 0.25), rgba(57, 255, 20, 0.25));
-            border: 1px solid var(--accent-purple);
-            border-radius: 14px; padding: 14px; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 12px;
-            cursor: pointer; transition: 0.3s;
-        }
-        .install-banner:hover { border-color: var(--primary); transform: translateY(-2px); }
-        .install-banner > i { font-size: 22px; color: var(--primary); }
-        .install-banner .txt { flex: 1; font-size: 12px; font-weight: 700; }
-        .install-banner .txt small {
-            display: block; font-size: 10px; color: var(--text-gray);
-            font-weight: 400; margin-top: 2px;
-        }
-
         @media (max-width: 480px) {
             .app-main { padding: 15px 12px; }
             .form-card { padding: 18px 14px; }
@@ -476,7 +463,7 @@
 </head>
 <body>
 
-<!-- Login -->
+<!-- Login Screen -->
 <div id="login-screen" class="login-wrap">
     <div class="login-card">
         <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="login-logo" alt="Logo">
@@ -485,12 +472,12 @@
 
         <div class="login-field">
             <label><i class="fas fa-envelope" style="color: var(--primary); margin-left: 5px;"></i> البريد الإلكتروني</label>
-            <input id="em" type="email" placeholder="you@example.com" autocomplete="email">
+            <input id="em" type="email" placeholder="you@example.com" autocomplete="email" dir="ltr">
         </div>
 
         <div class="login-field">
             <label><i class="fas fa-lock" style="color: var(--primary); margin-left: 5px;"></i> كلمة المرور</label>
-            <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password">
+            <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" dir="ltr">
         </div>
 
         <button class="btn-primary-lg" id="loginBtn">
@@ -501,7 +488,7 @@
     </div>
 </div>
 
-<!-- App -->
+<!-- Main App (Hidden by default) -->
 <div id="app" hidden>
     <header class="app-header">
         <div class="header-logo-area">
@@ -521,11 +508,16 @@
 </div>
 
 <script>
+    // ==========================================
+    // إعدادات Supabase
+    // ==========================================
     const SUPABASE_URL = 'https://cnygozaqtomkprpeydgc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Each field: [key, label, type, options, help]
+    // ==========================================
+    // الحقول والبيانات
+    // ==========================================
     const T = {
         projects: {
             label: 'المشاريع', singular: 'مشروع', icon: 'fa-folder-open',
@@ -609,6 +601,9 @@
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+    // ==========================================
+    // أدوات مساعدة
+    // ==========================================
     function toast(msg, ok = true) {
         let el = document.getElementById('toast');
         if (!el) {
@@ -628,6 +623,39 @@
         $('#main').innerHTML = '<div class="loader"><div class="spinner"></div><span>جاري التحميل...</span></div>';
     }
 
+    // ==========================================
+    // دالة التحقق من تسجيل الدخول (إصلاح مشكلة التداخل والتعليق)
+    // ==========================================
+    async function checkAuth() {
+        try {
+            const { data } = await sb.auth.getSession();
+            
+            if (data && data.session) {
+                // إذا كان مسجل دخول: إخفاء اللوجين وإظهار التطبيق
+                $('#login-screen').style.display = 'none';
+                $('#login-screen').hidden = true;
+                
+                $('#app').hidden = false;
+                $('#app').style.display = 'block';
+                
+                tabs();
+                load();
+            } else {
+                // إذا لم يكن مسجل دخول: إظهار اللوجين وإخفاء التطبيق
+                $('#login-screen').style.display = 'flex';
+                $('#login-screen').hidden = false;
+                
+                $('#app').hidden = true;
+                $('#app').style.display = 'none';
+            }
+        } catch (error) {
+            console.error("Auth check failed:", error);
+        }
+    }
+
+    // ==========================================
+    // التبويبات والتحميل
+    // ==========================================
     function tabs() {
         const items = [...Object.keys(T), 'settings'];
         $('#tabs').innerHTML = items.map(k => {
@@ -723,6 +751,9 @@
         }
     }
 
+    // ==========================================
+    // إضافة وتعديل
+    // ==========================================
     function edit(id) {
         const r = id ? rows.find(x => x.id === id) : {};
 
@@ -822,6 +853,9 @@
         load();
     }
 
+    // ==========================================
+    // الحذف
+    // ==========================================
     function confirmDelete(id) {
         deleteTargetId = id;
         const modal = document.createElement('div');
@@ -856,6 +890,9 @@
         load();
     }
 
+    // ==========================================
+    // الإعدادات
+    // ==========================================
     async function settingsView() {
         showLoading();
         const { data } = await sb.from('site_settings').select('*');
@@ -902,52 +939,74 @@
         toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
     }
 
-    async function checkAuth() {
-        const { data } = await sb.auth.getSession();
-        if (data.session) {
-            $('#login-screen').hidden = true;
-            $('#app').hidden = false;
-            tabs();
-            load();
-        }
-    }
-
+    // ==========================================
+    // تسجيل الدخول والخروج (معالج ضد التعليق)
+    // ==========================================
     $('#loginBtn').onclick = async () => {
         const btn = $('#loginBtn');
         const email = $('#em').value.trim();
         const pw = $('#pw').value;
+        
         if (!email || !pw) {
             $('#err').textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
             return;
         }
+
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
         $('#err').textContent = '';
-        const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-        if (error) {
-            $('#err').textContent = error.message;
+
+        try {
+            const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+            
+            if (error) {
+                $('#err').textContent = error.message;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+            } else {
+                // نجاح: استدعاء دالة التحقق لإخفاء اللوجين وفتح الموقع
+                await checkAuth();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+            }
+        } catch (err) {
+            $('#err').textContent = 'حدث خطأ في الاتصال، جرب تاني.';
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-        } else {
-            checkAuth();
         }
     };
 
+    // تسجيل الدخول بزرار Enter
     $('#pw').addEventListener('keypress', e => {
         if (e.key === 'Enter') $('#loginBtn').click();
     });
 
+    // تسجيل الخروج
     $('#logout').onclick = async () => {
         if (!confirm('تسجيل الخروج؟')) return;
         await sb.auth.signOut();
         location.reload();
     };
 
+    // ==========================================
+    // تشغيل التطبيق
+    // ==========================================
+    // الاستماع لتغيير حالة الدخول (لو اليوزر عمل ريفريش أو سجل خروج من تاب تاني)
+    sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            if (session) checkAuth();
+        } else if (event === 'SIGNED_OUT') {
+            checkAuth();
+        }
+    });
+
+    // تشغيل التحقق فور فتح الصفحة
+    checkAuth();
+
+    // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     }
-
-    checkAuth();
 </script>
 </body>
 </html>
