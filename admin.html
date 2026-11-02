@@ -322,7 +322,7 @@
         .field-checkbox input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
         .field-checkbox span { font-size: 13px; font-weight: 700; }
         
-        /* Image Upload Styles */
+        /* Image Upload Styles (Cover) */
         .img-upload-wrapper {
             background: var(--bg-input);
             border: 1px dashed var(--border-color);
@@ -348,6 +348,43 @@
         }
         .field-preview.visible { display: inline-block; width: auto; }
         .upload-status { font-size: 12px; font-weight: 700; margin-top: 10px; display: block; }
+
+        /* Gallery Upload Styles (Multiple) */
+        .gallery-upload-wrapper {
+            background: var(--bg-input);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .gallery-previews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .gallery-thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+        }
+        .gallery-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .btn-remove-thumb {
+            position: absolute; top: 4px; left: 4px;
+            background: var(--accent-red); color: white;
+            border: none; width: 24px; height: 24px;
+            border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: 0.2s;
+        }
+        .btn-remove-thumb:hover { transform: scale(1.1); }
 
         .form-actions {
             display: flex; gap: 10px; margin-top: 24px;
@@ -547,7 +584,7 @@
                 ['title', 'العنوان', 'text', null, 'اسم المشروع كما يظهر للزائر'],
                 ['category', 'التصنيف', 'sel', 'social|identity|print', 'social=سوشيال، identity=هوية، print=مطبوعات'],
                 ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'ارفع صورة من جهازك أو الصق رابطاً مباشراً'],
-                ['gallery', 'صور المعرض', 'list', null, 'روابط صور إضافية — كل رابط في سطر منفصل'],
+                ['gallery', 'صور المعرض', 'gallery', null, 'ارفع صور متعددة من جهازك أو أضف روابط'],
                 ['is_new', 'جديد', 'bool', null, 'لو مفعّل، تظهر شارة "جديد" (الأحدث ياخدها تلقائياً)'],
                 ['published', 'منشور', 'bool', null, 'لو مقفول، المشروع مش هيظهر في الموقع'],
                 ['sort_order', 'الترتيب', 'num', null, 'رقم الترتيب اليدوي (الأقل يظهر أولاً)']
@@ -617,6 +654,7 @@
     ];
 
     let cur = 'projects', rows = [], searchTerm = '', deleteTargetId = null;
+    let tempGallery = []; // مصفوفة مؤقتة لحفظ صور المعرض أثناء التعديل
 
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -644,13 +682,12 @@
     }
 
     // ==========================================
-    // دالة رفع الصور لـ Supabase Storage
+    // دالة رفع صورة مفردة (للغلاف)
     // ==========================================
     async function uploadImage(fileInput, fieldKey) {
         const file = fileInput.files[0];
         if (!file) return;
 
-        // التحقق من الحجم (بحد أقصى 5 ميجا)
         if (file.size > 5 * 1024 * 1024) {
             toast('✗ حجم الصورة كبير جداً (الحد الأقصى 5 ميجابايت)', false);
             fileInput.value = '';
@@ -663,12 +700,10 @@
 
         statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصورة...</span>';
 
-        // إنشاء اسم فريد للصورة
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
-        // الرفع إلى Bucket اسمه images
         const { data, error } = await sb.storage
             .from('images')
             .upload(filePath, file, { cacheControl: '3600', upsert: false });
@@ -680,20 +715,84 @@
             return;
         }
 
-        // جلب الرابط المباشر للصورة
         const { data: publicUrlData } = sb.storage
             .from('images')
             .getPublicUrl(filePath);
 
         const publicUrl = publicUrlData.publicUrl;
 
-        // تحديث الخانة والمعاينة
         inputEl.value = publicUrl;
         previewEl.src = publicUrl;
         previewEl.classList.add('visible');
 
         statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-check"></i> تم الرفع بنجاح</span>';
         setTimeout(() => statusEl.innerHTML = '', 3000);
+    }
+
+    // ==========================================
+    // دوال رفع صور المعرض المتعددة
+    // ==========================================
+    async function uploadGalleryImages(fileInput, fieldKey) {
+        const files = fileInput.files;
+        if (!files.length) return;
+
+        const statusEl = document.getElementById(`upload-status-${fieldKey}`);
+        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصور...</span>';
+
+        let uploadedCount = 0;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.size > 5 * 1024 * 1024) {
+                toast(`✗ الصورة ${file.name} أكبر من 5 ميجا وتم تخطيها`, false);
+                continue;
+            }
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+            const filePath = `uploads/${fileName}`;
+
+            const { error } = await sb.storage
+                .from('images')
+                .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+            if (!error) {
+                const { data: publicUrlData } = sb.storage.from('images').getPublicUrl(filePath);
+                tempGallery.push(publicUrlData.publicUrl);
+                uploadedCount++;
+            }
+        }
+
+        fileInput.value = ''; // تصفير الحقل
+        statusEl.innerHTML = `<span style="color: var(--primary);"><i class="fas fa-check"></i> تم رفع ${uploadedCount} صورة بنجاح</span>`;
+        setTimeout(() => statusEl.innerHTML = '', 3000);
+        
+        renderGalleryPreviews(fieldKey);
+    }
+
+    function renderGalleryPreviews(fieldKey) {
+        const container = document.getElementById(`gallery-previews-${fieldKey}`);
+        if (!container) return;
+
+        if (tempGallery.length === 0) {
+            container.innerHTML = '<p style="font-size:12px;color:var(--text-gray);">لا توجد صور في المعرض.</p>';
+            return;
+        }
+
+        container.innerHTML = tempGallery.map((url, index) => `
+            <div class="gallery-thumb">
+                <img src="${esc(url)}" onerror="this.src='https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png'">
+                <button type="button" class="btn-remove-thumb" onclick="removeGalleryImage('${fieldKey}', ${index})" title="حذف الصورة">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function removeGalleryImage(fieldKey, index) {
+        if (!confirm('هل أنت متأكد من إزالة هذه الصورة من المعرض؟')) return;
+        tempGallery.splice(index, 1);
+        renderGalleryPreviews(fieldKey);
     }
 
     // ==========================================
@@ -856,7 +955,6 @@
                     ${opts.split('|').map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${x}</option>`).join('')}
                 </select>`;
             } else if (t === 'img') {
-                // ====== التعديل هنا: إضافة واجهة رفع الصور ======
                 input = `
                     <div class="img-upload-wrapper">
                         <label class="btn-upload">
@@ -868,6 +966,19 @@
                         <span id="upload-status-${k}" class="upload-status"></span>
                         <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
                             onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">
+                    </div>
+                `;
+            } else if (t === 'gallery') {
+                tempGallery = Array.isArray(v) ? [...v] : [];
+                input = `
+                    <div class="gallery-upload-wrapper">
+                        <div class="gallery-previews" id="gallery-previews-${k}"></div>
+                        <label class="btn-upload">
+                            <i class="fas fa-images"></i> رفع صور للمعرض
+                            <input type="file" accept="image/*" multiple onchange="uploadGalleryImages(this, '${k}')" style="display: none;">
+                        </label>
+                        <span id="upload-status-${k}" class="upload-status"></span>
+                        <input type="hidden" data-k="${k}" data-t="gallery" value="">
                     </div>
                 `;
             } else {
@@ -892,6 +1003,11 @@
             </div>`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        // عرض صور المعرض المحفوظة مسبقاً
+        if (cur === 'projects') {
+            renderGalleryPreviews('gallery');
+        }
+
         document.querySelectorAll('.field-checkbox input').forEach(cb => {
             cb.addEventListener('change', function() {
                 this.nextElementSibling.textContent = this.checked ? 'مفعّل' : 'معطّل';
@@ -911,6 +1027,12 @@
         const obj = {};
         for (const el of document.querySelectorAll('[data-k]')) {
             const k = el.dataset.k, t = el.dataset.t, v = el.value;
+            
+            if (t === 'gallery') {
+                obj[k] = tempGallery;
+                continue;
+            }
+
             if (el.type === 'checkbox') obj[k] = el.checked;
             else if (t === 'num') obj[k] = Number(v) || 0;
             else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
@@ -1000,88 +1122,4 @@
                 <div class="page-head-info">
                     <h2 class="page-title">الإعدادات</h2>
                     <p class="page-desc">التحكم في نصوص الموقع وبيانات التواصل وروابط السوشيال ميديا.</p>
-                </div>
-            </div>
-            <div class="form-card">
-                ${groupsHtml}
-                <button class="btn-primary-lg" onclick="saveSettings(this)">
-                    <i class="fas fa-save"></i> حفظ الإعدادات
-                </button>
-            </div>`;
-    }
-
-    async function saveSettings(btn) {
-        const list = [...document.querySelectorAll('[data-k]')].map(el => ({
-            key: el.dataset.k, value: el.value
-        }));
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
-        const { error } = await sb.from('site_settings').upsert(list);
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ الإعدادات'; }
-        toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
-    }
-
-    // ==========================================
-    // تسجيل الدخول والخروج
-    // ==========================================
-    $('#loginBtn').onclick = async () => {
-        const btn = $('#loginBtn');
-        const email = $('#em').value.trim();
-        const pw = $('#pw').value;
-        
-        if (!email || !pw) {
-            $('#err').textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
-        $('#err').textContent = '';
-
-        try {
-            const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-            
-            if (error) {
-                $('#err').textContent = error.message;
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-            } else {
-                await checkAuth();
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-            }
-        } catch (err) {
-            $('#err').textContent = 'حدث خطأ في الاتصال، جرب تاني.';
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-        }
-    };
-
-    $('#pw').addEventListener('keypress', e => {
-        if (e.key === 'Enter') $('#loginBtn').click();
-    });
-
-    $('#logout').onclick = async () => {
-        if (!confirm('تسجيل الخروج؟')) return;
-        await sb.auth.signOut();
-        location.reload();
-    };
-
-    // ==========================================
-    // تشغيل التطبيق
-    // ==========================================
-    sb.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            if (session) checkAuth();
-        } else if (event === 'SIGNED_OUT') {
-            checkAuth();
-        }
-    });
-
-    checkAuth();
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-</script>
-</body>
-</html>
+                </d
