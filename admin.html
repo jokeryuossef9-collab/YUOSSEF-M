@@ -386,6 +386,18 @@
         }
         .btn-remove-thumb:hover { transform: scale(1.1); }
 
+        /* URL row for gallery */
+        .gallery-url-row {
+            display: flex; gap: 8px; align-items: stretch;
+            margin-top: 6px;
+        }
+        .gallery-url-row .field-input {
+            flex: 1; padding: 10px 12px; font-size: 12px;
+        }
+        .gallery-url-row .btn-upload {
+            padding: 10px 15px; white-space: nowrap; font-size: 12px;
+        }
+
         .form-actions {
             display: flex; gap: 10px; margin-top: 24px;
             padding-top: 18px; border-top: 1px solid var(--border-color);
@@ -583,8 +595,8 @@
             f: [
                 ['title', 'العنوان', 'text', null, 'اسم المشروع كما يظهر للزائر'],
                 ['category', 'التصنيف', 'sel', 'social|identity|print', 'social=سوشيال، identity=هوية، print=مطبوعات'],
-                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'ارفع صورة من جهازك أو الصق رابطاً مباشراً'],
-                ['gallery', 'صور المعرض', 'gallery', null, 'ارفع صور متعددة من جهازك أو أضف روابط'],
+                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'ارفع صورة من جهازك/تليفونك أو الصق رابطاً مباشراً'],
+                ['gallery', 'صور المعرض', 'gallery', null, 'ارفع صور متعددة من جهازك/تليفونك أو أضف روابط من مواقع استضافة'],
                 ['is_new', 'جديد', 'bool', null, 'لو مفعّل، تظهر شارة "جديد" (الأحدث ياخدها تلقائياً)'],
                 ['published', 'منشور', 'bool', null, 'لو مقفول، المشروع مش هيظهر في الموقع'],
                 ['sort_order', 'الترتيب', 'num', null, 'رقم الترتيب اليدوي (الأقل يظهر أولاً)']
@@ -611,7 +623,7 @@
             f: [
                 ['title', 'اسم الكورس', 'text', null, 'اسم الكورس'],
                 ['description', 'الوصف', 'area', null, 'وصف مختصر للكورس'],
-                ['image', 'رابط الصورة', 'img', null, 'ارفع صورة الكورس من جهازك أو الصق رابطاً'],
+                ['image', 'رابط الصورة', 'img', null, 'ارفع صورة الكورس من جهازك/تليفونك أو الصق رابطاً'],
                 ['price', 'السعر', 'text', null, 'السعر الحالي'],
                 ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم (اختياري)'],
                 ['discount_label', 'شارة الخصم', 'text', null, 'مثال: خصم 50%'],
@@ -654,7 +666,7 @@
     ];
 
     let cur = 'projects', rows = [], searchTerm = '', deleteTargetId = null;
-    let tempGallery = []; // مصفوفة مؤقتة لحفظ صور المعرض أثناء التعديل
+    let tempGallery = [];
 
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -682,6 +694,17 @@
     }
 
     // ==========================================
+    // تطبيع رابط الصورة (إضافة https لو ناقص)
+    // ==========================================
+    function normalizeImageUrl(url) {
+        let v = String(url || '').trim();
+        if (!v) return '';
+        if (v.startsWith('data:')) return v;
+        if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+        return v;
+    }
+
+    // ==========================================
     // دالة رفع صورة مفردة (للغلاف)
     // ==========================================
     async function uploadImage(fileInput, fieldKey) {
@@ -700,7 +723,7 @@
 
         statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصورة...</span>';
 
-        const fileExt = file.name.split('.').pop();
+        const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
@@ -748,7 +771,7 @@
                 continue;
             }
 
-            const fileExt = file.name.split('.').pop();
+            const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
             const filePath = `uploads/${fileName}`;
 
@@ -763,11 +786,42 @@
             }
         }
 
-        fileInput.value = ''; // تصفير الحقل
+        fileInput.value = '';
         statusEl.innerHTML = `<span style="color: var(--primary);"><i class="fas fa-check"></i> تم رفع ${uploadedCount} صورة بنجاح</span>`;
         setTimeout(() => statusEl.innerHTML = '', 3000);
         
         renderGalleryPreviews(fieldKey);
+    }
+
+    // ==========================================
+    // إضافة صورة للمعرض عبر رابط
+    // ==========================================
+    function addGalleryUrl(fieldKey) {
+        const input = document.getElementById(`gallery-url-${fieldKey}`);
+        if (!input) return;
+
+        let url = input.value.trim();
+        if (!url) {
+            toast('من فضلك أدخل رابط الصورة', false);
+            return;
+        }
+
+        url = normalizeImageUrl(url);
+
+        if (!/^https?:\/\/.+\..+/i.test(url) && !url.startsWith('data:')) {
+            toast('الرابط غير صالح', false);
+            return;
+        }
+
+        if (tempGallery.includes(url)) {
+            toast('هذا الرابط مضاف بالفعل', false);
+            return;
+        }
+
+        tempGallery.push(url);
+        input.value = '';
+        renderGalleryPreviews(fieldKey);
+        toast('✔ تمت إضافة الصورة من الرابط');
     }
 
     function renderGalleryPreviews(fieldKey) {
@@ -955,28 +1009,46 @@
                     ${opts.split('|').map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${x}</option>`).join('')}
                 </select>`;
             } else if (t === 'img') {
+                // ✅ دعم الرفع من التليفون + إضافة رابط
                 input = `
                     <div class="img-upload-wrapper">
                         <label class="btn-upload">
-                            <i class="fas fa-cloud-upload-alt"></i> رفع صورة من الجهاز
+                            <i class="fas fa-cloud-upload-alt"></i> رفع صورة من التليفون / الجهاز
                             <input type="file" accept="image/*" onchange="uploadImage(this, '${k}')" style="display: none;">
                         </label>
-                        <div class="or-divider">— أو —</div>
-                        <input class="field-input" id="input-${k}" data-k="${k}" data-t="text" value="${esc(val)}" oninput="updatePreview(this, '${k}')" placeholder="https://..." dir="ltr">
+                        <div class="or-divider">— أو الصق رابط صورة من موقع استضافة —</div>
+                        <input class="field-input" id="input-${k}" data-k="${k}" data-t="text" value="${esc(val)}"
+                            oninput="updatePreview(this, '${k}')"
+                            onblur="this.value = normalizeImageUrl(this.value)"
+                            placeholder="https://example.com/image.jpg" dir="ltr">
                         <span id="upload-status-${k}" class="upload-status"></span>
                         <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
                             onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">
                     </div>
                 `;
             } else if (t === 'gallery') {
+                // ✅ دعم الرفع المتعدد + إضافة روابط
                 tempGallery = Array.isArray(v) ? [...v] : [];
                 input = `
                     <div class="gallery-upload-wrapper">
                         <div class="gallery-previews" id="gallery-previews-${k}"></div>
+
                         <label class="btn-upload">
-                            <i class="fas fa-images"></i> رفع صور للمعرض
+                            <i class="fas fa-images"></i> رفع صور من التليفون / الجهاز
                             <input type="file" accept="image/*" multiple onchange="uploadGalleryImages(this, '${k}')" style="display: none;">
                         </label>
+
+                        <div class="or-divider">— أو أضف رابط صورة من موقع استضافة —</div>
+
+                        <div class="gallery-url-row">
+                            <input type="url" id="gallery-url-${k}" class="field-input"
+                                placeholder="https://example.com/image.jpg" dir="ltr"
+                                onkeypress="if(event.key==='Enter'){event.preventDefault();addGalleryUrl('${k}');}">
+                            <button type="button" class="btn-upload" onclick="addGalleryUrl('${k}')">
+                                <i class="fas fa-plus"></i> إضافة
+                            </button>
+                        </div>
+
                         <span id="upload-status-${k}" class="upload-status"></span>
                         <input type="hidden" data-k="${k}" data-t="gallery" value="">
                     </div>
@@ -1019,8 +1091,12 @@
         const img = document.getElementById('preview-' + key);
         if (!img) return;
         const v = input.value.trim();
-        if (v) img.src = v;
-        else img.classList.remove('visible');
+        if (v) {
+            img.src = normalizeImageUrl(v);
+            img.classList.add('visible');
+        } else {
+            img.classList.remove('visible');
+        }
     }
 
     async function save(id, btn) {
@@ -1039,7 +1115,15 @@
             else if (t === 'json') {
                 try { obj[k] = JSON.parse(v || '[]'); }
                 catch (e) { return toast('✗ خطأ في JSON في حقل: ' + k, false); }
-            } else obj[k] = v.trim() === '' ? null : v;
+            } else {
+                // تطبيع روابط الصور المفردة
+                const val = v.trim();
+                if (val && (k === 'cover_image' || k === 'image' || k.endsWith('_image'))) {
+                    obj[k] = normalizeImageUrl(val);
+                } else {
+                    obj[k] = val === '' ? null : v;
+                }
+            }
         }
 
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
