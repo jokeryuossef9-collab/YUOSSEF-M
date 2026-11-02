@@ -1,226 +1,953 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>لوحة التحكم - YUOSSEF&M</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-  body { font-family: Tahoma, Arial, sans-serif; background: #f4f5f7; margin: 0; color: #222; }
-  header { background: #111; color: #39ff14; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-  nav { display: flex; gap: 6px; padding: 10px 20px; background: #fff; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
-  nav button { padding: 8px 14px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; }
-  nav button.on { background: #111; color: #39ff14; }
-  main { padding: 20px; max-width: 900px; margin: auto; }
-  .card { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px #0002; }
-  .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-  label { display: block; font-size: 13px; margin: 12px 0 4px; color: #555; }
-  input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font: inherit; box-sizing: border-box; }
-  textarea { min-height: 70px; }
-  .p { background: #111; color: #39ff14; border: 0; padding: 9px 16px; border-radius: 6px; cursor: pointer; margin-top: 12px; }
-  .d { background: #e63946; color: #fff; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
-  .e { background: #eee; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
-  .muted { color: #888; font-size: 12px; }
-  .thumb { width: 56px; height: 56px; background: #f0f0f0; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #bbb; font-size: 20px; }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .toast { position: fixed; bottom: 20px; right: 20px; background: #39ff14; color: #000; padding: 12px 22px; border-radius: 8px; font-weight: bold; z-index: 9999; box-shadow: 0 4px 20px #0003; animation: slideIn 0.3s ease; }
-  .toast.err { background: #e63946; color: #fff; }
-  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  .preview-img { margin-top: 8px; max-width: 220px; border-radius: 8px; border: 1px solid #ddd; display: block; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>لوحة التحكم | YUOSSEF&M</title>
+    <meta name="description" content="لوحة تحكم إدارة موقع YUOSSEF&M">
+    <meta name="theme-color" content="#05040a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Y&M Admin">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Y&M Admin","short_name":"Admin","start_url":"./admin.html","display":"standalone","orientation":"portrait","background_color":"%2305040a","theme_color":"%2339ff14","icons":[{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"512x512","type":"image/png","purpose":"any"}]}'>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg-main: #05040a;
+            --bg-card: #110e1a;
+            --bg-input: #0a0812;
+            --primary: #39ff14;
+            --primary-hover: #28cc0d;
+            --accent-red: #e63946;
+            --accent-purple: #7b2cbf;
+            --text-white: #ffffff;
+            --text-gray: #a0aab2;
+            --border-color: #2a1f3d;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body { min-height: 100vh; }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: linear-gradient(rgba(5, 4, 10, 0.9), rgba(5, 4, 10, 0.97)), url('https://i.postimg.cc/ZngMXCqn/Duck-ai-image-2026-11-01-04-02.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-white);
+            max-width: 750px;
+            margin: 0 auto;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== Login ===== */
+        .login-wrap {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: rgba(17, 14, 26, 0.88);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px 25px;
+            width: 100%; max-width: 400px;
+            box-shadow: 0 0 60px rgba(57, 255, 20, 0.15), 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-logo {
+            width: 100px; height: 100px; object-fit: contain;
+            display: block; margin: 0 auto 20px;
+            filter: drop-shadow(0 0 20px rgba(57, 255, 20, 0.5));
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .login-title {
+            text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .login-subtitle {
+            text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 30px;
+        }
+        .login-field { margin-bottom: 16px; }
+        .login-field label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: var(--text-gray); margin-bottom: 6px;
+        }
+        .login-field input {
+            width: 100%; padding: 13px 15px; border-radius: 12px;
+            background: var(--bg-input); border: 1px solid var(--border-color);
+            color: var(--text-white); font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .login-field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+        }
+        .login-err {
+            color: var(--accent-red); font-size: 12px; margin-top: 10px;
+            text-align: center; min-height: 16px;
+        }
+
+        /* ===== Header ===== */
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background-color: rgba(5, 4, 10, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .header-logo-area { display: flex; align-items: center; gap: 10px; }
+        .header-logo {
+            width: 45px; height: 45px; object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.4));
+        }
+        .header-title { font-size: 15px; font-weight: 900; color: var(--text-white); }
+        .header-title span {
+            display: block; font-size: 10px; font-weight: 600;
+            color: var(--primary); margin-top: 2px;
+        }
+        .btn-logout {
+            background: rgba(230, 57, 70, 0.1);
+            border: 1px solid var(--accent-red); color: var(--accent-red);
+            padding: 8px 14px; border-radius: 20px; font-size: 12px;
+            font-weight: 700; cursor: pointer; display: flex;
+            align-items: center; gap: 6px; transition: 0.3s;
+        }
+        .btn-logout:hover { background: var(--accent-red); color: white; }
+
+        /* ===== Nav ===== */
+        .app-nav {
+            display: flex; gap: 8px; padding: 12px 15px;
+            overflow-x: auto; scrollbar-width: none;
+            background: rgba(5, 4, 10, 0.6);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky; top: 75px; z-index: 99;
+        }
+        .app-nav::-webkit-scrollbar { display: none; }
+        .nav-chip {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-gray); padding: 9px 18px;
+            border-radius: 20px; font-size: 13px; font-weight: 700;
+            cursor: pointer; white-space: nowrap; display: flex;
+            align-items: center; gap: 7px; transition: 0.3s; flex-shrink: 0;
+        }
+        .nav-chip i { font-size: 12px; }
+        .nav-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .nav-chip.on {
+            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+            color: #000; border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+        }
+
+        /* ===== Main ===== */
+        .app-main { padding: 20px 15px; }
+
+        .page-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+        }
+        .page-head-info { flex: 1; min-width: 0; }
+        .page-title {
+            font-size: 20px; font-weight: 900; color: var(--text-white);
+            display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+        }
+        .page-title::before {
+            content: ''; width: 4px; height: 20px;
+            background: var(--primary); border-radius: 2px;
+        }
+        .page-desc { font-size: 12px; color: var(--text-gray); line-height: 1.5; }
+
+        .btn-add {
+            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+            color: #000; border: none; padding: 10px 18px; border-radius: 12px;
+            font-size: 13px; font-weight: 900; cursor: pointer;
+            display: flex; align-items: center; gap: 6px; transition: 0.3s;
+            box-shadow: 0 4px 20px rgba(57, 255, 20, 0.3);
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(57, 255, 20, 0.5);
+        }
+
+        /* Search */
+        .search-box { margin-bottom: 15px; position: relative; }
+        .search-box input {
+            width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px;
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-white); font-size: 13px; outline: none; transition: 0.3s;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+        }
+        .search-box i {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--text-gray); font-size: 14px;
+        }
+
+        /* Item card */
+        .item-card {
+            background: rgba(17, 14, 26, 0.85);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 12px; margin-bottom: 12px; display: flex;
+            align-items: center; gap: 12px; transition: 0.3s;
+        }
+        .item-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+            transform: translateY(-2px);
+        }
+        .item-thumb {
+            width: 60px; height: 60px; border-radius: 12px;
+            background: var(--bg-main); border: 1px solid var(--border-color);
+            flex-shrink: 0; overflow: hidden; display: flex;
+            align-items: center; justify-content: center;
+            color: var(--text-gray); font-size: 22px;
+        }
+        .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .item-info { flex: 1; min-width: 0; }
+        .item-name {
+            font-size: 14px; font-weight: 700; color: var(--text-white);
+            margin-bottom: 4px; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .item-meta {
+            font-size: 11px; color: var(--text-gray);
+            display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 8px; border-radius: 20px;
+            font-size: 10px; font-weight: 700;
+        }
+        .status-pill.pub { background: rgba(57, 255, 20, 0.15); color: var(--primary); }
+        .status-pill.hidden { background: rgba(230, 57, 70, 0.15); color: var(--accent-red); }
+        .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-sm {
+            width: 34px; height: 34px; border-radius: 10px;
+            border: 1px solid var(--border-color); background: var(--bg-main);
+            color: var(--text-gray); cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 13px;
+            transition: 0.3s;
+        }
+        .btn-icon-sm:hover {
+            border-color: var(--primary); color: var(--primary);
+            background: rgba(57, 255, 20, 0.05);
+        }
+        .btn-icon-sm.danger:hover {
+            border-color: var(--accent-red); color: var(--accent-red);
+            background: rgba(230, 57, 70, 0.05);
+        }
+
+        /* Empty */
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-gray); }
+        .empty-state i {
+            font-size: 50px; color: var(--border-color);
+            margin-bottom: 15px; display: block;
+        }
+        .empty-state p { font-size: 14px; }
+
+        /* Form */
+        .form-card {
+            background: rgba(17, 14, 26, 0.88);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 22px 18px; animation: fadeInUp 0.4s ease;
+        }
+        .form-title {
+            font-size: 18px; font-weight: 900; color: var(--primary);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border-color);
+        }
+        .field-group { margin-bottom: 18px; }
+        .field-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 700; color: var(--text-white);
+            margin-bottom: 6px;
+        }
+        .field-label i { color: var(--primary); font-size: 8px; }
+        .field-help {
+            font-size: 11px; color: var(--text-gray);
+            margin-bottom: 8px; line-height: 1.5;
+        }
+        .field-input, .field-textarea, .field-select {
+            width: 100%; padding: 12px 14px; border-radius: 10px;
+            background: var(--bg-input); border: 1px solid var(--border-color);
+            color: var(--text-white); font-family: inherit; font-size: 13px;
+            outline: none; transition: 0.3s;
+        }
+        .field-textarea { min-height: 80px; resize: vertical; }
+        .field-select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+        .field-select option { background: var(--bg-main); color: white; }
+        .field-input:focus, .field-textarea:focus, .field-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+        }
+        .field-checkbox {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; background: var(--bg-input);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .field-checkbox:hover { border-color: var(--primary); }
+        .field-checkbox input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+        .field-checkbox span { font-size: 13px; font-weight: 700; }
+        .field-preview {
+            margin-top: 10px; max-width: 200px; max-height: 200px;
+            border-radius: 10px; border: 1px solid var(--border-color);
+            object-fit: cover; display: none;
+        }
+        .field-preview.visible { display: block; }
+
+        .form-actions {
+            display: flex; gap: 10px; margin-top: 24px;
+            padding-top: 18px; border-top: 1px solid var(--border-color);
+        }
+        .btn-save {
+            flex: 1;
+            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+            color: #000; border: none; padding: 14px; border-radius: 12px;
+            font-size: 14px; font-weight: 900; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; transition: 0.3s;
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(57, 255, 20, 0.4);
+        }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-cancel {
+            padding: 14px 20px; background: transparent;
+            border: 1px solid var(--border-color); color: var(--text-gray);
+            border-radius: 12px; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-cancel:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+        .btn-primary-lg {
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+            color: #000; border: none; padding: 14px; border-radius: 12px;
+            font-size: 15px; font-weight: 900; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: 10px; transition: 0.3s;
+        }
+        .btn-primary-lg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(57, 255, 20, 0.4);
+        }
+        .btn-primary-lg:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(200%);
+            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+            color: #000; padding: 12px 24px; border-radius: 30px;
+            font-weight: 900; font-size: 13px; z-index: 9999;
+            box-shadow: 0 8px 30px rgba(57, 255, 20, 0.4);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; align-items: center; gap: 8px; max-width: 90%;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.err {
+            background: linear-gradient(90deg, var(--accent-red), #b32d38);
+            color: white;
+            box-shadow: 0 8px 30px rgba(230, 57, 70, 0.4);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            z-index: 1000; display: flex; justify-content: center;
+            align-items: center; padding: 20px;
+        }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--accent-red);
+            border-radius: 20px; padding: 28px 22px; max-width: 380px;
+            width: 100%; text-align: center;
+            box-shadow: 0 20px 60px rgba(230, 57, 70, 0.2);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-icon {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(230, 57, 70, 0.15); color: var(--accent-red);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin: 0 auto 16px;
+        }
+        .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+        .modal-text {
+            font-size: 13px; color: var(--text-gray);
+            margin-bottom: 22px; line-height: 1.5;
+        }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button {
+            flex: 1; padding: 12px; border-radius: 10px;
+            font-weight: 900; font-size: 13px; cursor: pointer;
+            border: none; transition: 0.3s;
+        }
+        .modal-actions .yes { background: var(--accent-red); color: white; }
+        .modal-actions .no {
+            background: var(--bg-main); border: 1px solid var(--border-color);
+            color: var(--text-white);
+        }
+
+        /* Loader */
+        .loader {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 50px;
+            color: var(--text-gray); gap: 15px;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Settings */
+        .settings-section { margin-bottom: 22px; }
+        .settings-section h4 {
+            font-size: 13px; color: var(--primary); font-weight: 900;
+            margin-bottom: 12px; display: flex; align-items: center;
+            gap: 8px; padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        /* Install banner */
+        .install-banner {
+            background: linear-gradient(90deg, rgba(123, 44, 191, 0.25), rgba(57, 255, 20, 0.25));
+            border: 1px solid var(--accent-purple);
+            border-radius: 14px; padding: 14px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .install-banner:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .install-banner > i { font-size: 22px; color: var(--primary); }
+        .install-banner .txt { flex: 1; font-size: 12px; font-weight: 700; }
+        .install-banner .txt small {
+            display: block; font-size: 10px; color: var(--text-gray);
+            font-weight: 400; margin-top: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .app-main { padding: 15px 12px; }
+            .form-card { padding: 18px 14px; }
+            .page-title { font-size: 18px; }
+            .login-card { padding: 32px 20px; }
+            .item-thumb { width: 50px; height: 50px; }
+        }
+    </style>
 </head>
 <body>
 
-<div id="login" class="card" style="max-width:340px;margin:80px auto">
-  <h2>تسجيل الدخول</h2>
-  <label>البريد الإلكتروني</label><input id="em" type="email">
-  <label>كلمة المرور</label><input id="pw" type="password">
-  <button class="p" id="loginBtn">دخول</button>
-  <p id="err" style="color:#e63946"></p>
+<!-- Login -->
+<div id="login-screen" class="login-wrap">
+    <div class="login-card">
+        <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="login-logo" alt="Logo">
+        <h1 class="login-title">YUOSSEF&M Admin</h1>
+        <p class="login-subtitle">لوحة التحكم — سجّل دخولك للمتابعة</p>
+
+        <div class="login-field">
+            <label><i class="fas fa-envelope" style="color: var(--primary); margin-left: 5px;"></i> البريد الإلكتروني</label>
+            <input id="em" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+
+        <div class="login-field">
+            <label><i class="fas fa-lock" style="color: var(--primary); margin-left: 5px;"></i> كلمة المرور</label>
+            <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <button class="btn-primary-lg" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+        </button>
+
+        <p id="err" class="login-err"></p>
+    </div>
 </div>
 
+<!-- App -->
 <div id="app" hidden>
-  <header><b>لوحة تحكم YUOSSEF&amp;M</b><button class="e" id="logout">خروج</button></header>
-  <nav id="tabs"></nav>
-  <main id="main"></main>
+    <header class="app-header">
+        <div class="header-logo-area">
+            <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="header-logo" alt="Logo">
+            <div class="header-title">
+                YUOSSEF&M
+                <span>لوحة التحكم</span>
+            </div>
+        </div>
+        <button class="btn-logout" id="logout">
+            <i class="fas fa-sign-out-alt"></i> خروج
+        </button>
+    </header>
+
+    <nav class="app-nav" id="tabs"></nav>
+    <main class="app-main" id="main"></main>
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://cnygozaqtomkprpeydgc.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = 'https://cnygozaqtomkprpeydgc.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const T = {
-    projects: { label: 'المشاريع', title: 'title', sort: 'sort_order', f: [
-      ['title', 'العنوان'], ['category', 'التصنيف', 'sel', 'social|identity|print'],
-      ['cover_image', 'رابط الصورة الرئيسية', 'img'], ['gallery', 'صور المعرض (رابط في كل سطر)', 'list'],
-      ['is_new', 'جديد', 'bool'], ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
-    packages: { label: 'الباكجات', title: 'title', sort: 'sort_order', f: [
-      ['title', 'الاسم'], ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'],
-      ['discount_label', 'شارة الخصم (مثال: خصم 25%)'], ['features', 'المميزات (سطر لكل ميزة)', 'list'],
-      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
-    courses: { label: 'الكورسات', title: 'title', sort: 'sort_order', f: [
-      ['title', 'اسم الكورس'], ['description', 'الوصف', 'area'], ['image', 'رابط الصورة', 'img'],
-      ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'], ['discount_label', 'شارة الخصم'],
-      ['features', 'المميزات (سطر لكل ميزة)', 'list'],
-      ['modules', 'الوحدات (JSON: [{"title":"..","lessons":["..",".."]}])', 'json'],
-      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
-    testimonials: { label: 'الآراء', title: 'name', sort: 'sort_order', f: [
-      ['name', 'الاسم'], ['role', 'المسمى'], ['body', 'نص الرأي', 'area'],
-      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] }
-  };
+    // Each field: [key, label, type, options, help]
+    const T = {
+        projects: {
+            label: 'المشاريع', singular: 'مشروع', icon: 'fa-folder-open',
+            title: 'title', sort: 'sort_order',
+            desc: 'إدارة معرض أعمالك. المشروع الأحدث (بأعلى ID) يظهر كغلاف رئيسي في الموقع تلقائياً.',
+            f: [
+                ['title', 'العنوان', 'text', null, 'اسم المشروع كما يظهر للزائر'],
+                ['category', 'التصنيف', 'sel', 'social|identity|print', 'social=سوشيال، identity=هوية، print=مطبوعات'],
+                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'الصورة اللي تظهر كغلاف. الصق رابط الصورة هنا'],
+                ['gallery', 'صور المعرض', 'list', null, 'روابط صور إضافية — كل رابط في سطر منفصل'],
+                ['is_new', 'جديد', 'bool', null, 'لو مفعّل، تظهر شارة "جديد" (الأحدث ياخدها تلقائياً)'],
+                ['published', 'منشور', 'bool', null, 'لو مقفول، المشروع مش هيظهر في الموقع'],
+                ['sort_order', 'الترتيب', 'num', null, 'رقم الترتيب اليدوي (الأقل يظهر أولاً)']
+            ]
+        },
+        packages: {
+            label: 'الباكجات', singular: 'باقة', icon: 'fa-tags',
+            title: 'title', sort: 'sort_order',
+            desc: 'إدارة باقات التصميم اللي تظهر في صفحة "الباكجات".',
+            f: [
+                ['title', 'اسم الباقة', 'text', null, 'اسم الباقة كما يظهر'],
+                ['price', 'السعر', 'text', null, 'السعر الحالي (مثلاً: 1500)'],
+                ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم — يظهر مشطوب'],
+                ['discount_label', 'شارة الخصم', 'text', null, 'نص شارة (مثال: خصم 25%)'],
+                ['features', 'المميزات', 'list', null, 'كل ميزة في سطر منفصل'],
+                ['published', 'منشور', 'bool', null, 'لو مقفول مش هتظهر'],
+                ['sort_order', 'الترتيب', 'num', null, 'الأقل يظهر أولاً']
+            ]
+        },
+        courses: {
+            label: 'الكورسات', singular: 'كورس', icon: 'fa-graduation-cap',
+            title: 'title', sort: 'sort_order',
+            desc: 'إدارة الكورسات اللي تظهر في صفحة "الكورسات".',
+            f: [
+                ['title', 'اسم الكورس', 'text', null, 'اسم الكورس'],
+                ['description', 'الوصف', 'area', null, 'وصف مختصر للكورس'],
+                ['image', 'رابط الصورة', 'img', null, 'صورة غلاف الكورس'],
+                ['price', 'السعر', 'text', null, 'السعر الحالي'],
+                ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم (اختياري)'],
+                ['discount_label', 'شارة الخصم', 'text', null, 'مثال: خصم 50%'],
+                ['features', 'المميزات', 'list', null, 'ميزة في كل سطر'],
+                ['modules', 'الوحدات (JSON)', 'json', null, 'الوحدات والدروس: [{"title":"...","lessons":["..."]}]'],
+                ['published', 'منشور', 'bool', null, 'لو مقفول مش هيظهر'],
+                ['sort_order', 'الترتيب', 'num', null, 'الأقل أولاً']
+            ]
+        },
+        testimonials: {
+            label: 'الآراء', singular: 'رأي', icon: 'fa-comments',
+            title: 'name', sort: 'sort_order',
+            desc: 'آراء العملاء اللي تظهر في الصفحة الرئيسية.',
+            f: [
+                ['name', 'اسم العميل', 'text', null, 'الاسم كما يظهر'],
+                ['role', 'المسمى', 'text', null, 'مثال: صاحب مطعم، مديرة تسويق'],
+                ['body', 'نص الرأي', 'area', null, 'نص الرأي أو التقييم'],
+                ['published', 'منشور', 'bool', null, 'لو مقفول مش هيظهر'],
+                ['sort_order', 'الترتيب', 'num', null, 'الأقل أولاً']
+            ]
+        }
+    };
 
-  const SETTINGS = [
-    ['hero_desc', 'وصف الصفحة الرئيسية', 'area'], ['journey_text', 'نص قسم "رحلتي"', 'area'],
-    ['whatsapp', 'رقم الواتساب (بدون +)'], ['phone', 'رقم الهاتف (بدون +)'], ['email', 'البريد الإلكتروني'],
-    ['facebook', 'رابط فيسبوك'], ['instagram', 'رابط انستجرام'], ['behance', 'رابط بيهانس'], ['linkedin', 'رابط لينكد إن']
-  ];
+    const SETTINGS_GROUPS = [
+        { title: 'النصوص الرئيسية', icon: 'fa-align-right', fields: [
+            ['hero_desc', 'وصف الصفحة الرئيسية', 'area', null, 'النص اللي تحت العنوان في أعلى الصفحة'],
+            ['journey_text', 'نص قسم "رحلتي"', 'area', null, 'النص اللي في تاب "رحلتي"']
+        ]},
+        { title: 'بيانات التواصل', icon: 'fa-phone', fields: [
+            ['whatsapp', 'رقم الواتساب', 'text', null, 'بدون + (مثال: 201154012821)'],
+            ['phone', 'رقم الهاتف', 'text', null, 'بدون + (يستخدم في tel:)'],
+            ['email', 'البريد الإلكتروني', 'text', null, 'الإيميل الرسمي']
+        ]},
+        { title: 'روابط التواصل الاجتماعي', icon: 'fa-share-alt', fields: [
+            ['facebook', 'فيسبوك', 'text', null, 'رابط صفحة فيسبوك'],
+            ['instagram', 'انستجرام', 'text', null, 'رابط حساب انستجرام'],
+            ['behance', 'بيهانس', 'text', null, 'رابط حساب بيهانس'],
+            ['linkedin', 'لينكد إن', 'text', null, 'رابط حساب لينكد إن']
+        ]}
+    ];
 
-  let cur = 'projects', rows = [];
-  const $ = s => document.querySelector(s);
-  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    let cur = 'projects', rows = [], searchTerm = '', deleteTargetId = null;
 
-  function toast(msg, ok = true) {
-    const el = document.createElement('div');
-    el.className = 'toast' + (ok ? '' : ' err');
-    el.textContent = msg;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 2600);
-  }
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  function getThumb(r) {
-    return r.cover_image || r.image || null;
-  }
-
-  function updatePreview(input, key) {
-    const img = document.getElementById('preview-' + key);
-    if (!img) return;
-    const v = input.value.trim();
-    if (v) { img.src = v; img.style.display = 'block'; }
-    else { img.style.display = 'none'; }
-  }
-
-  function tabs() {
-    $('#tabs').innerHTML = [...Object.keys(T), 'settings'].map(k =>
-      `<button class="${k === cur ? 'on' : ''}" onclick="go('${k}')">${k === 'settings' ? 'الإعدادات' : T[k].label}</button>`).join('');
-  }
-
-  function go(k) { cur = k; tabs(); load(); }
-
-  async function load() {
-    if (cur === 'settings') return settings();
-    const { data, error } = await sb.from(cur).select('*').order(T[cur].sort);
-    if (error) return $('#main').innerHTML = `<p style="color:#e63946">${esc(error.message)}</p>`;
-    rows = data;
-    const list = rows.map(r => {
-      const thumb = getThumb(r);
-      const thumbHtml = `<div class="thumb">${thumb ? `<img src="${esc(thumb)}" alt="" onerror="this.parentElement.innerHTML='📷'">` : '📷'}</div>`;
-      return `<div class="card row">
-        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
-          ${thumbHtml}
-          <div style="min-width:0">
-            <b>${esc(r[T[cur].title])}</b>
-            ${r.published ? '' : '<span class="muted"> (مخفي)</span>'}
-          </div>
-        </div>
-        <div style="flex-shrink:0">
-          <button class="e" onclick="edit(${r.id})">تعديل</button>
-          <button class="d" onclick="del(${r.id})">حذف</button>
-        </div>
-      </div>`;
-    }).join('');
-    $('#main').innerHTML =
-      `<div class="row"><h3>${T[cur].label} <span class="muted">(${rows.length})</span></h3>
-        <button class="p" onclick="edit(null)">+ إضافة</button></div>` +
-      (list || '<p class="muted">لا يوجد عناصر بعد</p>');
-  }
-
-  function edit(id) {
-    const r = id ? rows.find(x => x.id === id) : {};
-    const fields = T[cur].f.map(([k, l, t = 'text', o]) => {
-      const v = r[k];
-      if (t === 'bool') return `<label style="display:flex;align-items:center;gap:8px;margin-top:14px">
-        <input type="checkbox" data-k="${k}" ${(v ?? (k === 'published')) ? 'checked' : ''} style="width:auto"> ${l}</label>`;
-      let val = v ?? '';
-      if (t === 'list') val = (v || []).join('\n');
-      if (t === 'json') val = JSON.stringify(v || [], null, 2);
-      let field;
-      if (t === 'area' || t === 'list' || t === 'json') {
-        field = `<textarea data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
-      } else if (t === 'sel') {
-        field = `<select data-k="${k}">${o.split('|').map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('')}</select>`;
-      } else if (t === 'img') {
-        field = `<input data-k="${k}" data-t="text" value="${esc(val)}" oninput="updatePreview(this,'${k}')" placeholder="https://...">
-          <img id="preview-${k}" class="preview-img" src="${esc(val)}" style="display:${val ? 'block' : 'none'}" onerror="this.style.display='none'" onload="this.style.display='block'">`;
-      } else {
-        field = `<input data-k="${k}" data-t="${t}" value="${esc(val)}">`;
-      }
-      return `<label>${l}</label>${field}`;
-    }).join('');
-    $('#main').innerHTML = `<div class="card"><h3>${id ? 'تعديل' : 'إضافة'}</h3>${fields}
-      <button class="p" onclick="save(${id || 'null'})">💾 حفظ</button>
-      <button class="e" onclick="load()">رجوع</button></div>`;
-    window.scrollTo(0, 0);
-  }
-
-  async function save(id) {
-    const obj = {};
-    for (const el of document.querySelectorAll('[data-k]')) {
-      const k = el.dataset.k, t = el.dataset.t, v = el.value;
-      if (el.type === 'checkbox') obj[k] = el.checked;
-      else if (t === 'num') obj[k] = Number(v) || 0;
-      else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
-      else if (t === 'json') {
-        try { obj[k] = JSON.parse(v || '[]'); }
-        catch (e) { return toast('✗ خطأ في JSON في حقل: ' + k, false); }
-      } else obj[k] = v.trim() === '' ? null : v;
+    function toast(msg, ok = true) {
+        let el = document.getElementById('toast');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'toast';
+            el.className = 'toast';
+            document.body.appendChild(el);
+        }
+        el.innerHTML = `<i class="fas fa-${ok ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+        el.className = 'toast' + (ok ? '' : ' err');
+        requestAnimationFrame(() => el.classList.add('show'));
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove('show'), 2600);
     }
-    const res = id ? await sb.from(cur).update(obj).eq('id', id) : await sb.from(cur).insert(obj);
-    if (res.error) return toast('✗ ' + res.error.message, false);
-    toast('✔ تم الحفظ بنجاح');
-    load();
-  }
 
-  async function del(id) {
-    if (!confirm('متأكد إنك عايز تحذف العنصر ده؟')) return;
-    const { error } = await sb.from(cur).delete().eq('id', id);
-    if (error) return toast('✗ ' + error.message, false);
-    toast('✔ تم الحذف');
-    load();
-  }
-
-  async function settings() {
-    const { data } = await sb.from('site_settings').select('*');
-    const s = Object.fromEntries((data || []).map(r => [r.key, r.value]));
-    $('#main').innerHTML = `<div class="card"><h3>الإعدادات</h3>` + SETTINGS.map(([k, l, t]) =>
-      `<label>${l}</label>` + (t === 'area'
-        ? `<textarea data-k="${k}">${esc(s[k])}</textarea>`
-        : `<input data-k="${k}" value="${esc(s[k])}">`)).join('') +
-      `<button class="p" onclick="saveSettings()">💾 حفظ الإعدادات</button></div>`;
-  }
-
-  async function saveSettings() {
-    const list = [...document.querySelectorAll('[data-k]')].map(el => ({ key: el.dataset.k, value: el.value }));
-    const { error } = await sb.from('site_settings').upsert(list);
-    toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
-  }
-
-  async function start() {
-    const { data } = await sb.auth.getSession();
-    if (data.session) {
-      $('#login').hidden = true;
-      $('#app').hidden = false;
-      tabs();
-      load();
+    function showLoading() {
+        $('#main').innerHTML = '<div class="loader"><div class="spinner"></div><span>جاري التحميل...</span></div>';
     }
-  }
 
-  $('#loginBtn').onclick = async () => {
-    const { error } = await sb.auth.signInWithPassword({ email: $('#em').value, password: $('#pw').value });
-    if (error) $('#err').textContent = error.message; else start();
-  };
-  $('#logout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
-  start();
+    function tabs() {
+        const items = [...Object.keys(T), 'settings'];
+        $('#tabs').innerHTML = items.map(k => {
+            const icon = k === 'settings' ? 'fa-cog' : T[k].icon;
+            const label = k === 'settings' ? 'الإعدادات' : T[k].label;
+            return `<button class="nav-chip ${k === cur ? 'on' : ''}" onclick="go('${k}')">
+                <i class="fas ${icon}"></i> ${label}
+            </button>`;
+        }).join('');
+    }
+
+    function go(k) {
+        cur = k; searchTerm = ''; tabs(); load();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function load() {
+        if (cur === 'settings') return settingsView();
+        showLoading();
+        const { data, error } = await sb.from(cur).select('*').order(T[cur].sort);
+        if (error) {
+            $('#main').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--accent-red)"></i><p>${esc(error.message)}</p></div>`;
+            return;
+        }
+        rows = data || [];
+        renderList();
+    }
+
+    function renderList() {
+        const filtered = rows.filter(r => {
+            if (!searchTerm) return true;
+            const title = String(r[T[cur].title] || '').toLowerCase();
+            return title.includes(searchTerm.toLowerCase());
+        });
+
+        const header = `
+            <div class="page-head">
+                <div class="page-head-info">
+                    <h2 class="page-title">${T[cur].label} <span style="font-size:12px;color:var(--text-gray);font-weight:400">(${rows.length})</span></h2>
+                    <p class="page-desc">${T[cur].desc}</p>
+                </div>
+                <button class="btn-add" onclick="edit(null)">
+                    <i class="fas fa-plus"></i> إضافة
+                </button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث في ${T[cur].label}..." value="${esc(searchTerm)}" oninput="onSearch(this.value)">
+            </div>`;
+
+        let list;
+        if (filtered.length === 0) {
+            list = `<div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>${rows.length === 0 ? 'لا يوجد عناصر بعد — اضغط "إضافة" للبدء' : 'لا توجد نتائج مطابقة للبحث'}</p>
+            </div>`;
+        } else {
+            list = filtered.map(r => {
+                const thumb = r.cover_image || r.image || null;
+                const thumbHtml = thumb
+                    ? `<img src="${esc(thumb)}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>'">`
+                    : `<i class="fas fa-image"></i>`;
+                const status = r.published
+                    ? '<span class="status-pill pub"><i class="fas fa-eye" style="font-size:8px"></i> منشور</span>'
+                    : '<span class="status-pill hidden"><i class="fas fa-eye-slash" style="font-size:8px"></i> مخفي</span>';
+                return `<div class="item-card">
+                    <div class="item-thumb">${thumbHtml}</div>
+                    <div class="item-info">
+                        <div class="item-name">${esc(r[T[cur].title])}</div>
+                        <div class="item-meta">
+                            ${status}
+                            ${r.category ? `<span><i class="fas fa-tag" style="font-size:9px"></i> ${esc(r.category)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-icon-sm" onclick="edit(${r.id})" title="تعديل"><i class="fas fa-pen"></i></button>
+                        <button class="btn-icon-sm danger" onclick="confirmDelete(${r.id})" title="حذف"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        $('#main').innerHTML = header + list;
+    }
+
+    function onSearch(v) {
+        searchTerm = v;
+        renderList();
+        const inp = document.getElementById('searchInput');
+        if (inp) {
+            inp.focus();
+            inp.setSelectionRange(v.length, v.length);
+        }
+    }
+
+    function edit(id) {
+        const r = id ? rows.find(x => x.id === id) : {};
+
+        const fieldsHtml = T[cur].f.map(([k, l, t = 'text', opts, help]) => {
+            const v = r[k];
+            const labelHtml = `<label class="field-label"><i class="fas fa-circle"></i> ${l}</label>`;
+            const helpHtml = help ? `<p class="field-help">${help}</p>` : '';
+
+            if (t === 'bool') {
+                const checked = (v ?? (k === 'published')) ? 'checked' : '';
+                return `<div class="field-group">
+                    ${labelHtml}${helpHtml}
+                    <label class="field-checkbox">
+                        <input type="checkbox" data-k="${k}" ${checked}>
+                        <span>${checked ? 'مفعّل' : 'معطّل'}</span>
+                    </label>
+                </div>`;
+            }
+
+            let val = v ?? '';
+            if (t === 'list') val = (v || []).join('\n');
+            if (t === 'json') val = JSON.stringify(v || [], null, 2);
+
+            let input;
+            if (t === 'area' || t === 'list' || t === 'json') {
+                input = `<textarea class="field-textarea" data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
+            } else if (t === 'sel') {
+                input = `<select class="field-select" data-k="${k}">
+                    ${opts.split('|').map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${x}</option>`).join('')}
+                </select>`;
+            } else if (t === 'img') {
+                input = `<input class="field-input" data-k="${k}" data-t="text" value="${esc(val)}"
+                    oninput="updatePreview(this, '${k}')" placeholder="https://..." dir="ltr">
+                    <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
+                        onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">`;
+            } else {
+                input = `<input class="field-input" data-k="${k}" data-t="${t}" value="${esc(val)}">`;
+            }
+            return `<div class="field-group">${labelHtml}${helpHtml}${input}</div>`;
+        }).join('');
+
+        $('#main').innerHTML = `
+            <div class="form-card">
+                <h3 class="form-title">
+                    <i class="fas fa-${id ? 'pen' : 'plus-circle'}"></i>
+                    ${id ? 'تعديل' : 'إضافة'} ${T[cur].singular}${id ? '' : ' جديد'}
+                </h3>
+                ${fieldsHtml}
+                <div class="form-actions">
+                    <button class="btn-cancel" onclick="load()">رجوع</button>
+                    <button class="btn-save" onclick="save(${id || 'null'}, this)">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
+            </div>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.querySelectorAll('.field-checkbox input').forEach(cb => {
+            cb.addEventListener('change', function() {
+                this.nextElementSibling.textContent = this.checked ? 'مفعّل' : 'معطّل';
+            });
+        });
+    }
+
+    function updatePreview(input, key) {
+        const img = document.getElementById('preview-' + key);
+        if (!img) return;
+        const v = input.value.trim();
+        if (v) img.src = v;
+        else img.classList.remove('visible');
+    }
+
+    async function save(id, btn) {
+        const obj = {};
+        for (const el of document.querySelectorAll('[data-k]')) {
+            const k = el.dataset.k, t = el.dataset.t, v = el.value;
+            if (el.type === 'checkbox') obj[k] = el.checked;
+            else if (t === 'num') obj[k] = Number(v) || 0;
+            else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
+            else if (t === 'json') {
+                try { obj[k] = JSON.parse(v || '[]'); }
+                catch (e) { return toast('✗ خطأ في JSON في حقل: ' + k, false); }
+            } else obj[k] = v.trim() === '' ? null : v;
+        }
+
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
+
+        const res = id
+            ? await sb.from(cur).update(obj).eq('id', id)
+            : await sb.from(cur).insert(obj);
+
+        if (res.error) {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ'; }
+            return toast('✗ ' + res.error.message, false);
+        }
+        toast(id ? '✔ تم التحديث بنجاح' : '✔ تمت الإضافة بنجاح');
+        load();
+    }
+
+    function confirmDelete(id) {
+        deleteTargetId = id;
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.id = 'deleteModal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <div class="modal-icon"><i class="fas fa-trash"></i></div>
+                <h3 class="modal-title">تأكيد الحذف</h3>
+                <p class="modal-text">هل أنت متأكد من حذف هذا العنصر؟<br>لا يمكن التراجع عن هذه الخطوة.</p>
+                <div class="modal-actions">
+                    <button class="no" onclick="closeDeleteModal()">إلغاء</button>
+                    <button class="yes" onclick="doDelete()">حذف نهائي</button>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+    }
+
+    function closeDeleteModal() {
+        const m = document.getElementById('deleteModal');
+        if (m) m.remove();
+        deleteTargetId = null;
+    }
+
+    async function doDelete() {
+        if (!deleteTargetId) return;
+        const id = deleteTargetId;
+        closeDeleteModal();
+        const { error } = await sb.from(cur).delete().eq('id', id);
+        if (error) return toast('✗ ' + error.message, false);
+        toast('✔ تم الحذف');
+        load();
+    }
+
+    async function settingsView() {
+        showLoading();
+        const { data } = await sb.from('site_settings').select('*');
+        const s = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+
+        const groupsHtml = SETTINGS_GROUPS.map(g => `
+            <div class="settings-section">
+                <h4><i class="fas ${g.icon}"></i> ${g.title}</h4>
+                ${g.fields.map(([k, l, t, opts, help]) => {
+                    const v = s[k] ?? '';
+                    const helpHtml = help ? `<p class="field-help">${help}</p>` : '';
+                    const input = t === 'area'
+                        ? `<textarea class="field-textarea" data-k="${k}">${esc(v)}</textarea>`
+                        : `<input class="field-input" data-k="${k}" value="${esc(v)}">`;
+                    return `<div class="field-group">
+                        <label class="field-label"><i class="fas fa-circle"></i> ${l}</label>
+                        ${helpHtml}${input}
+                    </div>`;
+                }).join('')}
+            </div>`).join('');
+
+        $('#main').innerHTML = `
+            <div class="page-head">
+                <div class="page-head-info">
+                    <h2 class="page-title">الإعدادات</h2>
+                    <p class="page-desc">التحكم في نصوص الموقع وبيانات التواصل وروابط السوشيال ميديا.</p>
+                </div>
+            </div>
+            <div class="form-card">
+                ${groupsHtml}
+                <button class="btn-primary-lg" onclick="saveSettings(this)">
+                    <i class="fas fa-save"></i> حفظ الإعدادات
+                </button>
+            </div>`;
+    }
+
+    async function saveSettings(btn) {
+        const list = [...document.querySelectorAll('[data-k]')].map(el => ({
+            key: el.dataset.k, value: el.value
+        }));
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
+        const { error } = await sb.from('site_settings').upsert(list);
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ الإعدادات'; }
+        toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
+    }
+
+    async function checkAuth() {
+        const { data } = await sb.auth.getSession();
+        if (data.session) {
+            $('#login-screen').hidden = true;
+            $('#app').hidden = false;
+            tabs();
+            load();
+        }
+    }
+
+    $('#loginBtn').onclick = async () => {
+        const btn = $('#loginBtn');
+        const email = $('#em').value.trim();
+        const pw = $('#pw').value;
+        if (!email || !pw) {
+            $('#err').textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
+            return;
+        }
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+        $('#err').textContent = '';
+        const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+        if (error) {
+            $('#err').textContent = error.message;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+        } else {
+            checkAuth();
+        }
+    };
+
+    $('#pw').addEventListener('keypress', e => {
+        if (e.key === 'Enter') $('#loginBtn').click();
+    });
+
+    $('#logout').onclick = async () => {
+        if (!confirm('تسجيل الخروج؟')) return;
+        await sb.auth.signOut();
+        location.reload();
+    };
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    checkAuth();
 </script>
 </body>
 </html>
