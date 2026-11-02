@@ -1,7 +1,10 @@
-// ربط الموقع بقاعدة البيانات (Supabase) - عدّل السطر التالي بالبيانات بتاعتك
+// ربط الموقع بقاعدة البيانات (Supabase)
 (function () {
   if (!window.supabase) return;
-  const sb = window.supabase.createClient('https://cnygozaqtomkprpeydgc.supabase.co', 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN');
+  const sb = window.supabase.createClient(
+    'https://cnygozaqtomkprpeydgc.supabase.co',
+    'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN'
+  );
   const $$ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -11,12 +14,29 @@
     return data;
   }
 
-  // ترتيب المشاريع: الأحدث الأول (created_at، ولو مش موجود نرجع للـ id)
+  // الأحدث أولاً: نعتمد على id (auto increment) — مضمون 100%
   function sortNewestFirst(a, b) {
-    const ta = a.created_at ? new Date(a.created_at).getTime() : NaN;
-    const tb = b.created_at ? new Date(b.created_at).getTime() : NaN;
-    if (!Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb) return tb - ta;
-    return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
+    return Number(b.id) - Number(a.id);
+  }
+
+  const CATEGORY_LABELS = { social: 'سوشيال ميديا', identity: 'هوية بصرية', print: 'مطبوعات' };
+
+  function renderFeatured(project) {
+    const wrapper = document.getElementById('featured-wrapper');
+    if (!wrapper || !project) return;
+    const cover = project.coverImage || 'https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg';
+    const catLabel = CATEGORY_LABELS[project.category] || 'مشروع';
+    wrapper.innerHTML = `
+      <div class="featured-card tilt-effect" onclick="openProjectDetail(${project.id})">
+        <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
+        <img src="${esc(cover)}" alt="${esc(project.title)}">
+        <div class="featured-overlay">
+          <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
+          <h3 style="font-size: 20px; margin-bottom: 5px;">${esc(project.title)}</h3>
+          <p style="font-size: 12px; color: var(--text-gray);">${catLabel}</p>
+        </div>
+      </div>`;
+    if (typeof init3DTilt === 'function') init3DTilt();
   }
 
   async function run() {
@@ -25,22 +45,25 @@
       sb.from('site_settings').select('*')
     ]);
 
-    // المشاريع (معرض الأعمال) - الأحدث الأول + علامة "جديد" تلقائياً للأحدث
-    if (pr) {
+    // ===== المشاريع =====
+    if (pr && pr.length) {
       const sorted = pr.slice().sort(sortNewestFirst);
       projectsData = sorted.map((p, i) => ({
         id: p.id,
         title: p.title,
         category: p.category,
         coverImage: p.cover_image,
-        isNew: i === 0 ? true : !!p.is_new, // الأحدث دايماً عليه علامة "جديد"
+        isNew: i === 0,           // الأحدث دائماً "جديد"
         gallery: p.gallery || []
       }));
+      // المشروع البارز = الأحدث
+      renderFeatured(projectsData[0]);
+      // الشبكة تحت
       renderHomeProjects(projectsData);
     }
 
-    // الباكجات
-    if (pk) {
+    // ===== الباكجات =====
+    if (pk && pk.length) {
       $$('.packages-container').innerHTML = pk.map(p => `
         <div class="pricing-card tilt-effect">
           ${p.discount_label ? `<div class="discount-badge">${esc(p.discount_label)}</div>` : ''}
@@ -51,11 +74,11 @@
           <button class="order-btn magnetic">اطلب الباقة الآن <i class="fas fa-arrow-left"></i></button>
         </div>`).join('');
       document.querySelectorAll('.packages-container .order-btn').forEach((b, i) => b.onclick = () => openPackageModal(pk[i].title, pk[i].price));
-      init3DTilt();
+      if (typeof init3DTilt === 'function') init3DTilt();
     }
 
-    // الكورسات
-    if (co) {
+    // ===== الكورسات =====
+    if (co && co.length) {
       document.querySelectorAll('#view-courses .course-card').forEach(el => el.remove());
       $$('#view-courses').insertAdjacentHTML('beforeend', co.map(c => `
         <div class="course-card tilt-effect">
@@ -80,8 +103,8 @@
       });
     }
 
-    // آراء العملاء
-    if (te) {
+    // ===== الآراء =====
+    if (te && te.length) {
       $$('.testimonials-wrapper').innerHTML = te.map(t => `
         <div class="testimonial-card">
           <i class="fas fa-quote-right"></i>
@@ -93,14 +116,16 @@
         </div>`).join('');
     }
 
-    // الإعدادات (نصوص وروابط التواصل)
+    // ===== الإعدادات =====
     const s = Object.fromEntries((st.data || []).map(r => [r.key, r.value]));
     if (s.hero_desc) $$('.hero-desc').textContent = s.hero_desc;
     if (s.journey_text) $$('.journey-text').textContent = s.journey_text;
     if (s.whatsapp) document.querySelectorAll('a[href*="wa.me/"]').forEach(a => a.href = 'https://wa.me/' + s.whatsapp);
     if (s.phone) document.querySelectorAll('a[href^="tel:"]').forEach(a => a.href = 'tel:+' + s.phone);
-    if (s.email) document.querySelectorAll('a[href^="mailto:"]').forEach(a => a.href = 'mailto:' + s.email);
-    if (s.email) document.querySelectorAll('a[href^="mailto:"] small').forEach(e => e.textContent = s.email);
+    if (s.email) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(a => a.href = 'mailto:' + s.email);
+      document.querySelectorAll('a[href^="mailto:"] small').forEach(e => e.textContent = s.email);
+    }
     if (s.phone) document.querySelectorAll('a[href^="tel:"] small').forEach(e => e.textContent = '+' + s.phone);
     const social = { 'فيسبوك': 'facebook', 'انستجرام': 'instagram', 'بيهانس': 'behance', 'لينكد إن': 'linkedin' };
     Object.entries(social).forEach(([title, key]) => {

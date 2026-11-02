@@ -21,6 +21,12 @@
   .d { background: #e63946; color: #fff; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
   .e { background: #eee; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
   .muted { color: #888; font-size: 12px; }
+  .thumb { width: 56px; height: 56px; background: #f0f0f0; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #bbb; font-size: 20px; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: #39ff14; color: #000; padding: 12px 22px; border-radius: 8px; font-weight: bold; z-index: 9999; box-shadow: 0 4px 20px #0003; animation: slideIn 0.3s ease; }
+  .toast.err { background: #e63946; color: #fff; }
+  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .preview-img { margin-top: 8px; max-width: 220px; border-radius: 8px; border: 1px solid #ddd; display: block; }
 </style>
 </head>
 <body>
@@ -44,18 +50,17 @@
   const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // تعريف الجداول والحقول: [اسم الحقل، الوصف، النوع، الخيارات]
   const T = {
     projects: { label: 'المشاريع', title: 'title', sort: 'sort_order', f: [
       ['title', 'العنوان'], ['category', 'التصنيف', 'sel', 'social|identity|print'],
-      ['cover_image', 'رابط الصورة الرئيسية'], ['gallery', 'صور المعرض (رابط في كل سطر)', 'list'],
+      ['cover_image', 'رابط الصورة الرئيسية', 'img'], ['gallery', 'صور المعرض (رابط في كل سطر)', 'list'],
       ['is_new', 'جديد', 'bool'], ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
     packages: { label: 'الباكجات', title: 'title', sort: 'sort_order', f: [
       ['title', 'الاسم'], ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'],
       ['discount_label', 'شارة الخصم (مثال: خصم 25%)'], ['features', 'المميزات (سطر لكل ميزة)', 'list'],
       ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
     courses: { label: 'الكورسات', title: 'title', sort: 'sort_order', f: [
-      ['title', 'اسم الكورس'], ['description', 'الوصف', 'area'], ['image', 'رابط الصورة'],
+      ['title', 'اسم الكورس'], ['description', 'الوصف', 'area'], ['image', 'رابط الصورة', 'img'],
       ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'], ['discount_label', 'شارة الخصم'],
       ['features', 'المميزات (سطر لكل ميزة)', 'list'],
       ['modules', 'الوحدات (JSON: [{"title":"..","lessons":["..",".."]}])', 'json'],
@@ -75,6 +80,26 @@
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+  function toast(msg, ok = true) {
+    const el = document.createElement('div');
+    el.className = 'toast' + (ok ? '' : ' err');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  function getThumb(r) {
+    return r.cover_image || r.image || null;
+  }
+
+  function updatePreview(input, key) {
+    const img = document.getElementById('preview-' + key);
+    if (!img) return;
+    const v = input.value.trim();
+    if (v) { img.src = v; img.style.display = 'block'; }
+    else { img.style.display = 'none'; }
+  }
+
   function tabs() {
     $('#tabs').innerHTML = [...Object.keys(T), 'settings'].map(k =>
       `<button class="${k === cur ? 'on' : ''}" onclick="go('${k}')">${k === 'settings' ? 'الإعدادات' : T[k].label}</button>`).join('');
@@ -85,30 +110,57 @@
   async function load() {
     if (cur === 'settings') return settings();
     const { data, error } = await sb.from(cur).select('*').order(T[cur].sort);
-    if (error) return $('#main').innerHTML = `<p>${esc(error.message)}</p>`;
+    if (error) return $('#main').innerHTML = `<p style="color:#e63946">${esc(error.message)}</p>`;
     rows = data;
-    $('#main').innerHTML = `<div class="row"><h3>${T[cur].label}</h3><button class="p" onclick="edit(null)">+ إضافة</button></div>` +
-      (rows.map(r => `<div class="card row"><div><b>${esc(r[T[cur].title])}</b> ${r.published ? '' : '<span class="muted">(مخفي)</span>'}</div>
-        <div><button class="e" onclick="edit(${r.id})">تعديل</button> <button class="d" onclick="del(${r.id})">حذف</button></div></div>`).join('')
-        || '<p class="muted">لا يوجد عناصر بعد</p>');
+    const list = rows.map(r => {
+      const thumb = getThumb(r);
+      const thumbHtml = `<div class="thumb">${thumb ? `<img src="${esc(thumb)}" alt="" onerror="this.parentElement.innerHTML='📷'">` : '📷'}</div>`;
+      return `<div class="card row">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+          ${thumbHtml}
+          <div style="min-width:0">
+            <b>${esc(r[T[cur].title])}</b>
+            ${r.published ? '' : '<span class="muted"> (مخفي)</span>'}
+          </div>
+        </div>
+        <div style="flex-shrink:0">
+          <button class="e" onclick="edit(${r.id})">تعديل</button>
+          <button class="d" onclick="del(${r.id})">حذف</button>
+        </div>
+      </div>`;
+    }).join('');
+    $('#main').innerHTML =
+      `<div class="row"><h3>${T[cur].label} <span class="muted">(${rows.length})</span></h3>
+        <button class="p" onclick="edit(null)">+ إضافة</button></div>` +
+      (list || '<p class="muted">لا يوجد عناصر بعد</p>');
   }
 
   function edit(id) {
     const r = id ? rows.find(x => x.id === id) : {};
     const fields = T[cur].f.map(([k, l, t = 'text', o]) => {
       const v = r[k];
-      if (t === 'bool') return `<label><input type="checkbox" data-k="${k}" ${(v ?? (k === 'published')) ? 'checked' : ''} style="width:auto"> ${l}</label>`;
+      if (t === 'bool') return `<label style="display:flex;align-items:center;gap:8px;margin-top:14px">
+        <input type="checkbox" data-k="${k}" ${(v ?? (k === 'published')) ? 'checked' : ''} style="width:auto"> ${l}</label>`;
       let val = v ?? '';
       if (t === 'list') val = (v || []).join('\n');
       if (t === 'json') val = JSON.stringify(v || [], null, 2);
       let field;
-      if (t === 'area' || t === 'list' || t === 'json') field = `<textarea data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
-      else if (t === 'sel') field = `<select data-k="${k}">${o.split('|').map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('')}</select>`;
-      else field = `<input data-k="${k}" data-t="${t}" value="${esc(val)}">`;
+      if (t === 'area' || t === 'list' || t === 'json') {
+        field = `<textarea data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
+      } else if (t === 'sel') {
+        field = `<select data-k="${k}">${o.split('|').map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('')}</select>`;
+      } else if (t === 'img') {
+        field = `<input data-k="${k}" data-t="text" value="${esc(val)}" oninput="updatePreview(this,'${k}')" placeholder="https://...">
+          <img id="preview-${k}" class="preview-img" src="${esc(val)}" style="display:${val ? 'block' : 'none'}" onerror="this.style.display='none'" onload="this.style.display='block'">`;
+      } else {
+        field = `<input data-k="${k}" data-t="${t}" value="${esc(val)}">`;
+      }
       return `<label>${l}</label>${field}`;
     }).join('');
     $('#main').innerHTML = `<div class="card"><h3>${id ? 'تعديل' : 'إضافة'}</h3>${fields}
-      <button class="p" onclick="save(${id || 'null'})">حفظ</button> <button class="e" onclick="load()">رجوع</button></div>`;
+      <button class="p" onclick="save(${id || 'null'})">💾 حفظ</button>
+      <button class="e" onclick="load()">رجوع</button></div>`;
+    window.scrollTo(0, 0);
   }
 
   async function save(id) {
@@ -120,18 +172,20 @@
       else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
       else if (t === 'json') {
         try { obj[k] = JSON.parse(v || '[]'); }
-        catch (e) { return alert('خطأ في تنسيق JSON في حقل: ' + k); }
+        catch (e) { return toast('✗ خطأ في JSON في حقل: ' + k, false); }
       } else obj[k] = v.trim() === '' ? null : v;
     }
     const res = id ? await sb.from(cur).update(obj).eq('id', id) : await sb.from(cur).insert(obj);
-    if (res.error) return alert(res.error.message);
+    if (res.error) return toast('✗ ' + res.error.message, false);
+    toast('✔ تم الحفظ بنجاح');
     load();
   }
 
   async function del(id) {
     if (!confirm('متأكد إنك عايز تحذف العنصر ده؟')) return;
     const { error } = await sb.from(cur).delete().eq('id', id);
-    if (error) alert(error.message);
+    if (error) return toast('✗ ' + error.message, false);
+    toast('✔ تم الحذف');
     load();
   }
 
@@ -142,13 +196,13 @@
       `<label>${l}</label>` + (t === 'area'
         ? `<textarea data-k="${k}">${esc(s[k])}</textarea>`
         : `<input data-k="${k}" value="${esc(s[k])}">`)).join('') +
-      `<button class="p" onclick="saveSettings()">حفظ الإعدادات</button></div>`;
+      `<button class="p" onclick="saveSettings()">💾 حفظ الإعدادات</button></div>`;
   }
 
   async function saveSettings() {
     const list = [...document.querySelectorAll('[data-k]')].map(el => ({ key: el.dataset.k, value: el.value }));
     const { error } = await sb.from('site_settings').upsert(list);
-    alert(error ? error.message : 'تم الحفظ ✔');
+    toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
   }
 
   async function start() {

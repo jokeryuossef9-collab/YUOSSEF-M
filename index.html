@@ -46,11 +46,11 @@
 
         /* تعديل الخلفية الرئيسية للموقع هنا */
         body {
-            background-color: var(--bg-main); /* لون احتياطي */
+            background-color: var(--bg-main);
             background-image: linear-gradient(rgba(5, 4, 10, 0.85), rgba(5, 4, 10, 0.95)), url('https://i.postimg.cc/ZngMXCqn/Duck-ai-image-2026-11-01-04-02.jpg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* تثبيت الخلفية أثناء التمرير */
+            background-attachment: fixed;
             background-repeat: no-repeat;
             
             color: var(--text-white);
@@ -190,7 +190,7 @@
             border-bottom: 1px solid var(--border-color); 
             position: relative; 
             overflow: hidden;
-            backdrop-filter: blur(5px); /* لإعطاء تأثير زجاجي خفيف */
+            backdrop-filter: blur(5px);
         }
         .hero-grid-bg {
             position: absolute; top: 0; left: 0; width: 200%; height: 200%;
@@ -267,7 +267,7 @@
         .marquee-container {
             padding: 15px 0; 
             position: relative; 
-            background: rgba(5, 4, 10, 0.6); /* خلفية شبه شفافة */
+            background: rgba(5, 4, 10, 0.6);
             backdrop-filter: blur(5px);
             border-top: 1px solid rgba(255,255,255,0.05); 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
@@ -645,15 +645,16 @@
             </div>
         </div>
 
-        <!-- المشروع البارز -->
-        <div class="featured-project reveal">
-            <div class="featured-card tilt-effect" onclick="openProjectDetail(13)">
+        <!-- المشروع البارز (يتحدث تلقائياً من قاعدة البيانات) -->
+        <div class="featured-project reveal" id="featured-wrapper">
+            <!-- محتوى احتياطي يظهر لو فشل تحميل CMS -->
+            <div class="featured-card tilt-effect" onclick="openProjectDetail(1)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
-                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Talabat Campaign">
+                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Featured">
                 <div class="featured-overlay">
                     <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
                     <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
-                    <p style="font-size: 12px; color: var(--text-gray);">طلبات - Talabat</p>
+                    <p style="font-size: 12px; color: var(--text-gray);">مشروع مميز</p>
                 </div>
             </div>
         </div>
@@ -1099,7 +1100,7 @@
 
     <script>
         // =========================================
-        // [1] بيانات المشاريع
+        // [1] بيانات المشاريع (احتياطية - يتم استبدالها من قاعدة البيانات)
         // =========================================
         let projectsData = [
             {
