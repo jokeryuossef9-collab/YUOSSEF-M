@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة التحكم - YUOSSEF&M</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  body { font-family: Tahoma, Arial, sans-serif; background: #f4f5f7; margin: 0; color: #222; }
+  header { background: #111; color: #39ff14; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+  nav { display: flex; gap: 6px; padding: 10px 20px; background: #fff; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+  nav button { padding: 8px 14px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; }
+  nav button.on { background: #111; color: #39ff14; }
+  main { padding: 20px; max-width: 900px; margin: auto; }
+  .card { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px #0002; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  label { display: block; font-size: 13px; margin: 12px 0 4px; color: #555; }
+  input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font: inherit; box-sizing: border-box; }
+  textarea { min-height: 70px; }
+  .p { background: #111; color: #39ff14; border: 0; padding: 9px 16px; border-radius: 6px; cursor: pointer; margin-top: 12px; }
+  .d { background: #e63946; color: #fff; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  .e { background: #eee; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  .muted { color: #888; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="login" class="card" style="max-width:340px;margin:80px auto">
+  <h2>تسجيل الدخول</h2>
+  <label>البريد الإلكتروني</label><input id="em" type="email">
+  <label>كلمة المرور</label><input id="pw" type="password">
+  <button class="p" id="loginBtn">دخول</button>
+  <p id="err" style="color:#e63946"></p>
+</div>
+
+<div id="app" hidden>
+  <header><b>لوحة تحكم YUOSSEF&amp;M</b><button class="e" id="logout">خروج</button></header>
+  <nav id="tabs"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://cnygozaqtomkprpeydgc.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // تعريف الجداول والحقول: [اسم الحقل، الوصف، النوع، الخيارات]
+  const T = {
+    projects: { label: 'المشاريع', title: 'title', sort: 'sort_order', f: [
+      ['title', 'العنوان'], ['category', 'التصنيف', 'sel', 'social|identity|print'],
+      ['cover_image', 'رابط الصورة الرئيسية'], ['gallery', 'صور المعرض (رابط في كل سطر)', 'list'],
+      ['is_new', 'جديد', 'bool'], ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
+    packages: { label: 'الباكجات', title: 'title', sort: 'sort_order', f: [
+      ['title', 'الاسم'], ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'],
+      ['discount_label', 'شارة الخصم (مثال: خصم 25%)'], ['features', 'المميزات (سطر لكل ميزة)', 'list'],
+      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
+    courses: { label: 'الكورسات', title: 'title', sort: 'sort_order', f: [
+      ['title', 'اسم الكورس'], ['description', 'الوصف', 'area'], ['image', 'رابط الصورة'],
+      ['price', 'السعر'], ['old_price', 'السعر القديم (اختياري)'], ['discount_label', 'شارة الخصم'],
+      ['features', 'المميزات (سطر لكل ميزة)', 'list'],
+      ['modules', 'الوحدات (JSON: [{"title":"..","lessons":["..",".."]}])', 'json'],
+      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] },
+    testimonials: { label: 'الآراء', title: 'name', sort: 'sort_order', f: [
+      ['name', 'الاسم'], ['role', 'المسمى'], ['body', 'نص الرأي', 'area'],
+      ['published', 'منشور', 'bool'], ['sort_order', 'الترتيب', 'num']] }
+  };
+
+  const SETTINGS = [
+    ['hero_desc', 'وصف الصفحة الرئيسية', 'area'], ['journey_text', 'نص قسم "رحلتي"', 'area'],
+    ['whatsapp', 'رقم الواتساب (بدون +)'], ['phone', 'رقم الهاتف (بدون +)'], ['email', 'البريد الإلكتروني'],
+    ['facebook', 'رابط فيسبوك'], ['instagram', 'رابط انستجرام'], ['behance', 'رابط بيهانس'], ['linkedin', 'رابط لينكد إن']
+  ];
+
+  let cur = 'projects', rows = [];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function tabs() {
+    $('#tabs').innerHTML = [...Object.keys(T), 'settings'].map(k =>
+      `<button class="${k === cur ? 'on' : ''}" onclick="go('${k}')">${k === 'settings' ? 'الإعدادات' : T[k].label}</button>`).join('');
+  }
+
+  function go(k) { cur = k; tabs(); load(); }
+
+  async function load() {
+    if (cur === 'settings') return settings();
+    const { data, error } = await sb.from(cur).select('*').order(T[cur].sort);
+    if (error) return $('#main').innerHTML = `<p>${esc(error.message)}</p>`;
+    rows = data;
+    $('#main').innerHTML = `<div class="row"><h3>${T[cur].label}</h3><button class="p" onclick="edit(null)">+ إضافة</button></div>` +
+      (rows.map(r => `<div class="card row"><div><b>${esc(r[T[cur].title])}</b> ${r.published ? '' : '<span class="muted">(مخفي)</span>'}</div>
+        <div><button class="e" onclick="edit(${r.id})">تعديل</button> <button class="d" onclick="del(${r.id})">حذف</button></div></div>`).join('')
+        || '<p class="muted">لا يوجد عناصر بعد</p>');
+  }
+
+  function edit(id) {
+    const r = id ? rows.find(x => x.id === id) : {};
+    const fields = T[cur].f.map(([k, l, t = 'text', o]) => {
+      const v = r[k];
+      if (t === 'bool') return `<label><input type="checkbox" data-k="${k}" ${(v ?? (k === 'published')) ? 'checked' : ''} style="width:auto"> ${l}</label>`;
+      let val = v ?? '';
+      if (t === 'list') val = (v || []).join('\n');
+      if (t === 'json') val = JSON.stringify(v || [], null, 2);
+      let field;
+      if (t === 'area' || t === 'list' || t === 'json') field = `<textarea data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
+      else if (t === 'sel') field = `<select data-k="${k}">${o.split('|').map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('')}</select>`;
+      else field = `<input data-k="${k}" data-t="${t}" value="${esc(val)}">`;
+      return `<label>${l}</label>${field}`;
+    }).join('');
+    $('#main').innerHTML = `<div class="card"><h3>${id ? 'تعديل' : 'إضافة'}</h3>${fields}
+      <button class="p" onclick="save(${id || 'null'})">حفظ</button> <button class="e" onclick="load()">رجوع</button></div>`;
+  }
+
+  async function save(id) {
+    const obj = {};
+    for (const el of document.querySelectorAll('[data-k]')) {
+      const k = el.dataset.k, t = el.dataset.t, v = el.value;
+      if (el.type === 'checkbox') obj[k] = el.checked;
+      else if (t === 'num') obj[k] = Number(v) || 0;
+      else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
+      else if (t === 'json') {
+        try { obj[k] = JSON.parse(v || '[]'); }
+        catch (e) { return alert('خطأ في تنسيق JSON في حقل: ' + k); }
+      } else obj[k] = v.trim() === '' ? null : v;
+    }
+    const res = id ? await sb.from(cur).update(obj).eq('id', id) : await sb.from(cur).insert(obj);
+    if (res.error) return alert(res.error.message);
+    load();
+  }
+
+  async function del(id) {
+    if (!confirm('متأكد إنك عايز تحذف العنصر ده؟')) return;
+    const { error } = await sb.from(cur).delete().eq('id', id);
+    if (error) alert(error.message);
+    load();
+  }
+
+  async function settings() {
+    const { data } = await sb.from('site_settings').select('*');
+    const s = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+    $('#main').innerHTML = `<div class="card"><h3>الإعدادات</h3>` + SETTINGS.map(([k, l, t]) =>
+      `<label>${l}</label>` + (t === 'area'
+        ? `<textarea data-k="${k}">${esc(s[k])}</textarea>`
+        : `<input data-k="${k}" value="${esc(s[k])}">`)).join('') +
+      `<button class="p" onclick="saveSettings()">حفظ الإعدادات</button></div>`;
+  }
+
+  async function saveSettings() {
+    const list = [...document.querySelectorAll('[data-k]')].map(el => ({ key: el.dataset.k, value: el.value }));
+    const { error } = await sb.from('site_settings').upsert(list);
+    alert(error ? error.message : 'تم الحفظ ✔');
+  }
+
+  async function start() {
+    const { data } = await sb.auth.getSession();
+    if (data.session) {
+      $('#login').hidden = true;
+      $('#app').hidden = false;
+      tabs();
+      load();
+    }
+  }
+
+  $('#loginBtn').onclick = async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: $('#em').value, password: $('#pw').value });
+    if (error) $('#err').textContent = error.message; else start();
+  };
+  $('#logout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+  start();
+</script>
+</body>
+</html>
