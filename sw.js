@@ -1,4 +1,4 @@
-const CACHE = 'ym-admin-v2';
+const CACHE = 'ym-v6';
 const ASSETS = [
   './admin.html',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
@@ -16,15 +16,27 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys => Promise.all(
       keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-    ))
+    )).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+
+  const url = new URL(e.request.url);
+
+  // ✅ HTML دايماً من الشبكة (مش من الكاش) عشان التحديثات تظهر فوراً
+  if (e.request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/') {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // الباقي: Network-first مع fallback للكاش
   e.respondWith(
     fetch(e.request).then(res => {
-      if (e.request.method === 'GET' && res.ok) {
+      if (res.ok) {
         const clone = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, clone)).catch(() => {});
       }

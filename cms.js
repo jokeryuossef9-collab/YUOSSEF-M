@@ -14,7 +14,6 @@
     return data;
   }
 
-  // الأحدث أولاً: نعتمد على id (auto increment) — مضمون 100%
   function sortNewestFirst(a, b) {
     return Number(b.id) - Number(a.id);
   }
@@ -29,9 +28,9 @@
     wrapper.innerHTML = `
       <div class="featured-card tilt-effect" onclick="openProjectDetail(${project.id})">
         <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
-        <img src="${esc(cover)}" alt="${esc(project.title)}">
+        <img src="${esc(cover)}" alt="${esc(project.title)}" loading="lazy" decoding="async">
         <div class="featured-overlay">
-          <p style="font-size: 10px; color: #d8b4fe; margin-bottom: 5px;">YUOSSEF&M</p>
+          <p style="font-size: 10px; color: #a5b4fc; margin-bottom: 5px;">مشروع مميز</p>
           <h3 style="font-size: 20px; margin-bottom: 5px;">${esc(project.title)}</h3>
           <p style="font-size: 12px; color: var(--text-gray);">${catLabel}</p>
         </div>
@@ -53,12 +52,10 @@
         title: p.title,
         category: p.category,
         coverImage: p.cover_image,
-        isNew: i === 0,           // الأحدث دائماً "جديد"
+        isNew: i === 0,
         gallery: p.gallery || []
       }));
-      // المشروع البارز = الأحدث
       renderFeatured(projectsData[0]);
-      // الشبكة تحت
       renderHomeProjects(projectsData);
     }
 
@@ -82,7 +79,7 @@
       document.querySelectorAll('#view-courses .course-card').forEach(el => el.remove());
       $$('#view-courses').insertAdjacentHTML('beforeend', co.map(c => `
         <div class="course-card tilt-effect">
-          <div class="course-image-container">${c.discount_label ? `<div class="course-discount-badge">${esc(c.discount_label)}</div>` : ''}<img src="${esc(c.image)}" alt="${esc(c.title)}"></div>
+          <div class="course-image-container">${c.discount_label ? `<div class="course-discount-badge">${esc(c.discount_label)}</div>` : ''}<img src="${esc(c.image)}" alt="${esc(c.title)}" loading="lazy"></div>
           <div class="course-content">
             <h3 class="course-title">${esc(c.title)}</h3>
             <p class="course-desc">${esc(c.description)}</p>

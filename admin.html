@@ -1,1283 +1,490 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>لوحة التحكم</title>
-    <meta name="description" content="لوحة تحكم إدارة الموقع">
-    <meta name="theme-color" content="#060b14">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="لوحة التحكم">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"لوحة التحكم","short_name":"Admin","start_url":"./admin.html","display":"standalone","orientation":"portrait","background_color":"%23060b14","theme_color":"%233b82f6","icons":[{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"512x512","type":"image/png","purpose":"any"}]}'>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://cnygozaqtomkprpeydgc.supabase.co" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        :root {
-            --bg-main: #060b14;
-            --bg-card: #0d1524;
-            --bg-input: #0a1322;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --accent-red: #ef4444;
-            --accent-purple: #6366f1;
-            --text-white: #ffffff;
-            --text-gray: #94a3b8;
-            --border-color: #1e293b;
-        }
-
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        [hidden] { display: none !important; }
-
-        html, body { min-height: 100vh; }
-
-        body {
-            background-color: var(--bg-main);
-            background-image:
-                radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.14), transparent 45%),
-                radial-gradient(circle at 80% 100%, rgba(99, 102, 241, 0.10), transparent 50%);
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: var(--text-white);
-            max-width: 750px;
-            margin: 0 auto;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: calc(30px + env(safe-area-inset-bottom));
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* ===== Login ===== */
-        .login-wrap {
-            min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: rgba(13, 21, 36, 0.90);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px 25px;
-            width: 100%; max-width: 400px;
-            box-shadow: 0 0 60px rgba(59, 130, 246, 0.18), 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: fadeInUp 0.4s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .login-logo {
-            width: 100px; height: 100px; object-fit: contain;
-            display: block; margin: 0 auto 20px;
-            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.55));
-        }
-        .login-title {
-            text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 8px;
-            background: linear-gradient(90deg, var(--primary), var(--accent-purple));
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .login-subtitle {
-            text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 30px;
-        }
-        .login-field { margin-bottom: 16px; }
-        .login-field label {
-            display: block; font-size: 12px; font-weight: 700;
-            color: var(--text-gray); margin-bottom: 6px;
-        }
-        .login-field input {
-            width: 100%; padding: 13px 15px; border-radius: 12px;
-            background: var(--bg-input); border: 1px solid var(--border-color);
-            color: var(--text-white); font-size: 14px; outline: none; transition: 0.25s;
-        }
-        .login-field input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.20);
-        }
-        .login-err {
-            color: var(--accent-red); font-size: 13px; margin-top: 15px;
-            text-align: center; min-height: 20px; font-weight: 700;
-        }
-
-        /* ===== Header ===== */
-        .app-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background-color: rgba(6, 11, 20, 0.88);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .header-logo-area { display: flex; align-items: center; gap: 10px; }
-        .header-logo {
-            width: 45px; height: 45px; object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
-        }
-        .header-title { font-size: 15px; font-weight: 900; color: var(--text-white); }
-        .header-title span {
-            display: block; font-size: 10px; font-weight: 600;
-            color: var(--primary); margin-top: 2px;
-        }
-        .btn-logout {
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid var(--accent-red); color: var(--accent-red);
-            padding: 8px 14px; border-radius: 20px; font-size: 12px;
-            font-weight: 700; cursor: pointer; display: flex;
-            align-items: center; gap: 6px; transition: 0.25s;
-        }
-        .btn-logout:hover { background: var(--accent-red); color: white; }
-
-        /* ===== Nav ===== */
-        .app-nav {
-            display: flex; gap: 8px; padding: 12px 15px;
-            overflow-x: auto; scrollbar-width: none;
-            background: rgba(6, 11, 20, 0.65);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: sticky; top: 75px; z-index: 99;
-        }
-        .app-nav::-webkit-scrollbar { display: none; }
-        .nav-chip {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-gray); padding: 9px 18px;
-            border-radius: 20px; font-size: 13px; font-weight: 700;
-            cursor: pointer; white-space: nowrap; display: flex;
-            align-items: center; gap: 7px; transition: 0.25s; flex-shrink: 0;
-        }
-        .nav-chip i { font-size: 12px; }
-        .nav-chip:hover { border-color: var(--primary); color: var(--primary); }
-        .nav-chip.on {
-            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-            color: #fff; border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.45);
-        }
-
-        /* ===== Main ===== */
-        .app-main { padding: 20px 15px; }
-
-        .page-head {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
-        }
-        .page-head-info { flex: 1; min-width: 0; }
-        .page-title {
-            font-size: 20px; font-weight: 900; color: var(--text-white);
-            display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
-        }
-        .page-title::before {
-            content: ''; width: 4px; height: 20px;
-            background: var(--primary); border-radius: 2px;
-        }
-        .page-desc { font-size: 12px; color: var(--text-gray); line-height: 1.5; }
-
-        .btn-add {
-            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-            color: #fff; border: none; padding: 10px 18px; border-radius: 12px;
-            font-size: 13px; font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; gap: 6px; transition: 0.25s;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
-        }
-        .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.55);
-        }
-
-        /* Search */
-        .search-box { margin-bottom: 15px; position: relative; }
-        .search-box input {
-            width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px;
-            background-color: var(--bg-card); border: 1px solid var(--border-color);
-            color: var(--text-white); font-size: 13px; outline: none; transition: 0.25s;
-        }
-        .search-box input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.20);
-        }
-        .search-box i {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            color: var(--text-gray); font-size: 14px;
-        }
-
-        /* Item card */
-        .item-card {
-            background: rgba(13, 21, 36, 0.88);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color); border-radius: 16px;
-            padding: 12px; margin-bottom: 12px; display: flex;
-            align-items: center; gap: 12px; transition: 0.25s;
-        }
-        .item-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
-            transform: translateY(-2px);
-        }
-        .item-thumb {
-            width: 60px; height: 60px; border-radius: 12px;
-            background: var(--bg-main); border: 1px solid var(--border-color);
-            flex-shrink: 0; overflow: hidden; display: flex;
-            align-items: center; justify-content: center;
-            color: var(--text-gray); font-size: 22px;
-        }
-        .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .item-info { flex: 1; min-width: 0; }
-        .item-name {
-            font-size: 14px; font-weight: 700; color: var(--text-white);
-            margin-bottom: 4px; white-space: nowrap;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-        .item-meta {
-            font-size: 11px; color: var(--text-gray);
-            display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-        }
-        .status-pill {
-            display: inline-flex; align-items: center; gap: 3px;
-            padding: 2px 8px; border-radius: 20px;
-            font-size: 10px; font-weight: 700;
-        }
-        .status-pill.pub { background: rgba(59, 130, 246, 0.18); color: var(--primary); }
-        .status-pill.hidden { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
-        .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
-        .btn-icon-sm {
-            width: 34px; height: 34px; border-radius: 10px;
-            border: 1px solid var(--border-color); background: var(--bg-main);
-            color: var(--text-gray); cursor: pointer; display: flex;
-            align-items: center; justify-content: center; font-size: 13px;
-            transition: 0.25s;
-        }
-        .btn-icon-sm:hover {
-            border-color: var(--primary); color: var(--primary);
-            background: rgba(59, 130, 246, 0.08);
-        }
-        .btn-icon-sm.danger:hover {
-            border-color: var(--accent-red); color: var(--accent-red);
-            background: rgba(239, 68, 68, 0.08);
-        }
-
-        /* Empty */
-        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-gray); }
-        .empty-state i {
-            font-size: 50px; color: var(--border-color);
-            margin-bottom: 15px; display: block;
-        }
-        .empty-state p { font-size: 14px; }
-
-        /* Form */
-        .form-card {
-            background: rgba(13, 21, 36, 0.90);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 22px 18px; animation: fadeInUp 0.35s ease;
-        }
-        .form-title {
-            font-size: 18px; font-weight: 900; color: var(--primary);
-            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-            padding-bottom: 15px; border-bottom: 1px solid var(--border-color);
-        }
-        .field-group { margin-bottom: 18px; }
-        .field-label {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 13px; font-weight: 700; color: var(--text-white);
-            margin-bottom: 6px;
-        }
-        .field-label i { color: var(--primary); font-size: 8px; }
-        .field-help {
-            font-size: 11px; color: var(--text-gray);
-            margin-bottom: 8px; line-height: 1.5;
-        }
-        .field-input, .field-textarea, .field-select {
-            width: 100%; padding: 12px 14px; border-radius: 10px;
-            background: var(--bg-input); border: 1px solid var(--border-color);
-            color: var(--text-white); font-family: inherit; font-size: 13px;
-            outline: none; transition: 0.25s;
-        }
-        .field-textarea { min-height: 80px; resize: vertical; }
-        .field-select { appearance: none; -webkit-appearance: none; cursor: pointer; }
-        .field-select option { background: var(--bg-main); color: white; }
-        .field-input:focus, .field-textarea:focus, .field-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.20);
-        }
-        .field-checkbox {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; background: var(--bg-input);
-            border: 1px solid var(--border-color); border-radius: 10px;
-            cursor: pointer; transition: 0.25s;
-        }
-        .field-checkbox:hover { border-color: var(--primary); }
-        .field-checkbox input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
-        .field-checkbox span { font-size: 13px; font-weight: 700; }
-        
-        /* Image Upload Styles */
-        .img-upload-wrapper {
-            background: var(--bg-input);
-            border: 1px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            transition: 0.25s;
-        }
-        .img-upload-wrapper:hover { border-color: var(--primary); }
-        .btn-upload {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(59, 130, 246, 0.12); color: var(--primary);
-            border: 1px solid var(--primary); padding: 10px 20px;
-            border-radius: 8px; font-size: 13px; font-weight: 700;
-            cursor: pointer; transition: 0.25s;
-        }
-        .btn-upload:hover { background: var(--primary); color: #fff; }
-        .or-divider { font-size: 11px; color: var(--text-gray); margin: 10px 0; }
-        .field-preview {
-            margin-top: 15px; max-width: 100%; max-height: 250px;
-            border-radius: 10px; border: 1px solid var(--border-color);
-            object-fit: cover; display: none; width: 100%;
-        }
-        .field-preview.visible { display: inline-block; width: auto; }
-        .upload-status { font-size: 12px; font-weight: 700; margin-top: 10px; display: block; }
-
-        /* Gallery Upload */
-        .gallery-upload-wrapper {
-            background: var(--bg-input);
-            border: 1px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-        }
-        .gallery-previews {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .gallery-thumb {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: var(--bg-main);
-        }
-        .gallery-thumb img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-        .btn-remove-thumb {
-            position: absolute; top: 4px; left: 4px;
-            background: var(--accent-red); color: white;
-            border: none; width: 24px; height: 24px;
-            border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            transition: 0.2s;
-        }
-        .btn-remove-thumb:hover { transform: scale(1.1); }
-
-        .gallery-url-row {
-            display: flex; gap: 8px; align-items: stretch;
-            margin-top: 6px;
-        }
-        .gallery-url-row .field-input {
-            flex: 1; padding: 10px 12px; font-size: 12px;
-        }
-        .gallery-url-row .btn-upload {
-            padding: 10px 15px; white-space: nowrap; font-size: 12px;
-        }
-
-        .form-actions {
-            display: flex; gap: 10px; margin-top: 24px;
-            padding-top: 18px; border-top: 1px solid var(--border-color);
-        }
-        .btn-save {
-            flex: 1;
-            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-            color: #fff; border: none; padding: 14px; border-radius: 12px;
-            font-size: 14px; font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; transition: 0.25s;
-        }
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45);
-        }
-        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .btn-cancel {
-            padding: 14px 20px; background: transparent;
-            border: 1px solid var(--border-color); color: var(--text-gray);
-            border-radius: 12px; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: 0.25s;
-        }
-        .btn-cancel:hover { border-color: var(--accent-red); color: var(--accent-red); }
-
-        .btn-primary-lg {
-            width: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-            color: #fff; border: none; padding: 14px; border-radius: 12px;
-            font-size: 15px; font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; margin-top: 10px; transition: 0.25s;
-        }
-        .btn-primary-lg:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45);
-        }
-        .btn-primary-lg:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 20px; left: 50%;
-            transform: translateX(-50%) translateY(200%);
-            background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-            color: #fff; padding: 12px 24px; border-radius: 30px;
-            font-weight: 900; font-size: 13px; z-index: 9999;
-            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.45);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex; align-items: center; gap: 8px; max-width: 90%;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.err {
-            background: linear-gradient(90deg, var(--accent-red), #b32d38);
-            color: white;
-            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.45);
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            z-index: 1000; display: flex; justify-content: center;
-            align-items: center; padding: 20px;
-        }
-        .modal-box {
-            background: var(--bg-card); border: 1px solid var(--accent-red);
-            border-radius: 20px; padding: 28px 22px; max-width: 380px;
-            width: 100%; text-align: center;
-            box-shadow: 0 20px 60px rgba(239, 68, 68, 0.25);
-            animation: modalIn 0.25s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal-icon {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: rgba(239, 68, 68, 0.15); color: var(--accent-red);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; margin: 0 auto 16px;
-        }
-        .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
-        .modal-text {
-            font-size: 13px; color: var(--text-gray);
-            margin-bottom: 22px; line-height: 1.5;
-        }
-        .modal-actions { display: flex; gap: 10px; }
-        .modal-actions button {
-            flex: 1; padding: 12px; border-radius: 10px;
-            font-weight: 900; font-size: 13px; cursor: pointer;
-            border: none; transition: 0.25s;
-        }
-        .modal-actions .yes { background: var(--accent-red); color: white; }
-        .modal-actions .no {
-            background: var(--bg-main); border: 1px solid var(--border-color);
-            color: var(--text-white);
-        }
-
-        /* Loader */
-        .loader {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 50px;
-            color: var(--text-gray); gap: 15px;
-        }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Settings */
-        .settings-section { margin-bottom: 22px; }
-        .settings-section h4 {
-            font-size: 13px; color: var(--primary); font-weight: 900;
-            margin-bottom: 12px; display: flex; align-items: center;
-            gap: 8px; padding-bottom: 8px;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
-        @media (max-width: 480px) {
-            .app-main { padding: 15px 12px; }
-            .form-card { padding: 18px 14px; }
-            .page-title { font-size: 18px; }
-            .login-card { padding: 32px 20px; }
-            .item-thumb { width: 50px; height: 50px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>لوحة التحكم</title>
+<meta name="theme-color" content="#060b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="لوحة التحكم">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg-main:#060b14;--bg-card:#0d1524;--bg-input:#0a1322;--primary:#3b82f6;--primary-hover:#2563eb;--accent-red:#ef4444;--accent-purple:#6366f1;--text-white:#fff;--text-gray:#94a3b8;--border-color:#1e293b}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{min-height:100vh}
+body{background-color:var(--bg-main);background-image:radial-gradient(circle at 20% 0%,rgba(59,130,246,.14),transparent 45%),radial-gradient(circle at 80% 100%,rgba(99,102,241,.10),transparent 50%);background-attachment:fixed;background-repeat:no-repeat;color:var(--text-white);max-width:750px;margin:0 auto;padding-top:env(safe-area-inset-top);padding-bottom:calc(30px + env(safe-area-inset-bottom));position:relative;overflow-x:hidden}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:rgba(13,21,36,.90);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border:1px solid var(--border-color);border-radius:24px;padding:40px 25px;width:100%;max-width:400px;box-shadow:0 0 60px rgba(59,130,246,.18),0 20px 60px rgba(0,0,0,.5);animation:fadeInUp .4s ease}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{width:100px;height:100px;object-fit:contain;display:block;margin:0 auto 20px;filter:drop-shadow(0 0 20px rgba(59,130,246,.55))}
+.login-title{text-align:center;font-size:24px;font-weight:900;margin-bottom:8px;background:linear-gradient(90deg,var(--primary),var(--accent-purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.login-subtitle{text-align:center;color:var(--text-gray);font-size:13px;margin-bottom:30px}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:12px;font-weight:700;color:var(--text-gray);margin-bottom:6px}
+.login-field input{width:100%;padding:13px 15px;border-radius:12px;background:var(--bg-input);border:1px solid var(--border-color);color:var(--text-white);font-size:14px;outline:none;transition:.25s}
+.login-field input:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(59,130,246,.20)}
+.login-err{color:var(--accent-red);font-size:13px;margin-top:15px;text-align:center;min-height:20px;font-weight:700}
+.app-header{display:flex;justify-content:space-between;align-items:center;padding:15px;background-color:rgba(6,11,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
+.header-logo-area{display:flex;align-items:center;gap:10px}
+.header-logo{width:45px;height:45px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(59,130,246,.5))}
+.header-title{font-size:15px;font-weight:900;color:var(--text-white)}
+.header-title span{display:block;font-size:10px;font-weight:600;color:var(--primary);margin-top:2px}
+.btn-logout{background:rgba(239,68,68,.12);border:1px solid var(--accent-red);color:var(--accent-red);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.25s}
+.btn-logout:hover{background:var(--accent-red);color:#fff}
+.app-nav{display:flex;gap:8px;padding:12px 15px;overflow-x:auto;scrollbar-width:none;background:rgba(6,11,20,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:75px;z-index:99}
+.app-nav::-webkit-scrollbar{display:none}
+.nav-chip{background-color:var(--bg-card);border:1px solid var(--border-color);color:var(--text-gray);padding:9px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px;transition:.25s;flex-shrink:0}
+.nav-chip i{font-size:12px}
+.nav-chip:hover{border-color:var(--primary);color:var(--primary)}
+.nav-chip.on{background:linear-gradient(90deg,var(--primary),var(--primary-hover));color:#fff;border-color:var(--primary);box-shadow:0 0 15px rgba(59,130,246,.45)}
+.app-main{padding:20px 15px}
+.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.page-head-info{flex:1;min-width:0}
+.page-title{font-size:20px;font-weight:900;color:var(--text-white);display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.page-title::before{content:'';width:4px;height:20px;background:var(--primary);border-radius:2px}
+.page-desc{font-size:12px;color:var(--text-gray);line-height:1.5}
+.btn-add{background:linear-gradient(90deg,var(--primary),var(--primary-hover));color:#fff;border:none;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.25s;box-shadow:0 4px 20px rgba(59,130,246,.35)}
+.btn-add:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(59,130,246,.55)}
+.search-box{margin-bottom:15px;position:relative}
+.search-box input{width:100%;padding:12px 40px 12px 15px;border-radius:12px;background-color:var(--bg-card);border:1px solid var(--border-color);color:var(--text-white);font-size:13px;outline:none;transition:.25s}
+.search-box input:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(59,130,246,.20)}
+.search-box i{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text-gray);font-size:14px}
+.item-card{background:rgba(13,21,36,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border-color);border-radius:16px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;transition:.25s}
+.item-card:hover{border-color:var(--primary);box-shadow:0 0 20px rgba(59,130,246,.15);transform:translateY(-2px)}
+.item-thumb{width:60px;height:60px;border-radius:12px;background:var(--bg-main);border:1px solid var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--text-gray);font-size:22px}
+.item-thumb img{width:100%;height:100%;object-fit:cover}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:14px;font-weight:700;color:var(--text-white);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-meta{font-size:11px;color:var(--text-gray);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.status-pill.pub{background:rgba(59,130,246,.18);color:var(--primary)}
+.status-pill.hidden{background:rgba(239,68,68,.15);color:var(--accent-red)}
+.item-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-icon-sm{width:34px;height:34px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-main);color:var(--text-gray);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.25s}
+.btn-icon-sm:hover{border-color:var(--primary);color:var(--primary);background:rgba(59,130,246,.08)}
+.btn-icon-sm.danger:hover{border-color:var(--accent-red);color:var(--accent-red);background:rgba(239,68,68,.08)}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-gray)}
+.empty-state i{font-size:50px;color:var(--border-color);margin-bottom:15px;display:block}
+.empty-state p{font-size:14px}
+.form-card{background:rgba(13,21,36,.90);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border-color);border-radius:20px;padding:22px 18px;animation:fadeInUp .35s ease}
+.form-title{font-size:18px;font-weight:900;color:var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:15px;border-bottom:1px solid var(--border-color)}
+.field-group{margin-bottom:18px}
+.field-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text-white);margin-bottom:6px}
+.field-label i{color:var(--primary);font-size:8px}
+.field-help{font-size:11px;color:var(--text-gray);margin-bottom:8px;line-height:1.5}
+.field-input,.field-textarea,.field-select{width:100%;padding:12px 14px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-color);color:var(--text-white);font-family:inherit;font-size:13px;outline:none;transition:.25s}
+.field-textarea{min-height:80px;resize:vertical}
+.field-select{appearance:none;-webkit-appearance:none;cursor:pointer}
+.field-select option{background:var(--bg-main);color:#fff}
+.field-input:focus,.field-textarea:focus,.field-select:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(59,130,246,.20)}
+.field-checkbox{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;cursor:pointer;transition:.25s}
+.field-checkbox:hover{border-color:var(--primary)}
+.field-checkbox input{width:20px;height:20px;accent-color:var(--primary);cursor:pointer}
+.field-checkbox span{font-size:13px;font-weight:700}
+.img-upload-wrapper{background:var(--bg-input);border:1px dashed var(--border-color);border-radius:12px;padding:15px;text-align:center;transition:.25s}
+.img-upload-wrapper:hover{border-color:var(--primary)}
+.btn-upload{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.12);color:var(--primary);border:1px solid var(--primary);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.25s}
+.btn-upload:hover{background:var(--primary);color:#fff}
+.or-divider{font-size:11px;color:var(--text-gray);margin:10px 0}
+.field-preview{margin-top:15px;max-width:100%;max-height:250px;border-radius:10px;border:1px solid var(--border-color);object-fit:cover;display:none;width:100%}
+.field-preview.visible{display:inline-block;width:auto}
+.upload-status{font-size:12px;font-weight:700;margin-top:10px;display:block}
+.gallery-upload-wrapper{background:var(--bg-input);border:1px dashed var(--border-color);border-radius:12px;padding:15px;text-align:center}
+.gallery-previews{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-bottom:15px}
+.gallery-thumb{position:relative;width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border-color);background:var(--bg-main)}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover}
+.btn-remove-thumb{position:absolute;top:4px;left:4px;background:var(--accent-red);color:#fff;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 5px rgba(0,0,0,.5);transition:.2s}
+.btn-remove-thumb:hover{transform:scale(1.1)}
+.gallery-url-row{display:flex;gap:8px;align-items:stretch;margin-top:6px}
+.gallery-url-row .field-input{flex:1;padding:10px 12px;font-size:12px}
+.gallery-url-row .btn-upload{padding:10px 15px;white-space:nowrap;font-size:12px}
+.form-actions{display:flex;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--border-color)}
+.btn-save{flex:1;background:linear-gradient(90deg,var(--primary),var(--primary-hover));color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.25s}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,.45)}
+.btn-save:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-cancel{padding:14px 20px;background:transparent;border:1px solid var(--border-color);color:var(--text-gray);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:.25s}
+.btn-cancel:hover{border-color:var(--accent-red);color:var(--accent-red)}
+.btn-primary-lg{width:100%;background:linear-gradient(90deg,var(--primary),var(--primary-hover));color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;transition:.25s}
+.btn-primary-lg:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,.45)}
+.btn-primary-lg:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(200%);background:linear-gradient(90deg,var(--primary),var(--primary-hover));color:#fff;padding:12px 24px;border-radius:30px;font-weight:900;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(59,130,246,.45);transition:transform .35s cubic-bezier(0.34,1.56,0.64,1);display:flex;align-items:center;gap:8px;max-width:90%}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{background:linear-gradient(90deg,var(--accent-red),#b32d38);color:#fff;box-shadow:0 8px 30px rgba(239,68,68,.45)}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:1000;display:flex;justify-content:center;align-items:center;padding:20px}
+.modal-box{background:var(--bg-card);border:1px solid var(--accent-red);border-radius:20px;padding:28px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(239,68,68,.25);animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal-icon{width:60px;height:60px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--accent-red);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:8px}
+.modal-text{font-size:13px;color:var(--text-gray);margin-bottom:22px;line-height:1.5}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:12px;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;border:none;transition:.25s}
+.modal-actions .yes{background:var(--accent-red);color:#fff}
+.modal-actions .no{background:var(--bg-main);border:1px solid var(--border-color);color:var(--text-white)}
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px;color:var(--text-gray);gap:15px}
+.spinner{width:40px;height:40px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.settings-section{margin-bottom:22px}
+.settings-section h4{font-size:13px;color:var(--primary);font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:1px dashed var(--border-color)}
+@media (max-width:480px){.app-main{padding:15px 12px}.form-card{padding:18px 14px}.page-title{font-size:18px}.login-card{padding:32px 20px}.item-thumb{width:50px;height:50px}}
+</style>
 </head>
 <body>
 
-<!-- Login Screen -->
 <div id="login-screen" class="login-wrap">
-    <div class="login-card">
-        <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="login-logo" alt="Logo">
-        <h1 class="login-title">لوحة التحكم</h1>
-        <p class="login-subtitle">سجّل دخولك للمتابعة</p>
-
-        <div class="login-field">
-            <label><i class="fas fa-envelope" style="color: var(--primary); margin-left: 5px;"></i> البريد الإلكتروني</label>
-            <input id="em" type="email" placeholder="you@example.com" autocomplete="email" dir="ltr">
-        </div>
-
-        <div class="login-field">
-            <label><i class="fas fa-lock" style="color: var(--primary); margin-left: 5px;"></i> كلمة المرور</label>
-            <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" dir="ltr">
-        </div>
-
-        <button class="btn-primary-lg" id="loginBtn">
-            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
-        </button>
-
-        <p id="err" class="login-err"></p>
-    </div>
+<div class="login-card">
+<img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="login-logo" alt="Logo">
+<h1 class="login-title">لوحة التحكم</h1>
+<p class="login-subtitle">سجّل دخولك للمتابعة</p>
+<div class="login-field">
+<label><i class="fas fa-envelope" style="color:var(--primary);margin-left:5px;"></i> البريد الإلكتروني</label>
+<input id="em" type="email" placeholder="you@example.com" autocomplete="email" dir="ltr">
+</div>
+<div class="login-field">
+<label><i class="fas fa-lock" style="color:var(--primary);margin-left:5px;"></i> كلمة المرور</label>
+<input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" dir="ltr">
+</div>
+<button class="btn-primary-lg" id="loginBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+<p id="err" class="login-err"></p>
+</div>
 </div>
 
-<!-- Main App (Hidden by default) -->
 <div id="app" hidden>
-    <header class="app-header">
-        <div class="header-logo-area">
-            <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="header-logo" alt="Logo">
-            <div class="header-title">
-                لوحة التحكم
-                <span>إدارة الموقع</span>
-            </div>
-        </div>
-        <button class="btn-logout" id="logout">
-            <i class="fas fa-sign-out-alt"></i> خروج
-        </button>
-    </header>
-
-    <nav class="app-nav" id="tabs"></nav>
-    <main class="app-main" id="main"></main>
+<header class="app-header">
+<div class="header-logo-area">
+<img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="header-logo" alt="Logo">
+<div class="header-title">لوحة التحكم<span>إدارة الموقع</span></div>
+</div>
+<button class="btn-logout" id="logout"><i class="fas fa-sign-out-alt"></i> خروج</button>
+</header>
+<nav class="app-nav" id="tabs"></nav>
+<main class="app-main" id="main"></main>
 </div>
 
 <script>
-    // ==========================================
-    // إعدادات Supabase
-    // ==========================================
-    const SUPABASE_URL = 'https://cnygozaqtomkprpeydgc.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // ==========================================
-    // الحقول والبيانات
-    // ==========================================
-    const T = {
-        projects: {
-            label: 'المشاريع', singular: 'مشروع', icon: 'fa-folder-open',
-            title: 'title', sort: 'sort_order',
-            desc: 'إدارة معرض أعمالك. المشروع الأحدث (بأعلى ID) يظهر كغلاف رئيسي في الموقع تلقائياً.',
-            f: [
-                ['title', 'العنوان', 'text', null, 'اسم المشروع كما يظهر للزائر'],
-                ['category', 'التصنيف', 'sel', 'social|identity|print', 'social=سوشيال، identity=هوية، print=مطبوعات'],
-                ['cover_image', 'رابط الصورة الرئيسية', 'img', null, 'ارفع صورة من جهازك/تليفونك أو الصق رابطاً مباشراً'],
-                ['gallery', 'صور المعرض', 'gallery', null, 'ارفع صور متعددة من جهازك/تليفونك أو أضف روابط من مواقع استضافة'],
-                ['is_new', 'جديد', 'bool', null, 'لو مفعّل، تظهر شارة "جديد" (الأحدث ياخدها تلقائياً)'],
-                ['published', 'منشور', 'bool', null, 'لو مقفول، المشروع مش هيظهر في الموقع'],
-                ['sort_order', 'الترتيب', 'num', null, 'رقم الترتيب اليدوي (الأقل يظهر أولاً)']
-            ]
-        },
-        packages: {
-            label: 'الباكجات', singular: 'باقة', icon: 'fa-tags',
-            title: 'title', sort: 'sort_order',
-            desc: 'إدارة باقات التصميم اللي تظهر في صفحة "الباكجات".',
-            f: [
-                ['title', 'اسم الباقة', 'text', null, 'اسم الباقة كما يظهر'],
-                ['price', 'السعر', 'text', null, 'السعر الحالي (مثلاً: 1500)'],
-                ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم — يظهر مشطوب'],
-                ['discount_label', 'شارة الخصم', 'text', null, 'نص شارة (مثال: خصم 25%)'],
-                ['features', 'المميزات', 'list', null, 'كل ميزة في سطر منفصل'],
-                ['published', 'منشور', 'bool', null, 'لو مقفول مش هتظهر'],
-                ['sort_order', 'الترتيب', 'num', null, 'الأقل يظهر أولاً']
-            ]
-        },
-        courses: {
-            label: 'الكورسات', singular: 'كورس', icon: 'fa-graduation-cap',
-            title: 'title', sort: 'sort_order',
-            desc: 'إدارة الكورسات اللي تظهر في صفحة "الكورسات".',
-            f: [
-                ['title', 'اسم الكورس', 'text', null, 'اسم الكورس'],
-                ['description', 'الوصف', 'area', null, 'وصف مختصر للكورس'],
-                ['image', 'رابط الصورة', 'img', null, 'ارفع صورة الكورس من جهازك/تليفونك أو الصق رابطاً'],
-                ['price', 'السعر', 'text', null, 'السعر الحالي'],
-                ['old_price', 'السعر القديم', 'text', null, 'السعر قبل الخصم (اختياري)'],
-                ['discount_label', 'شارة الخصم', 'text', null, 'مثال: خصم 50%'],
-                ['features', 'المميزات', 'list', null, 'ميزة في كل سطر'],
-                ['modules', 'الوحدات (JSON)', 'json', null, 'الوحدات والدروس: [{"title":"...","lessons":["..."]}]'],
-                ['published', 'منشور', 'bool', null, 'لو مقفول مش هيظهر'],
-                ['sort_order', 'الترتيب', 'num', null, 'الأقل أولاً']
-            ]
-        },
-        testimonials: {
-            label: 'الآراء', singular: 'رأي', icon: 'fa-comments',
-            title: 'name', sort: 'sort_order',
-            desc: 'آراء العملاء اللي تظهر في الصفحة الرئيسية.',
-            f: [
-                ['name', 'اسم العميل', 'text', null, 'الاسم كما يظهر'],
-                ['role', 'المسمى', 'text', null, 'مثال: صاحب مطعم، مديرة تسويق'],
-                ['body', 'نص الرأي', 'area', null, 'نص الرأي أو التقييم'],
-                ['published', 'منشور', 'bool', null, 'لو مقفول مش هيظهر'],
-                ['sort_order', 'الترتيب', 'num', null, 'الأقل أولاً']
-            ]
-        }
-    };
-
-    const SETTINGS_GROUPS = [
-        { title: 'النصوص الرئيسية', icon: 'fa-align-right', fields: [
-            ['hero_desc', 'وصف الصفحة الرئيسية', 'area', null, 'النص اللي تحت العنوان في أعلى الصفحة'],
-            ['journey_text', 'نص قسم "رحلتي"', 'area', null, 'النص اللي في تاب "رحلتي"']
-        ]},
-        { title: 'بيانات التواصل', icon: 'fa-phone', fields: [
-            ['whatsapp', 'رقم الواتساب', 'text', null, 'بدون + (مثال: 201154012821)'],
-            ['phone', 'رقم الهاتف', 'text', null, 'بدون + (يستخدم في tel:)'],
-            ['email', 'البريد الإلكتروني', 'text', null, 'الإيميل الرسمي']
-        ]},
-        { title: 'روابط التواصل الاجتماعي', icon: 'fa-share-alt', fields: [
-            ['facebook', 'فيسبوك', 'text', null, 'رابط صفحة فيسبوك'],
-            ['instagram', 'انستجرام', 'text', null, 'رابط حساب انستجرام'],
-            ['behance', 'بيهانس', 'text', null, 'رابط حساب بيهانس'],
-            ['linkedin', 'لينكد إن', 'text', null, 'رابط حساب لينكد إن']
-        ]}
-    ];
-
-    let cur = 'projects', rows = [], searchTerm = '', deleteTargetId = null;
-    let tempGallery = [];
-
-    const $ = s => document.querySelector(s);
-    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-    // ==========================================
-    // أدوات مساعدة
-    // ==========================================
-    function toast(msg, ok = true) {
-        let el = document.getElementById('toast');
-        if (!el) {
-            el = document.createElement('div');
-            el.id = 'toast';
-            el.className = 'toast';
-            document.body.appendChild(el);
-        }
-        el.innerHTML = `<i class="fas fa-${ok ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
-        el.className = 'toast' + (ok ? '' : ' err');
-        requestAnimationFrame(() => el.classList.add('show'));
-        clearTimeout(el._t);
-        el._t = setTimeout(() => el.classList.remove('show'), 2600);
-    }
-
-    function showLoading() {
-        $('#main').innerHTML = '<div class="loader"><div class="spinner"></div><span>جاري التحميل...</span></div>';
-    }
-
-    function normalizeImageUrl(url) {
-        let v = String(url || '').trim();
-        if (!v) return '';
-        if (v.startsWith('data:')) return v;
-        if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
-        return v;
-    }
-
-    // ==========================================
-    // رفع صورة مفردة
-    // ==========================================
-    async function uploadImage(fileInput, fieldKey) {
-        const file = fileInput.files[0];
-        if (!file) return;
-
-        if (file.size > 5 * 1024 * 1024) {
-            toast('✗ حجم الصورة كبير جداً (الحد الأقصى 5 ميجابايت)', false);
-            fileInput.value = '';
-            return;
-        }
-
-        const statusEl = document.getElementById(`upload-status-${fieldKey}`);
-        const inputEl = document.getElementById(`input-${fieldKey}`);
-        const previewEl = document.getElementById(`preview-${fieldKey}`);
-
-        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصورة...</span>';
-
-        const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-        const filePath = `uploads/${fileName}`;
-
-        const { data, error } = await sb.storage
-            .from('images')
-            .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
-        if (error) {
-            statusEl.innerHTML = '<span style="color: var(--accent-red);"><i class="fas fa-times"></i> فشل الرفع</span>';
-            toast('✗ خطأ في الرفع: ' + error.message, false);
-            fileInput.value = '';
-            return;
-        }
-
-        const { data: publicUrlData } = sb.storage
-            .from('images')
-            .getPublicUrl(filePath);
-
-        const publicUrl = publicUrlData.publicUrl;
-
-        inputEl.value = publicUrl;
-        previewEl.src = publicUrl;
-        previewEl.classList.add('visible');
-
-        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-check"></i> تم الرفع بنجاح</span>';
-        setTimeout(() => statusEl.innerHTML = '', 3000);
-    }
-
-    // ==========================================
-    // رفع صور المعرض المتعددة
-    // ==========================================
-    async function uploadGalleryImages(fileInput, fieldKey) {
-        const files = fileInput.files;
-        if (!files.length) return;
-
-        const statusEl = document.getElementById(`upload-status-${fieldKey}`);
-        statusEl.innerHTML = '<span style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> جاري رفع الصور...</span>';
-
-        let uploadedCount = 0;
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.size > 5 * 1024 * 1024) {
-                toast(`✗ الصورة ${file.name} أكبر من 5 ميجا وتم تخطيها`, false);
-                continue;
-            }
-
-            const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-            const filePath = `uploads/${fileName}`;
-
-            const { error } = await sb.storage
-                .from('images')
-                .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
-            if (!error) {
-                const { data: publicUrlData } = sb.storage.from('images').getPublicUrl(filePath);
-                tempGallery.push(publicUrlData.publicUrl);
-                uploadedCount++;
-            }
-        }
-
-        fileInput.value = '';
-        statusEl.innerHTML = `<span style="color: var(--primary);"><i class="fas fa-check"></i> تم رفع ${uploadedCount} صورة بنجاح</span>`;
-        setTimeout(() => statusEl.innerHTML = '', 3000);
-        
-        renderGalleryPreviews(fieldKey);
-    }
-
-    function addGalleryUrl(fieldKey) {
-        const input = document.getElementById(`gallery-url-${fieldKey}`);
-        if (!input) return;
-
-        let url = input.value.trim();
-        if (!url) {
-            toast('من فضلك أدخل رابط الصورة', false);
-            return;
-        }
-
-        url = normalizeImageUrl(url);
-
-        if (!/^https?:\/\/.+\..+/i.test(url) && !url.startsWith('data:')) {
-            toast('الرابط غير صالح', false);
-            return;
-        }
-
-        if (tempGallery.includes(url)) {
-            toast('هذا الرابط مضاف بالفعل', false);
-            return;
-        }
-
-        tempGallery.push(url);
-        input.value = '';
-        renderGalleryPreviews(fieldKey);
-        toast('✔ تمت إضافة الصورة من الرابط');
-    }
-
-    function renderGalleryPreviews(fieldKey) {
-        const container = document.getElementById(`gallery-previews-${fieldKey}`);
-        if (!container) return;
-
-        if (tempGallery.length === 0) {
-            container.innerHTML = '<p style="font-size:12px;color:var(--text-gray);">لا توجد صور في المعرض.</p>';
-            return;
-        }
-
-        container.innerHTML = tempGallery.map((url, index) => `
-            <div class="gallery-thumb">
-                <img src="${esc(url)}" loading="lazy" onerror="this.src='https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png'">
-                <button type="button" class="btn-remove-thumb" onclick="removeGalleryImage('${fieldKey}', ${index})" title="حذف الصورة">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `).join('');
-    }
-
-    function removeGalleryImage(fieldKey, index) {
-        if (!confirm('هل أنت متأكد من إزالة هذه الصورة من المعرض؟')) return;
-        tempGallery.splice(index, 1);
-        renderGalleryPreviews(fieldKey);
-    }
-
-    // ==========================================
-    // التحقق من تسجيل الدخول
-    // ==========================================
-    async function checkAuth() {
-        try {
-            const { data } = await sb.auth.getSession();
-            
-            if (data && data.session) {
-                $('#login-screen').style.display = 'none';
-                $('#login-screen').hidden = true;
-                
-                $('#app').hidden = false;
-                $('#app').style.display = 'block';
-                
-                tabs();
-                load();
-            } else {
-                $('#login-screen').style.display = 'flex';
-                $('#login-screen').hidden = false;
-                
-                $('#app').hidden = true;
-                $('#app').style.display = 'none';
-            }
-        } catch (error) {
-            console.error("Auth check failed:", error);
-        }
-    }
-
-    // ==========================================
-    // التبويبات والتحميل
-    // ==========================================
-    function tabs() {
-        const items = [...Object.keys(T), 'settings'];
-        $('#tabs').innerHTML = items.map(k => {
-            const icon = k === 'settings' ? 'fa-cog' : T[k].icon;
-            const label = k === 'settings' ? 'الإعدادات' : T[k].label;
-            return `<button class="nav-chip ${k === cur ? 'on' : ''}" onclick="go('${k}')">
-                <i class="fas ${icon}"></i> ${label}
-            </button>`;
-        }).join('');
-    }
-
-    function go(k) {
-        cur = k; searchTerm = ''; tabs(); load();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function load() {
-        if (cur === 'settings') return settingsView();
-        showLoading();
-        const { data, error } = await sb.from(cur).select('*').order(T[cur].sort);
-        if (error) {
-            $('#main').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--accent-red)"></i><p>${esc(error.message)}</p></div>`;
-            return;
-        }
-        rows = data || [];
-        renderList();
-    }
-
-    function renderList() {
-        const filtered = rows.filter(r => {
-            if (!searchTerm) return true;
-            const title = String(r[T[cur].title] || '').toLowerCase();
-            return title.includes(searchTerm.toLowerCase());
-        });
-
-        const header = `
-            <div class="page-head">
-                <div class="page-head-info">
-                    <h2 class="page-title">${T[cur].label} <span style="font-size:12px;color:var(--text-gray);font-weight:400">(${rows.length})</span></h2>
-                    <p class="page-desc">${T[cur].desc}</p>
-                </div>
-                <button class="btn-add" onclick="edit(null)">
-                    <i class="fas fa-plus"></i> إضافة
-                </button>
-            </div>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="ابحث في ${T[cur].label}..." value="${esc(searchTerm)}" oninput="onSearch(this.value)">
-            </div>`;
-
-        let list;
-        if (filtered.length === 0) {
-            list = `<div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>${rows.length === 0 ? 'لا يوجد عناصر بعد — اضغط "إضافة" للبدء' : 'لا توجد نتائج مطابقة للبحث'}</p>
-            </div>`;
-        } else {
-            list = filtered.map(r => {
-                const thumb = r.cover_image || r.image || null;
-                const thumbHtml = thumb
-                    ? `<img src="${esc(thumb)}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>'">`
-                    : `<i class="fas fa-image"></i>`;
-                const status = r.published
-                    ? '<span class="status-pill pub"><i class="fas fa-eye" style="font-size:8px"></i> منشور</span>'
-                    : '<span class="status-pill hidden"><i class="fas fa-eye-slash" style="font-size:8px"></i> مخفي</span>';
-                return `<div class="item-card">
-                    <div class="item-thumb">${thumbHtml}</div>
-                    <div class="item-info">
-                        <div class="item-name">${esc(r[T[cur].title])}</div>
-                        <div class="item-meta">
-                            ${status}
-                            ${r.category ? `<span><i class="fas fa-tag" style="font-size:9px"></i> ${esc(r.category)}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn-icon-sm" onclick="edit(${r.id})" title="تعديل"><i class="fas fa-pen"></i></button>
-                        <button class="btn-icon-sm danger" onclick="confirmDelete(${r.id})" title="حذف"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        $('#main').innerHTML = header + list;
-    }
-
-    function onSearch(v) {
-        searchTerm = v;
-        renderList();
-        const inp = document.getElementById('searchInput');
-        if (inp) {
-            inp.focus();
-            inp.setSelectionRange(v.length, v.length);
-        }
-    }
-
-    // ==========================================
-    // إضافة وتعديل
-    // ==========================================
-    function edit(id) {
-        const r = id ? rows.find(x => x.id === id) : {};
-
-        const fieldsHtml = T[cur].f.map(([k, l, t = 'text', opts, help]) => {
-            const v = r[k];
-            const labelHtml = `<label class="field-label"><i class="fas fa-circle"></i> ${l}</label>`;
-            const helpHtml = help ? `<p class="field-help">${help}</p>` : '';
-
-            if (t === 'bool') {
-                const checked = (v ?? (k === 'published')) ? 'checked' : '';
-                return `<div class="field-group">
-                    ${labelHtml}${helpHtml}
-                    <label class="field-checkbox">
-                        <input type="checkbox" data-k="${k}" ${checked}>
-                        <span>${checked ? 'مفعّل' : 'معطّل'}</span>
-                    </label>
-                </div>`;
-            }
-
-            let val = v ?? '';
-            if (t === 'list') val = (v || []).join('\n');
-            if (t === 'json') val = JSON.stringify(v || [], null, 2);
-
-            let input;
-            if (t === 'area' || t === 'list' || t === 'json') {
-                input = `<textarea class="field-textarea" data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
-            } else if (t === 'sel') {
-                input = `<select class="field-select" data-k="${k}">
-                    ${opts.split('|').map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${x}</option>`).join('')}
-                </select>`;
-            } else if (t === 'img') {
-                input = `
-                    <div class="img-upload-wrapper">
-                        <label class="btn-upload">
-                            <i class="fas fa-cloud-upload-alt"></i> رفع صورة من التليفون / الجهاز
-                            <input type="file" accept="image/*" onchange="uploadImage(this, '${k}')" style="display: none;">
-                        </label>
-                        <div class="or-divider">— أو الصق رابط صورة من موقع استضافة —</div>
-                        <input class="field-input" id="input-${k}" data-k="${k}" data-t="text" value="${esc(val)}"
-                            oninput="updatePreview(this, '${k}')"
-                            onblur="this.value = normalizeImageUrl(this.value)"
-                            placeholder="https://example.com/image.jpg" dir="ltr">
-                        <span id="upload-status-${k}" class="upload-status"></span>
-                        <img id="preview-${k}" class="field-preview ${val ? 'visible' : ''}" src="${esc(val)}"
-                            onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">
-                    </div>
-                `;
-            } else if (t === 'gallery') {
-                tempGallery = Array.isArray(v) ? [...v] : [];
-                input = `
-                    <div class="gallery-upload-wrapper">
-                        <div class="gallery-previews" id="gallery-previews-${k}"></div>
-
-                        <label class="btn-upload">
-                            <i class="fas fa-images"></i> رفع صور من التليفون / الجهاز
-                            <input type="file" accept="image/*" multiple onchange="uploadGalleryImages(this, '${k}')" style="display: none;">
-                        </label>
-
-                        <div class="or-divider">— أو أضف رابط صورة من موقع استضافة —</div>
-
-                        <div class="gallery-url-row">
-                            <input type="url" id="gallery-url-${k}" class="field-input"
-                                placeholder="https://example.com/image.jpg" dir="ltr"
-                                onkeypress="if(event.key==='Enter'){event.preventDefault();addGalleryUrl('${k}');}">
-                            <button type="button" class="btn-upload" onclick="addGalleryUrl('${k}')">
-                                <i class="fas fa-plus"></i> إضافة
-                            </button>
-                        </div>
-
-                        <span id="upload-status-${k}" class="upload-status"></span>
-                        <input type="hidden" data-k="${k}" data-t="gallery" value="">
-                    </div>
-                `;
-            } else {
-                input = `<input class="field-input" data-k="${k}" data-t="${t}" value="${esc(val)}">`;
-            }
-            return `<div class="field-group">${labelHtml}${helpHtml}${input}</div>`;
-        }).join('');
-
-        $('#main').innerHTML = `
-            <div class="form-card">
-                <h3 class="form-title">
-                    <i class="fas fa-${id ? 'pen' : 'plus-circle'}"></i>
-                    ${id ? 'تعديل' : 'إضافة'} ${T[cur].singular}${id ? '' : ' جديد'}
-                </h3>
-                ${fieldsHtml}
-                <div class="form-actions">
-                    <button class="btn-cancel" onclick="load()">رجوع</button>
-                    <button class="btn-save" onclick="save(${id || 'null'}, this)">
-                        <i class="fas fa-save"></i> حفظ
-                    </button>
-                </div>
-            </div>`;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        if (cur === 'projects') {
-            renderGalleryPreviews('gallery');
-        }
-
-        document.querySelectorAll('.field-checkbox input').forEach(cb => {
-            cb.addEventListener('change', function() {
-                this.nextElementSibling.textContent = this.checked ? 'مفعّل' : 'معطّل';
-            });
-        });
-    }
-
-    function updatePreview(input, key) {
-        const img = document.getElementById('preview-' + key);
-        if (!img) return;
-        const v = input.value.trim();
-        if (v) {
-            img.src = normalizeImageUrl(v);
-            img.classList.add('visible');
-        } else {
-            img.classList.remove('visible');
-        }
-    }
-
-    async function save(id, btn) {
-        const obj = {};
-        for (const el of document.querySelectorAll('[data-k]')) {
-            const k = el.dataset.k, t = el.dataset.t, v = el.value;
-            
-            if (t === 'gallery') {
-                obj[k] = tempGallery;
-                continue;
-            }
-
-            if (el.type === 'checkbox') obj[k] = el.checked;
-            else if (t === 'num') obj[k] = Number(v) || 0;
-            else if (t === 'list') obj[k] = v.split('\n').map(s => s.trim()).filter(Boolean);
-            else if (t === 'json') {
-                try { obj[k] = JSON.parse(v || '[]'); }
-                catch (e) { return toast('✗ خطأ في JSON في حقل: ' + k, false); }
-            } else {
-                const val = v.trim();
-                if (val && (k === 'cover_image' || k === 'image' || k.endsWith('_image'))) {
-                    obj[k] = normalizeImageUrl(val);
-                } else {
-                    obj[k] = val === '' ? null : v;
-                }
-            }
-        }
-
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
-
-        const res = id
-            ? await sb.from(cur).update(obj).eq('id', id)
-            : await sb.from(cur).insert(obj);
-
-        if (res.error) {
-            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ'; }
-            return toast('✗ ' + res.error.message, false);
-        }
-        toast(id ? '✔ تم التحديث بنجاح' : '✔ تمت الإضافة بنجاح');
-        load();
-    }
-
-    // ==========================================
-    // الحذف
-    // ==========================================
-    function confirmDelete(id) {
-        deleteTargetId = id;
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.id = 'deleteModal';
-        modal.innerHTML = `
-            <div class="modal-box">
-                <div class="modal-icon"><i class="fas fa-trash"></i></div>
-                <h3 class="modal-title">تأكيد الحذف</h3>
-                <p class="modal-text">هل أنت متأكد من حذف هذا العنصر؟<br>لا يمكن التراجع عن هذه الخطوة.</p>
-                <div class="modal-actions">
-                    <button class="no" onclick="closeDeleteModal()">إلغاء</button>
-                    <button class="yes" onclick="doDelete()">حذف نهائي</button>
-                </div>
-            </div>`;
-        document.body.appendChild(modal);
-    }
-
-    function closeDeleteModal() {
-        const m = document.getElementById('deleteModal');
-        if (m) m.remove();
-        deleteTargetId = null;
-    }
-
-    async function doDelete() {
-        if (!deleteTargetId) return;
-        const id = deleteTargetId;
-        closeDeleteModal();
-        const { error } = await sb.from(cur).delete().eq('id', id);
-        if (error) return toast('✗ ' + error.message, false);
-        toast('✔ تم الحذف');
-        load();
-    }
-
-    // ==========================================
-    // الإعدادات
-    // ==========================================
-    async function settingsView() {
-        showLoading();
-        const { data } = await sb.from('site_settings').select('*');
-        const s = Object.fromEntries((data || []).map(r => [r.key, r.value]));
-
-        const groupsHtml = SETTINGS_GROUPS.map(g => `
-            <div class="settings-section">
-                <h4><i class="fas ${g.icon}"></i> ${g.title}</h4>
-                ${g.fields.map(([k, l, t, opts, help]) => {
-                    const v = s[k] ?? '';
-                    const helpHtml = help ? `<p class="field-help">${help}</p>` : '';
-                    const input = t === 'area'
-                        ? `<textarea class="field-textarea" data-k="${k}">${esc(v)}</textarea>`
-                        : `<input class="field-input" data-k="${k}" value="${esc(v)}">`;
-                    return `<div class="field-group">
-                        <label class="field-label"><i class="fas fa-circle"></i> ${l}</label>
-                        ${helpHtml}${input}
-                    </div>`;
-                }).join('')}
-            </div>`).join('');
-
-        $('#main').innerHTML = `
-            <div class="page-head">
-                <div class="page-head-info">
-                    <h2 class="page-title">الإعدادات</h2>
-                    <p class="page-desc">التحكم في نصوص الموقع وبيانات التواصل وروابط السوشيال ميديا.</p>
-                </div>
-            </div>
-            <div class="form-card">
-                ${groupsHtml}
-                <button class="btn-primary-lg" onclick="saveSettings(this)">
-                    <i class="fas fa-save"></i> حفظ الإعدادات
-                </button>
-            </div>`;
-    }
-
-    async function saveSettings(btn) {
-        const list = [...document.querySelectorAll('[data-k]')].map(el => ({
-            key: el.dataset.k, value: el.value
-        }));
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
-        const { error } = await sb.from('site_settings').upsert(list);
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ الإعدادات'; }
-        toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
-    }
-
-    // ==========================================
-    // تسجيل الدخول والخروج
-    // ==========================================
-    $('#loginBtn').onclick = async () => {
-        const btn = $('#loginBtn');
-        const email = $('#em').value.trim();
-        const pw = $('#pw').value;
-        
-        if (!email || !pw) {
-            $('#err').textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
-        $('#err').textContent = '';
-
-        try {
-            const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-            
-            if (error) {
-                $('#err').textContent = error.message;
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-            } else {
-                await checkAuth();
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-            }
-        } catch (err) {
-            $('#err').textContent = 'حدث خطأ في الاتصال، جرب تاني.';
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-        }
-    };
-
-    $('#pw').addEventListener('keypress', e => {
-        if (e.key === 'Enter') $('#loginBtn').click();
-    });
-
-    $('#logout').onclick = async () => {
-        if (!confirm('تسجيل الخروج؟')) return;
-        await sb.auth.signOut();
-        location.reload();
-    };
-
-    // ==========================================
-    // تشغيل التطبيق
-    // ==========================================
-    sb.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            if (session) checkAuth();
-        } else if (event === 'SIGNED_OUT') {
-            checkAuth();
-        }
-    });
-
-    checkAuth();
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
+const SUPABASE_URL='https://cnygozaqtomkprpeydgc.supabase.co';
+const SUPABASE_KEY='sb_publishable_--faLKzcgaevNrvutQuSZw_uuocJWRN';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const T={
+projects:{label:'المشاريع',singular:'مشروع',icon:'fa-folder-open',title:'title',sort:'sort_order',desc:'إدارة معرض أعمالك. المشروع الأحدث (بأعلى ID) يظهر كغلاف رئيسي في الموقع تلقائياً.',f:[['title','العنوان','text',null,'اسم المشروع كما يظهر للزائر'],['category','التصنيف','sel','social|identity|print','social=سوشيال، identity=هوية، print=مطبوعات'],['cover_image','رابط الصورة الرئيسية','img',null,'ارفع صورة من جهازك أو الصق رابطاً مباشراً'],['gallery','صور المعرض','gallery',null,'ارفع صور متعددة أو أضف روابط'],['is_new','جديد','bool',null,'لو مفعّل، تظهر شارة "جديد"'],['published','منشور','bool',null,'لو مقفول، المشروع مش هيظهر'],['sort_order','الترتيب','num',null,'رقم الترتيب اليدوي']]},
+packages:{label:'الباكجات',singular:'باقة',icon:'fa-tags',title:'title',sort:'sort_order',desc:'إدارة باقات التصميم.',f:[['title','اسم الباقة','text',null,'اسم الباقة'],['price','السعر','text',null,'السعر الحالي'],['old_price','السعر القديم','text',null,'السعر قبل الخصم'],['discount_label','شارة الخصم','text',null,'مثال: خصم 25%'],['features','المميزات','list',null,'كل ميزة في سطر'],['published','منشور','bool',null,'لو مقفول مش هتظهر'],['sort_order','الترتيب','num',null,'الأقل أولاً']]},
+courses:{label:'الكورسات',singular:'كورس',icon:'fa-graduation-cap',title:'title',sort:'sort_order',desc:'إدارة الكورسات.',f:[['title','اسم الكورس','text',null,'اسم الكورس'],['description','الوصف','area',null,'وصف مختصر'],['image','رابط الصورة','img',null,'ارفع صورة أو الصق رابطاً'],['price','السعر','text',null,'السعر الحالي'],['old_price','السعر القديم','text',null,'السعر قبل الخصم'],['discount_label','شارة الخصم','text',null,'مثال: خصم 50%'],['features','المميزات','list',null,'ميزة في كل سطر'],['modules','الوحدات (JSON)','json',null,'[{"title":"...","lessons":["..."]}]'],['published','منشور','bool',null,'لو مقفول مش هيظهر'],['sort_order','الترتيب','num',null,'الأقل أولاً']]},
+testimonials:{label:'الآراء',singular:'رأي',icon:'fa-comments',title:'name',sort:'sort_order',desc:'آراء العملاء.',f:[['name','اسم العميل','text',null,'الاسم'],['role','المسمى','text',null,'مثال: صاحب مطعم'],['body','نص الرأي','area',null,'نص الرأي'],['published','منشور','bool',null,'لو مقفول مش هيظهر'],['sort_order','الترتيب','num',null,'الأقل أولاً']]}
+};
+
+const SETTINGS_GROUPS=[
+{title:'النصوص الرئيسية',icon:'fa-align-right',fields:[['hero_desc','وصف الصفحة الرئيسية','area',null,'النص تحت العنوان'],['journey_text','نص قسم "رحلتي"','area',null,'النص في تاب "رحلتي"']]},
+{title:'بيانات التواصل',icon:'fa-phone',fields:[['whatsapp','رقم الواتساب','text',null,'بدون + (مثال: 201154012821)'],['phone','رقم الهاتف','text',null,'بدون +'],['email','البريد الإلكتروني','text',null,'الإيميل الرسمي']]},
+{title:'روابط التواصل الاجتماعي',icon:'fa-share-alt',fields:[['facebook','فيسبوك','text',null,'رابط فيسبوك'],['instagram','انستجرام','text',null,'رابط انستجرام'],['behance','بيهانس','text',null,'رابط بيهانس'],['linkedin','لينكد إن','text',null,'رابط لينكد إن']]}
+];
+
+let cur='projects',rows=[],searchTerm='',deleteTargetId=null,tempGallery=[];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function toast(msg,ok=true){let el=document.getElementById('toast');if(!el){el=document.createElement('div');el.id='toast';el.className='toast';document.body.appendChild(el);}el.innerHTML=`<i class="fas fa-${ok?'check-circle':'exclamation-circle'}"></i> ${msg}`;el.className='toast'+(ok?'':' err');requestAnimationFrame(()=>el.classList.add('show'));clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2600);}
+function showLoading(){$('#main').innerHTML='<div class="loader"><div class="spinner"></div><span>جاري التحميل...</span></div>';}
+function normalizeImageUrl(url){let v=String(url||'').trim();if(!v)return'';if(v.startsWith('data:'))return v;if(!/^https?:\/\//i.test(v))v='https://'+v;return v;}
+
+async function uploadImage(fileInput,fieldKey){
+const file=fileInput.files[0];if(!file)return;
+if(file.size>5*1024*1024){toast('✗ حجم الصورة كبير (الحد 5MB)',false);fileInput.value='';return;}
+const statusEl=document.getElementById(`upload-status-${fieldKey}`);
+const inputEl=document.getElementById(`input-${fieldKey}`);
+const previewEl=document.getElementById(`preview-${fieldKey}`);
+statusEl.innerHTML='<span style="color:var(--primary)"><i class="fas fa-spinner fa-spin"></i> جاري الرفع...</span>';
+const fileExt=(file.name.split('.').pop()||'jpg').toLowerCase();
+const fileName=`${Date.now()}_${Math.random().toString(36).substring(2,8)}.${fileExt}`;
+const filePath=`uploads/${fileName}`;
+const {data,error}=await sb.storage.from('images').upload(filePath,file,{cacheControl:'3600',upsert:false});
+if(error){statusEl.innerHTML='<span style="color:var(--accent-red)"><i class="fas fa-times"></i> فشل</span>';toast('✗ '+error.message,false);fileInput.value='';return;}
+const {data:publicUrlData}=sb.storage.from('images').getPublicUrl(filePath);
+inputEl.value=publicUrlData.publicUrl;previewEl.src=publicUrlData.publicUrl;previewEl.classList.add('visible');
+statusEl.innerHTML='<span style="color:var(--primary)"><i class="fas fa-check"></i> تم الرفع</span>';
+setTimeout(()=>statusEl.innerHTML='',3000);
+}
+
+async function uploadGalleryImages(fileInput,fieldKey){
+const files=fileInput.files;if(!files.length)return;
+const statusEl=document.getElementById(`upload-status-${fieldKey}`);
+statusEl.innerHTML='<span style="color:var(--primary)"><i class="fas fa-spinner fa-spin"></i> جاري الرفع...</span>';
+let uploadedCount=0;
+for(let i=0;i<files.length;i++){
+const file=files[i];
+if(file.size>5*1024*1024){toast(`✗ ${file.name} أكبر من 5MB`,false);continue;}
+const fileExt=(file.name.split('.').pop()||'jpg').toLowerCase();
+const fileName=`${Date.now()}_${Math.random().toString(36).substring(2,8)}.${fileExt}`;
+const filePath=`uploads/${fileName}`;
+const {error}=await sb.storage.from('images').upload(filePath,file,{cacheControl:'3600',upsert:false});
+if(!error){const {data:publicUrlData}=sb.storage.from('images').getPublicUrl(filePath);tempGallery.push(publicUrlData.publicUrl);uploadedCount++;}
+}
+fileInput.value='';
+statusEl.innerHTML=`<span style="color:var(--primary)"><i class="fas fa-check"></i> تم رفع ${uploadedCount} صورة</span>`;
+setTimeout(()=>statusEl.innerHTML='',3000);
+renderGalleryPreviews(fieldKey);
+}
+
+function addGalleryUrl(fieldKey){
+const input=document.getElementById(`gallery-url-${fieldKey}`);if(!input)return;
+let url=input.value.trim();if(!url){toast('أدخل رابط الصورة',false);return;}
+url=normalizeImageUrl(url);
+if(!/^https?:\/\/.+\..+/i.test(url)&&!url.startsWith('data:')){toast('الرابط غير صالح',false);return;}
+if(tempGallery.includes(url)){toast('هذا الرابط مضاف بالفعل',false);return;}
+tempGallery.push(url);input.value='';renderGalleryPreviews(fieldKey);toast('✔ تمت الإضافة');
+}
+
+function renderGalleryPreviews(fieldKey){
+const container=document.getElementById(`gallery-previews-${fieldKey}`);if(!container)return;
+if(tempGallery.length===0){container.innerHTML='<p style="font-size:12px;color:var(--text-gray)">لا توجد صور في المعرض.</p>';return;}
+container.innerHTML=tempGallery.map((url,index)=>`
+<div class="gallery-thumb">
+<img src="${esc(url)}" loading="lazy" onerror="this.src='https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png'">
+<button type="button" class="btn-remove-thumb" onclick="removeGalleryImage('${fieldKey}',${index})" title="حذف"><i class="fas fa-times"></i></button>
+</div>`).join('');
+}
+
+function removeGalleryImage(fieldKey,index){
+if(!confirm('إزالة هذه الصورة؟'))return;
+tempGallery.splice(index,1);renderGalleryPreviews(fieldKey);
+}
+
+async function checkAuth(){
+try{
+const {data}=await sb.auth.getSession();
+if(data&&data.session){
+$('#login-screen').style.display='none';$('#login-screen').hidden=true;
+$('#app').hidden=false;$('#app').style.display='block';
+tabs();load();
+}else{
+$('#login-screen').style.display='flex';$('#login-screen').hidden=false;
+$('#app').hidden=true;$('#app').style.display='none';
+}
+}catch(error){console.error('Auth check failed:',error);}
+}
+
+function tabs(){
+const items=[...Object.keys(T),'settings'];
+$('#tabs').innerHTML=items.map(k=>{
+const icon=k==='settings'?'fa-cog':T[k].icon;
+const label=k==='settings'?'الإعدادات':T[k].label;
+return `<button class="nav-chip ${k===cur?'on':''}" onclick="go('${k}')"><i class="fas ${icon}"></i> ${label}</button>`;
+}).join('');
+}
+
+function go(k){cur=k;searchTerm='';tabs();load();window.scrollTo({top:0,behavior:'smooth'});}
+
+async function load(){
+if(cur==='settings')return settingsView();
+showLoading();
+const {data,error}=await sb.from(cur).select('*').order(T[cur].sort);
+if(error){$('#main').innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--accent-red)"></i><p>${esc(error.message)}</p></div>`;return;}
+rows=data||[];renderList();
+}
+
+function renderList(){
+const filtered=rows.filter(r=>{if(!searchTerm)return true;const title=String(r[T[cur].title]||'').toLowerCase();return title.includes(searchTerm.toLowerCase());});
+const header=`
+<div class="page-head">
+<div class="page-head-info">
+<h2 class="page-title">${T[cur].label} <span style="font-size:12px;color:var(--text-gray);font-weight:400">(${rows.length})</span></h2>
+<p class="page-desc">${T[cur].desc}</p>
+</div>
+<button class="btn-add" onclick="edit(null)"><i class="fas fa-plus"></i> إضافة</button>
+</div>
+<div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="ابحث في ${T[cur].label}..." value="${esc(searchTerm)}" oninput="onSearch(this.value)"></div>`;
+let list;
+if(filtered.length===0){
+list=`<div class="empty-state"><i class="fas fa-inbox"></i><p>${rows.length===0?'لا يوجد عناصر بعد — اضغط "إضافة" للبدء':'لا توجد نتائج مطابقة'}</p></div>`;
+}else{
+list=filtered.map(r=>{
+const thumb=r.cover_image||r.image||null;
+const thumbHtml=thumb?`<img src="${esc(thumb)}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>'">`:`<i class="fas fa-image"></i>`;
+const status=r.published?'<span class="status-pill pub"><i class="fas fa-eye" style="font-size:8px"></i> منشور</span>':'<span class="status-pill hidden"><i class="fas fa-eye-slash" style="font-size:8px"></i> مخفي</span>';
+return `<div class="item-card">
+<div class="item-thumb">${thumbHtml}</div>
+<div class="item-info">
+<div class="item-name">${esc(r[T[cur].title])}</div>
+<div class="item-meta">${status}${r.category?`<span><i class="fas fa-tag" style="font-size:9px"></i> ${esc(r.category)}</span>`:''}</div>
+</div>
+<div class="item-actions">
+<button class="btn-icon-sm" onclick="edit(${r.id})" title="تعديل"><i class="fas fa-pen"></i></button>
+<button class="btn-icon-sm danger" onclick="confirmDelete(${r.id})" title="حذف"><i class="fas fa-trash"></i></button>
+</div>
+</div>`;
+}).join('');
+}
+$('#main').innerHTML=header+list;
+}
+
+function onSearch(v){searchTerm=v;renderList();const inp=document.getElementById('searchInput');if(inp){inp.focus();inp.setSelectionRange(v.length,v.length);}}
+
+function edit(id){
+const r=id?rows.find(x=>x.id===id):{};
+const fieldsHtml=T[cur].f.map(([k,l,t='text',opts,help])=>{
+const v=r[k];
+const labelHtml=`<label class="field-label"><i class="fas fa-circle"></i> ${l}</label>`;
+const helpHtml=help?`<p class="field-help">${help}</p>`:'';
+if(t==='bool'){
+const checked=(v??(k==='published'))?'checked':'';
+return `<div class="field-group">${labelHtml}${helpHtml}<label class="field-checkbox"><input type="checkbox" data-k="${k}" ${checked}><span>${checked?'مفعّل':'معطّل'}</span></label></div>`;
+}
+let val=v??'';
+if(t==='list')val=(v||[]).join('\n');
+if(t==='json')val=JSON.stringify(v||[],null,2);
+let input;
+if(t==='area'||t==='list'||t==='json'){
+input=`<textarea class="field-textarea" data-k="${k}" data-t="${t}">${esc(val)}</textarea>`;
+}else if(t==='sel'){
+input=`<select class="field-select" data-k="${k}">${opts.split('|').map(x=>`<option value="${x}" ${x===v?'selected':''}>${x}</option>`).join('')}</select>`;
+}else if(t==='img'){
+input=`<div class="img-upload-wrapper">
+<label class="btn-upload"><i class="fas fa-cloud-upload-alt"></i> رفع صورة من الجهاز<input type="file" accept="image/*" onchange="uploadImage(this,'${k}')" style="display:none;"></label>
+<div class="or-divider">— أو الصق رابط —</div>
+<input class="field-input" id="input-${k}" data-k="${k}" data-t="text" value="${esc(val)}" oninput="updatePreview(this,'${k}')" onblur="this.value=normalizeImageUrl(this.value)" placeholder="https://..." dir="ltr">
+<span id="upload-status-${k}" class="upload-status"></span>
+<img id="preview-${k}" class="field-preview ${val?'visible':''}" src="${esc(val)}" onerror="this.classList.remove('visible')" onload="this.classList.add('visible')">
+</div>`;
+}else if(t==='gallery'){
+tempGallery=Array.isArray(v)?[...v]:[];
+input=`<div class="gallery-upload-wrapper">
+<div class="gallery-previews" id="gallery-previews-${k}"></div>
+<label class="btn-upload"><i class="fas fa-images"></i> رفع صور<input type="file" accept="image/*" multiple onchange="uploadGalleryImages(this,'${k}')" style="display:none;"></label>
+<div class="or-divider">— أو أضف رابط —</div>
+<div class="gallery-url-row">
+<input type="url" id="gallery-url-${k}" class="field-input" placeholder="https://..." dir="ltr" onkeypress="if(event.key==='Enter'){event.preventDefault();addGalleryUrl('${k}');}">
+<button type="button" class="btn-upload" onclick="addGalleryUrl('${k}')"><i class="fas fa-plus"></i> إضافة</button>
+</div>
+<span id="upload-status-${k}" class="upload-status"></span>
+<input type="hidden" data-k="${k}" data-t="gallery" value="">
+</div>`;
+}else{
+input=`<input class="field-input" data-k="${k}" data-t="${t}" value="${esc(val)}">`;
+}
+return `<div class="field-group">${labelHtml}${helpHtml}${input}</div>`;
+}).join('');
+
+$('#main').innerHTML=`
+<div class="form-card">
+<h3 class="form-title"><i class="fas fa-${id?'pen':'plus-circle'}"></i> ${id?'تعديل':'إضافة'} ${T[cur].singular}${id?'':' جديد'}</h3>
+${fieldsHtml}
+<div class="form-actions">
+<button class="btn-cancel" onclick="load()">رجوع</button>
+<button class="btn-save" onclick="save(${id||'null'},this)"><i class="fas fa-save"></i> حفظ</button>
+</div>
+</div>`;
+window.scrollTo({top:0,behavior:'smooth'});
+if(cur==='projects')renderGalleryPreviews('gallery');
+document.querySelectorAll('.field-checkbox input').forEach(cb=>{cb.addEventListener('change',function(){this.nextElementSibling.textContent=this.checked?'مفعّل':'معطّل';});});
+}
+
+function updatePreview(input,key){const img=document.getElementById('preview-'+key);if(!img)return;const v=input.value.trim();if(v){img.src=normalizeImageUrl(v);img.classList.add('visible');}else{img.classList.remove('visible');}}
+
+async function save(id,btn){
+const obj={};
+for(const el of document.querySelectorAll('[data-k]')){
+const k=el.dataset.k,t=el.dataset.t,v=el.value;
+if(t==='gallery'){obj[k]=tempGallery;continue;}
+if(el.type==='checkbox')obj[k]=el.checked;
+else if(t==='num')obj[k]=Number(v)||0;
+else if(t==='list')obj[k]=v.split('\n').map(s=>s.trim()).filter(Boolean);
+else if(t==='json'){try{obj[k]=JSON.parse(v||'[]');}catch(e){return toast('✗ خطأ في JSON: '+k,false);}}
+else{const val=v.trim();if(val&&(k==='cover_image'||k==='image'||k.endsWith('_image'))){obj[k]=normalizeImageUrl(val);}else{obj[k]=val===''?null:v;}}
+}
+if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';}
+const res=id?await sb.from(cur).update(obj).eq('id',id):await sb.from(cur).insert(obj);
+if(res.error){if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> حفظ';}return toast('✗ '+res.error.message,false);}
+toast(id?'✔ تم التحديث':'✔ تمت الإضافة');load();
+}
+
+function confirmDelete(id){
+deleteTargetId=id;
+const modal=document.createElement('div');
+modal.className='modal-overlay';modal.id='deleteModal';
+modal.innerHTML=`
+<div class="modal-box">
+<div class="modal-icon"><i class="fas fa-trash"></i></div>
+<h3 class="modal-title">تأكيد الحذف</h3>
+<p class="modal-text">هل أنت متأكد من الحذف؟<br>لا يمكن التراجع.</p>
+<div class="modal-actions">
+<button class="no" onclick="closeDeleteModal()">إلغاء</button>
+<button class="yes" onclick="doDelete()">حذف نهائي</button>
+</div>
+</div>`;
+document.body.appendChild(modal);
+}
+
+function closeDeleteModal(){const m=document.getElementById('deleteModal');if(m)m.remove();deleteTargetId=null;}
+
+async function doDelete(){if(!deleteTargetId)return;const id=deleteTargetId;closeDeleteModal();const {error}=await sb.from(cur).delete().eq('id',id);if(error)return toast('✗ '+error.message,false);toast('✔ تم الحذف');load();}
+
+async function settingsView(){
+showLoading();
+const {data}=await sb.from('site_settings').select('*');
+const s=Object.fromEntries((data||[]).map(r=>[r.key,r.value]));
+const groupsHtml=SETTINGS_GROUPS.map(g=>`
+<div class="settings-section">
+<h4><i class="fas ${g.icon}"></i> ${g.title}</h4>
+${g.fields.map(([k,l,t,opts,help])=>{
+const v=s[k]??'';
+const helpHtml=help?`<p class="field-help">${help}</p>`:'';
+const input=t==='area'?`<textarea class="field-textarea" data-k="${k}">${esc(v)}</textarea>`:`<input class="field-input" data-k="${k}" value="${esc(v)}">`;
+return `<div class="field-group"><label class="field-label"><i class="fas fa-circle"></i> ${l}</label>${helpHtml}${input}</div>`;
+}).join('')}
+</div>`).join('');
+$('#main').innerHTML=`
+<div class="page-head">
+<div class="page-head-info">
+<h2 class="page-title">الإعدادات</h2>
+<p class="page-desc">التحكم في نصوص الموقع وبيانات التواصل.</p>
+</div>
+</div>
+<div class="form-card">
+${groupsHtml}
+<button class="btn-primary-lg" onclick="saveSettings(this)"><i class="fas fa-save"></i> حفظ الإعدادات</button>
+</div>`;
+}
+
+async function saveSettings(btn){
+const list=[...document.querySelectorAll('[data-k]')].map(el=>({key:el.dataset.k,value:el.value}));
+if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';}
+const {error}=await sb.from('site_settings').upsert(list);
+if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> حفظ الإعدادات';}
+toast(error?'✗ '+error.message:'✔ تم حفظ الإعدادات',!error);
+}
+
+$('#loginBtn').onclick=async()=>{
+const btn=$('#loginBtn');
+const email=$('#em').value.trim();
+const pw=$('#pw').value;
+if(!email||!pw){$('#err').textContent='أدخل الإيميل وكلمة المرور';return;}
+btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';$('#err').textContent='';
+try{
+const {error}=await sb.auth.signInWithPassword({email,password:pw});
+if(error){$('#err').textContent=error.message;btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';}
+else{await checkAuth();btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';}
+}catch(err){$('#err').textContent='حدث خطأ في الاتصال، جرب تاني.';btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';}
+};
+
+$('#pw').addEventListener('keypress',e=>{if(e.key==='Enter')$('#loginBtn').click();});
+
+$('#logout').onclick=async()=>{if(!confirm('تسجيل الخروج؟'))return;await sb.auth.signOut();location.reload();};
+
+sb.auth.onAuthStateChange((event,session)=>{
+if(event==='SIGNED_IN'||event==='INITIAL_SESSION'){if(session)checkAuth();}
+else if(event==='SIGNED_OUT'){checkAuth();}
+});
+
+checkAuth();
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
 </html>

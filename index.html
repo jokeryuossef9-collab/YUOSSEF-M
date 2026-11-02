@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cnygozaqtomkprpeydgc.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
     
     <link rel="manifest" href='data:application/manifest+json,{"name":"معرض أعمالي","short_name":"Portfolio","start_url":".","display":"standalone","background_color":"%23060b14","theme_color":"%233b82f6","icons":[{"src":"https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png","sizes":"192x192","type":"image/png"}]}'>
     <meta name="theme-color" content="#060b14">
@@ -19,9 +21,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* =========================================
-           1. المتغيرات والألوان (Dark Blue Professional)
-           ========================================= */
         :root {
             --bg-main: #060b14;
             --bg-card: #0d1524;
@@ -56,7 +55,6 @@
                 radial-gradient(circle at 80% 100%, rgba(99, 102, 241, 0.10), transparent 50%);
             background-attachment: fixed;
             background-repeat: no-repeat;
-            
             color: var(--text-white);
             max-width: 600px;
             margin: 0 auto;
@@ -68,9 +66,6 @@
         }
         body.modal-open { overflow: hidden; }
 
-        /* =========================================
-           مؤشر الماوس المخصص
-           ========================================= */
         .custom-cursor {
             width: 8px; height: 8px; background: var(--primary);
             border-radius: 50%; position: fixed; top: 0; left: 0;
@@ -85,9 +80,6 @@
         }
         .cursor-follower.hovering { width: 60px; height: 60px; background: rgba(59, 130, 246, 0.12); opacity: 1; border-width: 2px;}
 
-        /* =========================================
-           شاشة البداية
-           ========================================= */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: radial-gradient(circle at 50% 30%, #0f1e3a 0%, #060b14 70%);
@@ -132,9 +124,6 @@
         }
         .welcome-toast.show { top: 20px; }
 
-        /* =========================================
-           الهيدر العلوي
-           ========================================= */
         header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px; background-color: rgba(6, 11, 20, 0.85); backdrop-filter: blur(10px);
@@ -162,15 +151,9 @@
             transition: transform 0.1s ease-out, box-shadow 0.3s; 
         }
 
-        /* =========================================
-           إعدادات الصفحات
-           ========================================= */
         .view { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
         .view.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* =========================================
-           الصفحة الرئيسية (Hero)
-           ========================================= */
         .hero-section {
             background: var(--bg-hero); 
             padding: 40px 20px; 
@@ -230,9 +213,6 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
-        /* =========================================
-           شارة "جديد" والمشروع البارز
-           ========================================= */
         .new-badge {
             position: absolute; top: 15px; left: 15px; background: linear-gradient(45deg, var(--accent-red), #f97316);
             color: #111; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 900;
@@ -252,9 +232,6 @@
             background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transform: translateZ(30px); pointer-events: none;
         }
 
-        /* =========================================
-           شريط التصنيفات (يدوي)
-           ========================================= */
         .marquee-container {
             padding: 15px 0; 
             position: relative; 
@@ -305,7 +282,6 @@
         .section-title { padding: 0 15px; font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 10px rgba(0,0,0,0.8);}
         .section-title::before { content: ''; width: 4px; height: 20px; background-color: var(--primary); border-radius: 2px; }
 
-        /* شبكة الأعمال */
         .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; perspective: 1000px; }
         .project-card {
             background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden;
@@ -315,9 +291,6 @@
         .card-info { padding: 12px; transform: translateZ(20px); pointer-events: none;}
         .card-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* =========================================
-           آراء العملاء (Testimonials)
-           ========================================= */
         .testimonials-wrapper {
             display: flex; gap: 15px; overflow-x: auto; padding: 0 15px 20px 15px; scrollbar-width: none;
         }
@@ -335,9 +308,6 @@
         .testimonial-name { font-size: 14px; font-weight: 700; }
         .testimonial-role { font-size: 11px; color: var(--primary); }
 
-        /* =========================================
-           الباكجات وحاسبة الأسعار
-           ========================================= */
         .packages-container { padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; perspective: 1000px;}
         .pricing-card {
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px 20px;
@@ -387,9 +357,6 @@
         .calc-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
         .calc-total { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 20px; font-weight: 900; color: var(--primary); }
 
-        /* =========================================
-           صفحة الكورسات
-           ========================================= */
         .course-card {
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
             margin: 0 15px 30px 15px; position: relative;
@@ -424,9 +391,6 @@
         .course-features li { font-size: 14px; color: var(--text-white); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .course-features li i { color: var(--primary); }
 
-        /* =========================================
-           صفحة عني (المطورة والتفاعلية)
-           ========================================= */
         .page-content { padding: 20px 15px; }
         
         .about-header { text-align: center; margin-bottom: 30px; }
@@ -436,7 +400,6 @@
         .about-photo-container { width: 100%; max-width: 300px; margin: 20px auto 30px auto; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
         .about-photo-container img { width: 100%; height: auto; display: block; object-fit: cover; }
 
-        /* التابات التفاعلية */
         .about-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn {
             background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-gray);
@@ -448,10 +411,8 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* محتوى تاب "رحلتي" */
         .journey-text { color: var(--text-gray); font-size: 14px; line-height: 1.8; text-align: center; margin-bottom: 30px; }
         
-        /* الخط الزمني */
         .timeline { position: relative; padding-right: 20px; margin-bottom: 30px; }
         .timeline::before {
             content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--border-color);
@@ -465,20 +426,17 @@
         .timeline-title { font-size: 16px; font-weight: 700; color: var(--text-white); margin-bottom: 5px; }
         .timeline-desc { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
 
-        /* محتوى تاب "مهاراتي" */
         .skills-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
         .skill-item { background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
         .skill-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 14px; }
         .skill-progress-bg { width: 100%; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
         .skill-progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent-purple)); border-radius: 4px; width: 0; transition: width 1s ease-out; }
 
-        /* محتوى تاب "حقائق" */
         .fun-facts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
         .fact-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px 15px; border-radius: 16px; text-align: center; }
         .fact-card i { font-size: 30px; color: var(--primary); margin-bottom: 10px; display: block; }
         .fact-card span { font-size: 14px; font-weight: 700; color: var(--text-white); display: block; }
 
-        /* الخدمات وخطوات العمل */
         .about-section-title { font-size: 20px; font-weight: 900; color: var(--text-white); margin: 30px 0 20px 0; display: flex; align-items: center; gap: 10px; border-right: 4px solid var(--primary); padding-right: 10px; }
         .services-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
         .service-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: flex-start; gap: 15px; position: relative; overflow: hidden; }
@@ -500,9 +458,6 @@
         .btn-about-primary { background-color: var(--primary); color: #000; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-about-whatsapp { background-color: #25D366; color: #fff; padding: 12px 25px; border-radius: 30px; font-size: 15px; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 8px; }
 
-        /* =========================================
-           صفحة تفاصيل المشروع والتواصل
-           ========================================= */
         #view-project { background-color: var(--bg-main); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 200; overflow-y: auto; padding-bottom: 80px; opacity: 0; visibility: hidden; transform: translateY(30px); transition: 0.4s; }
         #view-project.active { opacity: 1; visibility: visible; transform: translateY(0); }
         .project-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: rgba(6, 11, 20, 0.92); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -544,9 +499,6 @@
         .contact-socials a { width: 50px; height: 50px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; color: var(--text-white); font-size: 22px; text-decoration: none; transition: 0.3s; }
         .contact-socials a:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35); }
 
-        /* =========================================
-           المودال (Modal)
-           ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
@@ -582,22 +534,18 @@
 </head>
 <body>
 
-    <!-- مؤشر الماوس المخصص -->
     <div class="custom-cursor"></div>
     <div class="cursor-follower"></div>
 
-    <!-- شاشة البداية -->
     <div id="preloader">
         <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="preloader-logo" alt="Logo">
         <h1 class="preloader-name">YUOSSEF Mahmoud</h1>
     </div>
 
-    <!-- رسالة الترحيب -->
     <div id="welcome-toast" class="welcome-toast">
         <i class="fas fa-hand-sparkles"></i> أهلاً بك في معرض أعمالي
     </div>
 
-    <!-- الهيدر -->
     <header id="main-header">
         <div class="logo-area">
             <img src="https://i.postimg.cc/ncJ7Gn26/AIRetouch-20261101-055625224.png" class="logo-icon" alt="Logo">
@@ -613,7 +561,6 @@
         </div>
     </header>
 
-    <!-- الصفحة الرئيسية -->
     <section id="view-home" class="view active">
         
         <div class="hero-section" id="hero-section">
@@ -636,11 +583,10 @@
             </div>
         </div>
 
-        <!-- المشروع البارز -->
         <div class="featured-project reveal" id="featured-wrapper">
             <div class="featured-card tilt-effect" onclick="openProjectDetail(1)">
                 <div class="new-badge"><i class="fas fa-star"></i> جديد</div>
-                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Featured">
+                <img src="https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg" alt="Featured" loading="lazy" decoding="async">
                 <div class="featured-overlay">
                     <p style="font-size: 10px; color: #a5b4fc; margin-bottom: 5px;">مشروع مميز</p>
                     <h3 style="font-size: 20px; margin-bottom: 5px;">حملة سوشيال ميديا</h3>
@@ -649,10 +595,8 @@
             </div>
         </div>
 
-        <!-- معرض الأعمال -->
         <h2 class="section-title reveal" id="projects">معرض الأعمال</h2>
         
-        <!-- شريط التصنيفات -->
         <div class="marquee-container reveal">
             <div class="marquee-content">
                 <div class="category-chip active" onclick="filterCategory('all', this)"><i class="fas fa-layer-group"></i> الكل</div>
@@ -669,7 +613,6 @@
 
         <div class="projects-grid" id="home-projects-grid"></div>
 
-        <!-- آراء العملاء -->
         <h2 class="section-title reveal">آراء العملاء</h2>
         <div class="testimonials-wrapper reveal">
             <div class="testimonial-card">
@@ -697,7 +640,6 @@
         </div>
     </section>
 
-    <!-- صفحة الباكجات والحاسبة -->
     <section id="view-packages" class="view">
         <div class="page-content">
             <h2 style="text-align: center; margin-bottom: 10px; color: var(--primary);">باكجات التصميم</h2>
@@ -773,7 +715,6 @@
         </div>
     </section>
 
-    <!-- صفحة الكورسات -->
     <section id="view-courses" class="view">
         <div class="page-content">
             <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary);">الكورسات</h2>
@@ -782,7 +723,7 @@
         <div class="course-card tilt-effect reveal">
             <div class="course-image-container">
                 <div class="course-discount-badge">خصم 50%</div>
-                <img src="https://i.postimg.cc/4yYLRjWW/644684898-1793407016330626.jpg" alt="دبلومة الذكاء الاصطناعي">
+                <img src="https://i.postimg.cc/4yYLRjWW/644684898-1793407016330626.jpg" alt="دبلومة الذكاء الاصطناعي" loading="lazy">
             </div>
             <div class="course-content">
 
@@ -825,7 +766,608 @@
         </div>
     </section>
 
-    <!-- صفحة تفاصيل المشروع -->
     <section id="view-project">
         <div class="project-top-bar">
-            <button class="back-btn magnetic" onclick="closeProjectDetail()"><i class="fas fa-chevr
+            <button class="back-btn magnetic" onclick="closeProjectDetail()"><i class="fas fa-chevron-right"></i> رجوع</button>
+            <span style="font-size: 12px; color: var(--primary); font-weight: 700;">تفاصيل الحملة</span>
+        </div>
+        <div class="main-project-image">
+            <img id="detail-main-img" src="" alt="Main Project Image">
+        </div>
+        <div class="project-gallery-grid" id="detail-gallery"></div>
+    </section>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <div class="close-lightbox magnetic"><i class="fas fa-times"></i></div>
+        <img id="lightbox-img" src="" onclick="event.stopPropagation()">
+    </div>
+
+    <section id="view-about" class="view">
+        <div class="page-content">
+            
+            <div class="about-header reveal">
+                <span class="about-badge"><i class="fas fa-magic"></i> عني</span>
+                <h2 class="about-name">أهلاً بك</h2>
+                <p class="about-title">مصمم جرافيك وهوية بصرية</p>
+                <div class="about-photo-container tilt-effect">
+                    <img src="https://i.postimg.cc/6qsVRC12/FB-IMG-1793394032018.jpg" alt="Yuossef" loading="lazy">
+                </div>
+            </div>
+
+            <div class="about-tabs reveal">
+                <button class="tab-btn active" onclick="switchAboutTab('journey', this)">رحلتي</button>
+                <button class="tab-btn" onclick="switchAboutTab('skills', this)">مهاراتي</button>
+                <button class="tab-btn" onclick="switchAboutTab('facts', this)">حقائق عني</button>
+            </div>
+
+            <div class="tab-content active" id="tab-journey">
+                <p class="journey-text">
+                    بدأت رحلتي في عالم التصميم بدافع الشغف، ومنذ ذلك الحين وأنا أؤمن أن التصميم الجيد ليس مجرد شكل جميل، بل هو لغة تواصل تروي قصة علامتك التجارية وتترك أثراً لا يُنسى في ذهن العميل.
+                </p>
+                
+                <h3 class="about-section-title" style="margin-top: 0;">محطات في مسيرتي</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2020</div>
+                        <div class="timeline-title">بداية الشغف</div>
+                        <div class="timeline-desc">بدأت تعلم برامج التصميم الأساسية واكتشاف عالم الهوية البصرية.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2021</div>
+                        <div class="timeline-title">أول عميل حقيقي</div>
+                        <div class="timeline-desc">صممت أول هوية بصرية متكاملة لمشروع محلي، وكانت نقطة تحول كبيرة.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">التوسع للخليج</div>
+                        <div class="timeline-desc">بدأت العمل مع عملاء من السعودية والإمارات عن بُعد في مشاريع سوشيال ميديا.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">الآن</div>
+                        <div class="timeline-title">أكاديمية التصميم</div>
+                        <div class="timeline-desc">توسعت لنقل الخبرة وتدريب المصممين الجدد على أدوات الذكاء الاصطناعي.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-skills">
+                <div class="skills-container">
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Adobe Photoshop</span> <span>95%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="95%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Adobe Illustrator</span> <span>90%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>Figma (UI/UX)</span> <span>85%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header"><span>AI Tools (Midjourney, ChatGPT)</span> <span>98%</span></div>
+                        <div class="skill-progress-bg"><div class="skill-progress-bar" data-width="98%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-facts">
+                <div class="fun-facts-grid">
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-coffee"></i>
+                        <span>قهوة لا تنتهي</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-book-open"></i>
+                        <span>قارئ نهم للكتب</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-gamepad"></i>
+                        <span>لاعب فيديو جيمز</span>
+                    </div>
+                    <div class="fact-card tilt-effect">
+                        <i class="fas fa-plane"></i>
+                        <span>أعشق السفر</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="about-section-title reveal">كيف أساعد علامتك</h3>
+            <div class="services-list reveal">
+                <div class="service-item tilt-effect">
+                    <div class="service-num">01</div>
+                    <div class="service-info"><h4>هوية بصرية كاملة</h4><p>شعار، نظام ألوان، خطوط، ودليل استخدام احترافي.</p></div>
+                </div>
+                <div class="service-item tilt-effect">
+                    <div class="service-num">02</div>
+                    <div class="service-info"><h4>سوشيال ميديا</h4><p>تصاميم منشورات وحملات متناسقة مع هوية العلامة.</p></div>
+                </div>
+            </div>
+
+            <div class="cta-box reveal">
+                <h3>عندك فكرة مشروع؟</h3>
+                <p>احكي لي عن علامتك وما تريد الوصول إليه، وأعدك بتصور بصري كامل.</p>
+                <div class="cta-btns">
+                    <a href="#" onclick="switchView('contact', document.querySelector('.nav-item:nth-child(5)')); return false;" class="btn-about-primary magnetic">تواصل معي <i class="fas fa-paper-plane"></i></a>
+                    <a href="https://wa.me/201154012821" target="_blank" class="btn-about-whatsapp magnetic"><i class="fab fa-whatsapp"></i> واتساب</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-contact" class="view">
+        <div class="page-content">
+            <h2 style="text-align: center; margin-bottom: 5px; color: var(--primary); font-weight: 900; font-size: 24px;">لنتحدث عن مشروعك</h2>
+            <p style="text-align: center; color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">أنا هنا لتحويل أفكارك إلى واقع بصري. اختر وسيلة التواصل المفضلة لديك.</p>
+            
+            <div class="contact-grid reveal">
+                <a href="https://wa.me/201154012821" target="_blank" class="contact-card magnetic">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>واتساب</span>
+                    <small>اضغط للمحادثة</small>
+                </a>
+                <a href="mailto:info@yuossef.com" class="contact-card magnetic">
+                    <i class="fas fa-envelope"></i>
+                    <span>البريد الإلكتروني</span>
+                    <small>info@yuossef.com</small>
+                </a>
+                <a href="tel:+201154012821" class="contact-card magnetic">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>اتصل بي</span>
+                    <small dir="ltr">+20 115 401 2821</small>
+                </a>
+                <div class="contact-card magnetic">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>الموقع</span>
+                    <small>القاهرة، مصر</small>
+                </div>
+            </div>
+
+            <form class="contact-form reveal" onsubmit="sendToWhatsApp(event)">
+                <div class="form-group">
+                    <label>الاسم الكريم</label>
+                    <input type="text" id="cName" placeholder="اكتب اسمك هنا" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>رقم الهاتف أو الواتساب</label>
+                    <input type="tel" id="cPhone" placeholder="مثال: 010xxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label>نوع الخدمة المطلوبة</label>
+                    <select id="cService" required>
+                        <option value="" disabled selected>اختر نوع الخدمة...</option>
+                        <option value="تصميم سوشيال ميديا">تصميم سوشيال ميديا</option>
+                        <option value="هوية بصرية كاملة">هوية بصرية كاملة</option>
+                        <option value="مطبوعات وتغليف">مطبوعات وتغليف</option>
+                        <option value="استفسار عن الكورسات">استفسار عن الكورسات</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>تفاصيل المشروع</label>
+                    <textarea id="cDetails" rows="4" placeholder="احكِ لي باختصار عن فكرتك وما تحتاجه..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn magnetic">
+                    إرسال عبر واتساب <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
+                </button>
+            </form>
+
+            <div class="contact-socials reveal">
+                <a href="https://www.facebook.com/share/1EqptCPXaj/" target="_blank" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" target="_blank" title="انستجرام"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank" title="بيهانس"><i class="fab fa-behance"></i></a>
+                <a href="#" target="_blank" title="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <div id="enrollModal" class="modal-overlay" onclick="closeEnrollModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closeEnrollModal(event)"></i>
+            <h3 class="modal-title">حجز كورس</h3>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;" id="modalCourseName">دبلومة الذكاء الاصطناعي</p>
+            
+            <form id="enrollForm" onsubmit="submitEnrollment(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="eName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" id="ePhone" required>
+                </div>
+                <button type="submit" class="submit-btn">تأكيد الحجز عبر واتساب <i class="fab fa-whatsapp"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="packageModal" class="modal-overlay" onclick="closePackageModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closePackageModal(event)"></i>
+            <h3 class="modal-title">طلب باقة</h3>
+            <p style="text-align: center; color: var(--text-gray); font-size: 13px; margin-bottom: 20px;" id="modalPackageName">باقة السوشيال ميديا</p>
+            <p style="text-align: center; color: var(--primary); font-size: 16px; font-weight: 900; margin-bottom: 20px;" id="modalPackagePrice">1500 ج.م</p>
+            
+            <form id="packageForm" onsubmit="submitPackageOrder(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="pName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" id="pPhone" required>
+                </div>
+                <button type="submit" class="submit-btn">تأكيد الطلب عبر واتساب <i class="fab fa-whatsapp"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="bottom-nav" id="bottom-nav">
+        <div class="nav-item active magnetic" onclick="switchView('home', this)"><i class="fas fa-th-large"></i><span>الأعمال</span></div>
+        <div class="nav-item magnetic" onclick="switchView('packages', this)"><i class="fas fa-tags"></i><span>الباكجات</span></div>
+        <div class="nav-item magnetic" onclick="switchView('courses', this)"><i class="fas fa-graduation-cap"></i><span>الكورسات</span></div>
+        <div class="nav-item magnetic" onclick="switchView('about', this)"><i class="fas fa-user"></i><span>عني</span></div>
+        <div class="nav-item magnetic" onclick="switchView('contact', this)"><i class="fas fa-envelope"></i><span>تواصل</span></div>
+    </nav>
+
+    <script>
+        // =========================================
+        // [1] بيانات المشاريع (احتياطية)
+        // =========================================
+        let projectsData = [
+            { id: 13, title: "حملة سوشيال ميديا - طلبات", category: "social", coverImage: "https://i.postimg.cc/3rz0ZPQP/FB-IMG-1793405873803.jpg", isNew: true, gallery: ["https://i.postimg.cc/ht1JcvQP/FB-IMG-1793405878950.jpg", "https://i.postimg.cc/x13kn8N1/FB-IMG-1793405882435.jpg", "https://i.postimg.cc/XYkZ4qBJ/FB-IMG-1793405884683.jpg", "https://i.postimg.cc/RZL34hJC/FB-IMG-1793405886957.jpg"] },
+            { id: 12, title: "حملة سوشيال ميديا - الفريق خميس", category: "social", coverImage: "https://i.postimg.cc/1502H1Nz/FB-IMG-1793404892228.jpg", gallery: ["https://i.postimg.cc/xd8Znkpv/FB-IMG-1793404899899.jpg", "https://i.postimg.cc/jj21tW3S/FB-IMG-1793404903545.jpg", "https://i.postimg.cc/hGvYcJZQ/FB-IMG-1793404909274.jpg", "https://i.postimg.cc/wBrGv6nJ/FB-IMG-1793404984329.jpg"] },
+            { id: 11, title: "حملة سوشيال ميديا - مشروع جديد", category: "social", coverImage: "https://i.postimg.cc/xd0DLF4c/FB-IMG-1793399730053.jpg", gallery: ["https://i.postimg.cc/MXkgHsBy/FB-IMG-1793399734239.jpg", "https://i.postimg.cc/44KdKmcS/FB-IMG-1793399737652.jpg", "https://i.postimg.cc/HjGFnSM3/FB-IMG-1793399747014.jpg", "https://i.postimg.cc/LhdG5yPD/FB-IMG-1793399750224.jpg"] },
+            { id: 10, title: "حملة سوشيال ميديا - مشروع مميز", category: "social", coverImage: "https://i.postimg.cc/hP7Cvbpq/FB-IMG-1793399051535.jpg", gallery: ["https://i.postimg.cc/gJTDknhd/FB-IMG-1793399059640.jpg", "https://i.postimg.cc/W3HnbhZ3/FB-IMG-1793399063223.jpg", "https://i.postimg.cc/wvGVT7NT/FB-IMG-1793399069307.jpg", "https://i.postimg.cc/0QBf2bSq/FB-IMG-1793399073362.jpg"] },
+            { id: 9, title: "حملة سوشيال ميديا - OREO", category: "social", coverImage: "https://i.postimg.cc/yx0Z4dXM/FB-IMG-1793398218764.jpg", gallery: ["https://i.postimg.cc/3xtDHzpP/FB-IMG-1793398223707.jpg", "https://i.postimg.cc/zGzR6qbz/FB-IMG-1793398226964.jpg", "https://i.postimg.cc/Bnm1GRH9/FB-IMG-1793398230828.jpg", "https://i.postimg.cc/6pWGgB26/FB-IMG-1793398234474.jpg"] },
+            { id: 8, title: "حملة سوشيال ميديا - WE SONIC", category: "social", coverImage: "https://i.postimg.cc/BnVRkQhR/FB-IMG-1793397469863.jpg", gallery: ["https://i.postimg.cc/pTD7mQ2d/FB-IMG-1793397476305.jpg", "https://i.postimg.cc/wvhP156j/FB-IMG-1793397480710.jpg", "https://i.postimg.cc/rmSbDG8m/FB-IMG-1793397485155.jpg", "https://i.postimg.cc/qR8YNckq/FB-IMG-1793397488672.jpg"] },
+            { id: 7, title: "حملة سوشيال ميديا - Tabby", category: "social", coverImage: "https://i.postimg.cc/GmVv6Zv7/FB-IMG-1793397047122.jpg", gallery: ["https://i.postimg.cc/6pv84TGj/FB-IMG-1793397051863.jpg", "https://i.postimg.cc/rwrDRztf/FB-IMG-1793397056179.jpg", "https://i.postimg.cc/kgb2RDtj/FB-IMG-1793397058833.jpg", "https://i.postimg.cc/rwrDRztg/FB-IMG-1793397061941.jpg"] },
+            { id: 6, title: "حملة KOSMOLITA CLINIC", category: "identity", coverImage: "https://i.postimg.cc/k5bLdv84/IMG-20261029-WA0264.jpg", gallery: ["https://i.postimg.cc/1t0T8Rv4/FB-IMG-1793395553117.jpg", "https://i.postimg.cc/d1RXhQ5V/FB-IMG-1793395556773.jpg", "https://i.postimg.cc/SsL5nQgR/FB-IMG-1793395560665.jpg", "https://i.postimg.cc/pTQ7mVsd/FB-IMG-1793395657468.jpg"] },
+            { id: 5, title: "حملة سوشيال ميديا - دجاج مقرمش", category: "social", coverImage: "https://i.postimg.cc/ZqMhxqmq/485893870-1793390740785796.jpg", gallery: ["https://i.postimg.cc/FKBQVKvs/176635013-1793390744359588.jpg", "https://i.postimg.cc/YSswzS74/479785028-1793390743585459.jpg", "https://i.postimg.cc/mD1WXGZk/697932327-1793390742700277.jpg", "https://i.postimg.cc/fbrhfbsz/995122413-1793390741768358.jpg"] }
+        ];
+
+        // =========================================
+        // [2] التابات التفاعلية
+        // =========================================
+        function switchAboutTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if(tabId === 'skills') {
+                setTimeout(() => {
+                    document.querySelectorAll('.skill-progress-bar').forEach(bar => { bar.style.width = bar.getAttribute('data-width'); });
+                }, 100);
+            } else {
+                document.querySelectorAll('.skill-progress-bar').forEach(bar => { bar.style.width = '0'; });
+            }
+        }
+
+        // =========================================
+        // [3] الأكورديون
+        // =========================================
+        let acc = document.getElementsByClassName("module-btn");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                let panel = this.nextElementSibling;
+                if (panel.style.maxHeight) { panel.style.maxHeight = null; } 
+                else { panel.style.maxHeight = panel.scrollHeight + "px"; }
+            });
+        }
+
+        // =========================================
+        // [4] تفاصيل الباقة
+        // =========================================
+        function togglePackageDetails(btn) {
+            btn.classList.toggle("active");
+            let panel = btn.nextElementSibling;
+            let icon = btn.querySelector("i");
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                icon.style.transform = "rotate(180deg)";
+            }
+        }
+
+        // =========================================
+        // [5] المودال
+        // =========================================
+        function openEnrollModal(courseName) {
+            document.getElementById('modalCourseName').innerText = courseName;
+            document.getElementById('enrollModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+        function closeEnrollModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('enrollModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('enrollForm').reset();
+        }
+        function submitEnrollment(e) {
+            e.preventDefault();
+            const name = document.getElementById('eName').value;
+            const phone = document.getElementById('ePhone').value;
+            const courseName = document.getElementById('modalCourseName').innerText;
+            const text = `مرحباً،%0Aأود حجز مكاني في *${courseName}*%0A%0A*الاسم:* ${name}%0A*رقم الواتساب:* ${phone}%0A%0Aأرجو إرسال تفاصيل الدفع.`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+            closeEnrollModal();
+        }
+        function openPackageModal(packageName, price) {
+            document.getElementById('modalPackageName').innerText = packageName;
+            document.getElementById('modalPackagePrice').innerText = price + " ج.م";
+            document.getElementById('packageModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+        function closePackageModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('packageModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('packageForm').reset();
+        }
+        function submitPackageOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const phone = document.getElementById('pPhone').value;
+            const packageName = document.getElementById('modalPackageName').innerText;
+            const price = document.getElementById('modalPackagePrice').innerText;
+            const text = `مرحباً،%0Aأود طلب *${packageName}* بسعر *${price}*%0A%0A*الاسم:* ${name}%0A*رقم الواتساب:* ${phone}`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+            closePackageModal();
+        }
+
+        // =========================================
+        // [6] المؤثرات الصوتية
+        // =========================================
+        try {
+            const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            document.querySelectorAll('button, a, .category-chip, .module-btn, .package-details-btn, .tab-btn').forEach(el => {
+                el.addEventListener('click', () => {
+                    clickSound.currentTime = 0;
+                    clickSound.play().catch(e => console.log("Audio blocked"));
+                });
+            });
+        } catch(e) { console.warn('Audio init failed', e); }
+
+        // =========================================
+        // [7] حاسبة الأسعار
+        // =========================================
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.calculator-box input[type="checkbox"]:checked').forEach(cb => {
+                total += parseInt(cb.value);
+            });
+            document.getElementById('total-price').innerText = total + ' ج.م';
+        }
+        function sendCalcToWhatsApp() {
+            let selectedServices = [];
+            document.querySelectorAll('.calculator-box input[type="checkbox"]:checked').forEach(cb => {
+                selectedServices.push(cb.parentElement.innerText.split('(')[0].trim());
+            });
+            let total = document.getElementById('total-price').innerText;
+            if (selectedServices.length === 0) {
+                alert("الرجاء اختيار خدمة واحدة على الأقل.");
+                return;
+            }
+            const text = `مرحباً،%0Aأود طلب العرض التالي:%0A- ${selectedServices.join('%0A- ')}%0A%0A*الإجمالي التقريبي:* ${total}`;
+            window.open(`https://wa.me/201154012821?text=${text}`, '_blank');
+        }
+
+        // =========================================
+        // [8] تشغيل الموقع — مع Safety Net
+        // =========================================
+        let siteInitialized = false;
+        function initSite() {
+            if (siteInitialized) return;
+            siteInitialized = true;
+
+            try { renderHomeProjects(projectsData); } catch(e) { console.error('❌ renderHomeProjects:', e); }
+            try { initCustomCursor(); } catch(e) { console.error('❌ initCustomCursor:', e); }
+            try { initMagneticButtons(); } catch(e) { console.error('❌ initMagneticButtons:', e); }
+            try { init3DTilt(); } catch(e) { console.error('❌ init3DTilt:', e); }
+            try { initScrollReveal(); } catch(e) { console.error('❌ initScrollReveal:', e); }
+            try { typeWriterEffect(); } catch(e) { console.error('❌ typeWriterEffect:', e); }
+
+            setTimeout(() => {
+                const pre = document.getElementById('preloader');
+                if (pre) pre.classList.add('hide');
+                setTimeout(startCounters, 250);
+                setTimeout(() => document.getElementById('welcome-toast')?.classList.add('show'), 100);
+                setTimeout(() => document.getElementById('welcome-toast')?.classList.remove('show'), 3500);
+            }, 950);
+        }
+
+        // حاول تشغّل بعد load أو بعد 4 ثوان (أيهما أسبق) — ده يمنع الموقع من التعليق
+        if (document.readyState === 'complete') {
+            initSite();
+        } else {
+            window.addEventListener('load', initSite);
+            setTimeout(initSite, 4000); // fallback قوي
+        }
+
+        function initCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+            const follower = document.querySelector('.cursor-follower');
+            if (!cursor || !follower) return;
+            let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX; mouseY = e.clientY;
+                cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+            });
+            function animateFollower() {
+                followerX += (mouseX - followerX) * 0.15; followerY += (mouseY - followerY) * 0.15;
+                follower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+                requestAnimationFrame(animateFollower);
+            }
+            animateFollower();
+            document.querySelectorAll('a, button, .project-card, .tab-btn').forEach(link => {
+                link.addEventListener('mouseenter', () => follower.classList.add('hovering'));
+                link.addEventListener('mouseleave', () => follower.classList.remove('hovering'));
+            });
+        }
+
+        function initMagneticButtons() {
+            if(window.innerWidth <= 768) return; 
+            document.querySelectorAll('.magnetic').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
+                btn.addEventListener('mouseleave', () => btn.style.transform = `translate(0px, 0px)`);
+            });
+        }
+
+        function init3DTilt() {
+            if(window.innerWidth <= 768) return;
+            document.querySelectorAll('.tilt-effect').forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height/2) / (rect.height/2)) * -10; 
+                    const rotateY = ((x - rect.width/2) / (rect.width/2)) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)');
+            });
+        }
+
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(reveal => observer.observe(reveal));
+        }
+
+        function typeWriterEffect() {
+            const text = "تصميم جرافيك يترك أثراً";
+            const titleElement = document.getElementById('typewriter-title');
+            if (!titleElement) return;
+            let i = 0; titleElement.innerHTML = '';
+            function type() {
+                if (i < text.length) { titleElement.innerHTML += text.charAt(i); i++; setTimeout(type, 80); }
+            }
+            setTimeout(type, 900); 
+        }
+
+        function renderHomeProjects(projectsToRender) {
+            const grid = document.getElementById('home-projects-grid');
+            if (!grid) return;
+            if (!Array.isArray(projectsToRender)) projectsToRender = projectsData || [];
+            grid.innerHTML = '';
+            projectsToRender.forEach((project) => {
+                const newBadgeHtml = project.isNew ? `<div class="new-badge"><i class="fas fa-star"></i> جديد</div>` : '';
+                grid.innerHTML += `
+                    <div class="project-card tilt-effect" onclick="openProjectDetail(${project.id})">
+                        ${newBadgeHtml}
+                        <img src="${project.coverImage}" class="card-img" alt="${project.title}" loading="lazy" decoding="async">
+                        <div class="card-info"><div class="card-title">${project.title}</div></div>
+                    </div>
+                `;
+            });
+            init3DTilt();
+        }
+
+        function filterCategory(category, element) {
+            document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            let filtered = category === 'all' ? projectsData : projectsData.filter(p => p.category === category);
+            renderHomeProjects(filtered);
+        }
+
+        function searchProjects() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            renderHomeProjects(projectsData.filter(p => p.title.toLowerCase().includes(searchTerm)));
+        }
+
+        function switchView(viewName, navItem) {
+            document.querySelectorAll('.view').forEach(v => { 
+                v.classList.remove('active'); 
+                v.style.display = 'none'; 
+            });
+            const activeView = document.getElementById('view-' + viewName);
+            setTimeout(() => { 
+                activeView.style.display = 'block'; 
+                setTimeout(() => {
+                    activeView.classList.add('active');
+                    activeView.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+                }, 10); 
+            }, 50);
+            if(navItem) { 
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+                navItem.classList.add('active'); 
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function openProjectDetail(projectId) {
+            const project = projectsData.find(p => p.id === projectId);
+            if(!project) return;
+            document.getElementById('detail-main-img').src = project.coverImage;
+            const galleryContainer = document.getElementById('detail-gallery');
+            galleryContainer.innerHTML = '';
+            project.gallery.forEach((imgUrl) => {
+                galleryContainer.innerHTML += `<div class="gallery-item" onclick="openLightbox('${imgUrl}')"><img src="${imgUrl}" loading="lazy" decoding="async"></div>`;
+            });
+            document.getElementById('view-project').classList.add('active');
+            document.body.classList.add('modal-open');
+            document.getElementById('main-header').style.transform = 'translateY(-100%)';
+            document.getElementById('bottom-nav').style.transform = 'translateY(100%)';
+        }
+
+        function closeProjectDetail() {
+            document.getElementById('view-project').classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('main-header').style.transform = 'translateY(0)';
+            document.getElementById('bottom-nav').style.transform = 'translateY(0)';
+        }
+
+        function openLightbox(imgSrc) {
+            document.getElementById('lightbox-img').src = imgSrc;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        function sendToWhatsApp(e) {
+            e.preventDefault();
+            const name = document.getElementById('cName').value;
+            const phone = document.getElementById('cPhone').value;
+            const service = document.getElementById('cService').value;
+            const details = document.getElementById('cDetails').value;
+            window.open(`https://wa.me/201154012821?text=مرحباً،%0A%0A*الاسم:* ${name}%0A*الهاتف:* ${phone}%0A*الخدمة:* ${service}%0A*التفاصيل:* ${details}`, '_blank');
+            document.getElementById('cName').value = ''; 
+            document.getElementById('cPhone').value = ''; 
+            document.getElementById('cService').value = ''; 
+            document.getElementById('cDetails').value = '';
+        }
+
+        function startCounters() {
+            document.querySelectorAll('.stat-val').forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                let startTime = null;
+                function animate(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    const progress = currentTime - startTime;
+                    counter.innerText = Math.floor((1 - Math.pow(1 - Math.min(progress / 1500, 1), 2)) * target);
+                    if (progress < 1500) requestAnimationFrame(animate); else counter.innerText = target;
+                }
+                requestAnimationFrame(animate);
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cms.js"></script>
+</body>
+</html>
