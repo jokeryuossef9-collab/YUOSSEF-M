@@ -1122,4 +1122,88 @@
                 <div class="page-head-info">
                     <h2 class="page-title">الإعدادات</h2>
                     <p class="page-desc">التحكم في نصوص الموقع وبيانات التواصل وروابط السوشيال ميديا.</p>
-                </d
+                </div>
+            </div>
+            <div class="form-card">
+                ${groupsHtml}
+                <button class="btn-primary-lg" onclick="saveSettings(this)">
+                    <i class="fas fa-save"></i> حفظ الإعدادات
+                </button>
+            </div>`;
+    }
+
+    async function saveSettings(btn) {
+        const list = [...document.querySelectorAll('[data-k]')].map(el => ({
+            key: el.dataset.k, value: el.value
+        }));
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
+        const { error } = await sb.from('site_settings').upsert(list);
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ الإعدادات'; }
+        toast(error ? '✗ ' + error.message : '✔ تم حفظ الإعدادات', !error);
+    }
+
+    // ==========================================
+    // تسجيل الدخول والخروج
+    // ==========================================
+    $('#loginBtn').onclick = async () => {
+        const btn = $('#loginBtn');
+        const email = $('#em').value.trim();
+        const pw = $('#pw').value;
+        
+        if (!email || !pw) {
+            $('#err').textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+        $('#err').textContent = '';
+
+        try {
+            const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+            
+            if (error) {
+                $('#err').textContent = error.message;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+            } else {
+                await checkAuth();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+            }
+        } catch (err) {
+            $('#err').textContent = 'حدث خطأ في الاتصال، جرب تاني.';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+        }
+    };
+
+    $('#pw').addEventListener('keypress', e => {
+        if (e.key === 'Enter') $('#loginBtn').click();
+    });
+
+    $('#logout').onclick = async () => {
+        if (!confirm('تسجيل الخروج؟')) return;
+        await sb.auth.signOut();
+        location.reload();
+    };
+
+    // ==========================================
+    // تشغيل التطبيق
+    // ==========================================
+    sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            if (session) checkAuth();
+        } else if (event === 'SIGNED_OUT') {
+            checkAuth();
+        }
+    });
+
+    checkAuth();
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+</script>
+</body>
+</html>
