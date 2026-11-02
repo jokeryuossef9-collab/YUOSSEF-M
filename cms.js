@@ -11,15 +11,31 @@
     return data;
   }
 
+  // ترتيب المشاريع: الأحدث الأول (created_at، ولو مش موجود نرجع للـ id)
+  function sortNewestFirst(a, b) {
+    const ta = a.created_at ? new Date(a.created_at).getTime() : NaN;
+    const tb = b.created_at ? new Date(b.created_at).getTime() : NaN;
+    if (!Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb) return tb - ta;
+    return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
+  }
+
   async function run() {
     const [pr, pk, co, te, st] = await Promise.all([
       get('projects'), get('packages'), get('courses'), get('testimonials'),
       sb.from('site_settings').select('*')
     ]);
 
-    // المشاريع (معرض الأعمال)
+    // المشاريع (معرض الأعمال) - الأحدث الأول + علامة "جديد" تلقائياً للأحدث
     if (pr) {
-      projectsData = pr.map(p => ({ id: p.id, title: p.title, category: p.category, coverImage: p.cover_image, isNew: p.is_new, gallery: p.gallery || [] }));
+      const sorted = pr.slice().sort(sortNewestFirst);
+      projectsData = sorted.map((p, i) => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        coverImage: p.cover_image,
+        isNew: i === 0 ? true : !!p.is_new, // الأحدث دايماً عليه علامة "جديد"
+        gallery: p.gallery || []
+      }));
       renderHomeProjects(projectsData);
     }
 
